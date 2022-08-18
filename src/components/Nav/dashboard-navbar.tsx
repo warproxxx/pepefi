@@ -11,7 +11,7 @@ import useScrollListener from "src/hooks/useScrollListener";
 import {useState, useEffect, useRef} from 'react';
 import {Link} from 'react-scroll';
 
-const pages = ['Vaults', 'Tab2', 'Tab3'];
+const pages = [ 'Loans','Vaults'];
 const links = ["#about_us","#nft_lending","#request_a_loan","#podcast","#contact_us"];
 const links2 = ["about_us","nft_lending","request_a_loan","podcast","contact_us"];
 export const DashboardNavbar = (props:any) => {

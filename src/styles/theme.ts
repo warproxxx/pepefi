@@ -231,10 +231,10 @@ export const theme = createTheme({
     '0px 25px 50px rgba(100, 116, 139, 0.25)'
   ],
   typography: {
+    fontFamily:'inherit',
     button: {
       fontWeight: 600
     },
-    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
     body1: {
       fontSize: '1rem',
       fontWeight: 400,

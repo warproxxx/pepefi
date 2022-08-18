@@ -13,7 +13,7 @@ export const VaultsBox = styled(Box)((props)  => sx({
   width: '100%'
 }));
 
-function IndexPage(props) {
+function IndexPage(props:any) {
   return (
     <>
       <Head>
@@ -33,8 +33,8 @@ function IndexPage(props) {
         }}
       >
         <VaultsBox sx={{maxWidth:'1400px'}}>
-          <Grid container spacing={2}>
-            <Grid item xl={3} lgp={3} lg={3} md={4} smpad={4} sm={6} xs={12} >
+          <Grid container spacing={8}>
+            <Grid item xl={4} lgp={4} lg={4} md={4} smpad={4} sm={6} xs={12} >
               <VaultCard vaultName={"Goblin Sax Vault"} mainColor={"white"} volume={7000} apr={5} status={'active'} data={[5000,6000,6500,7000]} /*handleVaultDetailPopupClickOpen={handleVaultDetailPopupClickOpen}*//>
             </Grid>
 

@@ -21,6 +21,40 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
+@font-face {
+  font-family: "DM Mono";
+  src: url("/static/fonts/DMMono-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Libre Baskerville";
+  src: url("/static/fonts/LibreBaskerville-Bold.ttf");
+}
+
+/* .MuiSlider-markLabel{
+  color:#A2A2A2 !important;
+} */
+
+/* .MuiSlider-thumb{
+  display:none !important;
+} */
+
+/* .MuiSlider-mark{
+  background-color: #5DC961 !important;
+  height: 15px !important;
+  box-shadow: 0px 0px 4px 1px #5DC961 !important;
+} */
+
+/* .MuiSlider-track{
+  height: 1px;
+  box-shadow: 0px 0px 4px 1px #5dc961;
+} */
+
+/* .MuiSlider-rail{
+  background-color:#939393 !important;
+  height: 1px;
+} */
+
 /* @keyframes App-logo-float {
   0% {
     transform: translateY(0);
