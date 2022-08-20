@@ -1,6 +1,7 @@
 require("@nomiclabs/hardhat-waffle");
 require('hardhat-abi-exporter');
 require("hardhat-interface-generator");
+require('dotenv').config()
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
@@ -18,12 +19,12 @@ module.exports = {
     hardhat: {
       chainId: 1337,
       forking: {
-        url: "https://eth-mainnet.alchemyapi.io/v2/[process.env.ALCHEMY_API]",
+        url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_API}`,
         accounts: [process.env.ETH_KEY]
       }
     },
     rinkeby: {
-      url: "https://eth-rinkeby.alchemyapi.io/v2/[process.env.ALCHEMY_API]",
+      url: `https://eth-rinkeby.alchemyapi.io/v2/${process.env.ALCHEMY_API}`,
       accounts: [process.env.ETH_KEY]
     },
   },
