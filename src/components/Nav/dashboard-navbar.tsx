@@ -48,7 +48,7 @@ export const DashboardNavbar = (props:any) => {
 
   return (
     <AppBar position="fixed" className={navClassList.join(" ")} sx={{boxShadow:"none",transition: "transform 250ms ease-in-out",backgroundColor:'black'}} >
-      <Container maxWidth="lg" sx={{width:{xs:'100%',md:'80%'},maxWidth:'1400px !important'}}>
+      <Container maxWidth="lg" sx={{width:{xs:'100%'},maxWidth:'1400px !important'}}>
         <Toolbar disableGutters>
         <Box sx={{
           cursor:'pointer',
@@ -121,9 +121,9 @@ export const DashboardNavbar = (props:any) => {
                 </Button>
             ))}
           </Box>
-            <Box sx={{backgroundColor:"#5DC961",padding:'12px',borderRadius:'15px'}}>
+          <Button variant="contained" onClick={()=>{console.log('getting loan')}} sx={{width:'140px'}}>
               Connect Wallet
-            </Box>
+          </Button>
         </Toolbar>
       </Container>
     </AppBar>

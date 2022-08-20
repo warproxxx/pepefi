@@ -117,6 +117,11 @@ export const RangeSlider = styled(Slider)((props)  => sx({
         backgroundColor:"#939393",
         height: "1px"
     },
+    '& :nth-child(3), & :nth-child(7)':{
+        width:'7px',
+        height:'7px',
+        borderRadius:'50%'
+    }
 
 
 }));
@@ -346,7 +351,7 @@ export const VaultCard = (props) => {
                 </Box>
 
                 <Box sx={{width:'100%',display:'flex',justifyContent:'flex-end',mt:'40px'}}>
-                    <Button variant="contained" onClick={()=>router.push('/vaultDetail')}>
+                    <Button variant="contained" onClick={()=>router.push('/vaultDetails')}>
                         Visit Vault
                     </Button>
                 </Box>
