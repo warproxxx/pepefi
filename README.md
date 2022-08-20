@@ -1,34 +1,12 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# PepeFi
 
-## Getting Started
+PepeFi allows NFTFi lenders to take a loan on a loan, effectively replicating a put option purchase and allowing lenders to use leverage. 
 
-First, run the development server:
+The loans are provided thru an automated vault whose initial Vault Creators determine APR and LTV. Depending on the risk profile of LPs, different Vaults can provide loans on different LTVs and APRs for the LPs.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+PepeFi does a few things differently than the prelevant NFT vaults. First, it provides loans on promissory notes instead of on NFTs. Most implementations of Vaults today can only offer loans on floor price; But people want variation. Thus, NFTFi keeps growing. However, lenders are more sophisticated. Few lenders in NFTFi dominate most of the lending volume. They would prefer instant liquidity. And, if they have more liquidity available, it will be +EV for the entire NFT Market.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Next, people hate liquidation. The prevalence of lenders in NFTFi shows that lenders are willing to provide loans with the risk of defaults. And data from NFTFi shows that lenders are making an APR higher than anything else despite the defaults. Further, the data from NFTFi shows that market is not rational. n% of the time, people repay their loans even on negative equity. 
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+PepeFi takes these findings into a Vault system. If lenders don't repay their loans by the end of the duration and borrowers don't default the principal, the NFT is instantly liquidated in sudoswap or listed for sale there until it sells.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
