@@ -125,9 +125,9 @@ function IndexPage(props:any) {
     };
         
     useEffect(() => {
-    if (web3Modal.cachedProvider) {
+    // if (web3Modal.cachedProvider) {
         connectWallet();
-    }
+    // }
     }, []);
 
     useEffect(() => {
