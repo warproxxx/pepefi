@@ -46,7 +46,7 @@ export const VaultOverViewChart = (props) => {
         },
         series: [
             {
-                name:"Total Weth",
+                name:"Total WETH",
                 data: props.data
             }
         ]

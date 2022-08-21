@@ -66,22 +66,22 @@ export const LoanDetailCollectionDataTypography = styled(Typography)((props)  =>
 const collections = [
     {
         name:'Bored Ape Yacht Club',
-        price:"25.67ETH/+10.16%",
+        price:"25.67 WETH/+10.16%",
         img: '/static/images/vaults/collection1.png'
     },
     {
         name:'Otherdeed for Otherside',
-        price:"1.7ETH/+5.16%",
+        price:"1.7 WETH/+5.16%",
         img: '/static/images/vaults/collection2.png'
     },
     {
         name:'Doodle',
-        price:"7.5ETH/+3.16%",
+        price:"7.5 WETH/+3.16%",
         img: '/static/images/vaults/collection3.png'
     },
     {
         name:'Moonbirds',
-        price:"12.4ETH/-5.16%",
+        price:"12.4 WETH/-5.16%",
         img: '/static/images/vaults/collection4.png'
     },
 ]
@@ -170,7 +170,7 @@ function LoanDetailPage(props:any) {
                     NFT Valuation
                   </LoanDetailLabelTypography>
                   <LoanDetailData1Typography>
-                    9.602 ETH
+                    9.602 WETH
                   </LoanDetailData1Typography>
                 </Box>
 
@@ -227,7 +227,7 @@ function LoanDetailPage(props:any) {
                       Payment
                     </LoanDetailLabelTypography>
                     <LoanDetailData1Typography>
-                      1.02 wEth
+                      1.02 WEth
                     </LoanDetailData1Typography>
                   </Box>
 

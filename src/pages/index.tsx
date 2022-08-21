@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {DashboardLayout} from 'src/components/Nav/dashboard-layout'
 import Head from "next/head";
 import { useState } from "react";
@@ -9,13 +9,18 @@ import { VaultDetailsPopup } from "src/components/Vaults/VaultDetailsPopup";
 import {styled, experimental_sx as sx} from '@mui/system';
 import Image from 'next/image';
 
+import { ethers } from "ethers";
+import Web3Modal from "web3modal";
+
+
 export const VaultsBox = styled(Box)((props)  => sx({
   minHeight: "80vh",
   width: '100%'
 }));
 
+
 function IndexPage(props:any) {
-  const [addVaultPopupOpen, setAddVaultPopupOpen] = useState(true);
+  const [addVaultPopupOpen, setAddVaultPopupOpen] = useState(false);
 
   const handleAddVaultPopupClickOpen = () => {
     setAddVaultPopupOpen(true);
@@ -24,6 +29,7 @@ function IndexPage(props:any) {
   const handleAddVaultPopupClose = () => {
     setAddVaultPopupOpen(false);
   };
+
   return (
     <>
       <Head>
@@ -61,6 +67,7 @@ function IndexPage(props:any) {
         right:"5%",
         bottom: "5%",
         cursor:'pointer',
+        transitionDuration:'0.5s',
         "&:hover":{
           transform:'translateY(-10px)',
         }

@@ -62,22 +62,22 @@ export const VaultDetailCollectionDataTypography = styled(Typography)((props)  =
 const collections = [
     {
         name:'Bored Ape Yacht Club',
-        price:"25.67ETH/+10.16%",
+        price:"25.67 WETH/+10.16%",
         img: '/static/images/vaults/collection1.png'
     },
     {
         name:'Otherdeed for Otherside',
-        price:"1.7ETH/+5.16%",
+        price:"1.7 WETH/+5.16%",
         img: '/static/images/vaults/collection2.png'
     },
     {
         name:'Doodle',
-        price:"7.5ETH/+3.16%",
+        price:"7.5 WETH/+3.16%",
         img: '/static/images/vaults/collection3.png'
     },
     {
         name:'Moonbirds',
-        price:"12.4ETH/-5.16%",
+        price:"12.4 WETH/-5.16%",
         img: '/static/images/vaults/collection4.png'
     },
 ]
@@ -85,7 +85,7 @@ const collections = [
 const vaultStats = [
     {
         name:'Total Supply',
-        data:'8000 ETH'
+        data:'8000 WETH'
     },
     {
         name:'APY',
@@ -318,7 +318,7 @@ function VaultDetailPage(props:any) {
                                                 </VaultDetailLabel2Typography>
                 
                                                 <VaultDetailData2Typography>
-                                                    {'55 ETH'}
+                                                    {'55 WETH'}
                                                 </VaultDetailData2Typography>
                                             </Box>
         
@@ -342,7 +342,7 @@ function VaultDetailPage(props:any) {
                                                 </VaultDetailLabel2Typography>
                 
                                                 <VaultDetailData2Typography>
-                                                    {'20 ETH'}
+                                                    {'20 WETH'}
                                                 </VaultDetailData2Typography>
                                             </Box>
         
