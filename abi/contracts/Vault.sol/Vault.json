@@ -160,6 +160,19 @@
   },
   {
     "inputs": [],
+    "name": "VAULT_CREATOR",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "VAULT_MANAGER",
     "outputs": [
       {

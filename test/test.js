@@ -17,7 +17,6 @@ describe('Contract tests', () => {
         const VaultManager = await ethers.getContractFactory("VaultManager");
         vm = await VaultManager.deploy(WETH);
         await vm.deployed();  
-        
     })
 
 
@@ -27,7 +26,6 @@ describe('Contract tests', () => {
 
         let weth_balance = await WETH_CONTRACT.balanceOf(owner.address)
         expect(weth_balance / 10**18 ).to.greaterThan(0.1)
-
     })
 
     it("Deploy Vault", async function (){

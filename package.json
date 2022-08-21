@@ -3,10 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "deploy:localhost": "npx hardhat run scripts/deploy.js --network localhost",
     "dev": "next dev -p 3009",
     "build": "next build",
     "start": "next start -p 3009",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "npx hardhat test --network localhost",
+    "compile": "npx hardhat compile"
+
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "^3.5.0",

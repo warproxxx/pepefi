@@ -28,7 +28,12 @@ Compile the contracts:
 
 
 Then deploy the contracts locally and generate config file: 
+>npm run deploy:localhost
+
+or
+
 >npx hardhat run scripts/deploy.sh --network localhost
+
 
 For mainnet or kovan deployment set the network accordingly
 
@@ -38,3 +43,7 @@ Then start the application using:
 
 To run the tests:
 >npx hardhat test
+
+or
+
+>npm run test
