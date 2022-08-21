@@ -125,9 +125,9 @@ function IndexPage(props:any) {
     };
         
     useEffect(() => {
-    // if (web3Modal.cachedProvider) {
+    if (web3Modal.cachedProvider) {
         connectWallet();
-    // }
+    }
     }, []);
 
     useEffect(() => {
@@ -177,9 +177,12 @@ function IndexPage(props:any) {
           // width:{xs:'100%',md:'80%'},maxWidth:'1400px !important',
           justifyContent: 'center',
           flexDirection:'column',
-          alignItems: 'center'
+          alignItems: 'center',
+          gap:'20px'
         }}
       >
+      <Button onClick={()=>{connectWallet();}} variant="contained">REAL connect button</Button>
+      <Button onClick={()=>{disconnect();}} variant="contained">REAL disconnect button</Button>
       <p style={{color:'white'}}>{`Connection Status: ${account ? 'good' : 'bad'}`}</p>
       <p style={{color:'white'}}>{`Account: ${truncateAddress(account)}`}</p>
       <p style={{color:'white'}}>{`Network ID: ${chainId ? chainId : "No Network"}`}</p>
