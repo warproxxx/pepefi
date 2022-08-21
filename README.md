@@ -16,15 +16,18 @@ The contracts are coded in hardhat inside contracts/ directory. tests are in /te
 A local hardhat instance can be started with a mainnet fork using:
     npx hardhat node
 
-Then 
-    npx hardhat run scripts/deploy.sh --network localhost
-
-Compile the contracts and verify tests using
+Compile the contracts
     npx hardhat compile
 
-    npx hardhat test --network localhost
 
+Then deploy the contracts locally using: 
+    npx hardhat run scripts/deploy.sh --network localhost
+
+For mainnet or kovan deployment set the network accordingly
 
 Then start the application using:
-
     npm run dev
+
+
+To run the tests:
+    npx hardhat test
