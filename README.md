@@ -14,20 +14,20 @@ PepeFi takes these findings into a Vault system. If lenders don't repay their lo
 The contracts are coded in hardhat inside contracts/ directory. tests are in /tests and deployment scripts are in /scripts.
 
 A local hardhat instance can be started with a mainnet fork using:
-    npx hardhat node
+>npx hardhat node
 
-Compile the contracts
-    npx hardhat compile
+Compile the contracts:
+>npx hardhat compile
 
 
-Then deploy the contracts locally using: 
-    npx hardhat run scripts/deploy.sh --network localhost
+Then deploy the contracts locally and generate config file: 
+>npx hardhat run scripts/deploy.sh --network localhost
 
 For mainnet or kovan deployment set the network accordingly
 
 Then start the application using:
-    npm run dev
+>npm run dev
 
 
 To run the tests:
-    npx hardhat test
+>npx hardhat test
