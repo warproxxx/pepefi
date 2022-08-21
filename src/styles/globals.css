@@ -31,39 +31,27 @@ body {
   src: url("/static/fonts/LibreBaskerville-Bold.ttf");
 }
 
-/* .MuiSlider-markLabel{
-  color:#A2A2A2 !important;
-} */
+#vaultDetailNFTBox::-webkit-scrollbar {
+    width: 0.5em;
+    height: 0.5em;
+}
+ 
+#vaultDetailNFTBox::-webkit-scrollbar-thumb {
+    background-color: rgba(255,255,255,.1);
+    border-radius: 3px;
+}
 
-/* .MuiSlider-thumb{
-  display:none !important;
-} */
+#vaultDetailNFTBox::-webkit-scrollbar-thumb:hover{
+    background: rgba(255,255,255,.2);
+}
 
-/* .MuiSlider-mark{
-  background-color: #5DC961 !important;
-  height: 15px !important;
-  box-shadow: 0px 0px 4px 1px #5DC961 !important;
-} */
+.MuiSlider-colorPrimary :nth-child(3){
+  
+}
 
-/* .MuiSlider-track{
-  height: 1px;
-  box-shadow: 0px 0px 4px 1px #5dc961;
-} */
+.MuiSlider-colorPrimary :nth-child(7){
+  
+}
 
-/* .MuiSlider-rail{
-  background-color:#939393 !important;
-  height: 1px;
-} */
 
-/* @keyframes App-logo-float {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(10px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
-} */
 

@@ -165,10 +165,10 @@ export const theme = createTheme({
       contrastText: '#FFFFFF'
     },
     secondary: {
-      main: '#10B981',
+      main: '#969696',
       light: '#3FC79A',
       dark: '#0B815A',
-      contrastText: '#FFFFFF'
+      contrastText: '#0A0C0B'
     },
     success: {
       main: '#14B8A6',
@@ -195,7 +195,7 @@ export const theme = createTheme({
       contrastText: '#FFFFFF'
     },
     text: {
-      primary: '#121828',
+      primary: '#fffff',
       secondary: '#65748B',
       disabled: 'rgba(55, 65, 81, 0.48)'
     }
