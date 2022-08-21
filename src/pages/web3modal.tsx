@@ -50,7 +50,14 @@ function IndexPage(props:any) {
     const web3Modal = new Web3Modal({
         network: "mainnet", // optional
         cacheProvider: true, // optional
-        providerOptions // required
+        providerOptions, // required
+        theme: {
+            background: "#121218",
+            main: "#ffffff",
+            secondary: "rgb(136, 136, 136)",
+            border: "rgba(195, 195, 195, 0.14)",
+            hover: "#1B1B21"
+        }
     });
 
 
