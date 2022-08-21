@@ -11,6 +11,11 @@ import useScrollListener from "src/hooks/useScrollListener";
 import {useState, useEffect, useRef} from 'react';
 import {Link} from 'react-scroll';
 
+import {web3ModalHelper} from '../../utils/web3ModalFunctions'
+import {truncateAddress,toHex} from '../../utils/helpers'
+import { useAppSelector } from '../../app/hooks';
+import {selectWallets,} from '../../redux/walletsSlice';
+
 const pages = [ 'Loans','Vaults'];
 const links = ["#about_us","#nft_lending","#request_a_loan","#podcast","#contact_us"];
 const links2 = ["about_us","nft_lending","request_a_loan","podcast","contact_us"];
@@ -18,6 +23,8 @@ export const DashboardNavbar = (props:any) => {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [navClassList, setNavClassList] = useState([]);
+
+  const open = Boolean(anchorElUser);
 
   const scroll = useScrollListener();
 
@@ -36,6 +43,7 @@ export const DashboardNavbar = (props:any) => {
   const handleOpenUserMenu = (event:any) => {
     setAnchorElUser(event.currentTarget);
   };
+  
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
@@ -44,6 +52,11 @@ export const DashboardNavbar = (props:any) => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  let connectWallet = web3ModalHelper.connectWallet;
+  let disconnect = web3ModalHelper.disconnect;
+  const wallets = useAppSelector(selectWallets);
+
 
 
   return (
@@ -121,9 +134,37 @@ export const DashboardNavbar = (props:any) => {
                 </Button>
             ))}
           </Box>
-          <Button variant="contained" onClick={()=>{console.log('getting loan')}} sx={{width:'140px'}}>
+          {wallets.account ? 
+          <>
+            <Box>
+             <Button variant="contained" onClick={(event)=>{handleOpenUserMenu(event)}} sx={{}}>
+              {`${truncateAddress(wallets.account)}`}
+            </Button>
+            <Menu
+            id="basic-menu"
+            anchorEl={anchorElUser}
+            open={open}
+            onClose={handleCloseUserMenu}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button',
+            }}
+            sx={{
+              "& .MuiPaper-root": {
+                backgroundColor: "white"
+              }
+            }}
+          >
+            <MenuItem onClick={()=>{disconnect();handleCloseUserMenu();}}>Disconnect</MenuItem>
+          </Menu>  
+            </Box>
+       
+          </>
+          :
+          <Button variant="contained" onClick={()=>{connectWallet()}} sx={{width:'140px'}}>
               Connect Wallet
           </Button>
+          }
+
         </Toolbar>
       </Container>
     </AppBar>

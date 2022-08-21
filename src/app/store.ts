@@ -1,10 +1,15 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from 'src/components/counter/counterSlice';
+import walletsReducer from 'src/redux/walletsSlice'
 
 export const store = configureStore({
+  
   reducer: {
-    counter: counterReducer,
+    wallets: walletsReducer, 
   },
+  middleware: (getDefaultMiddleware:any) =>
+  getDefaultMiddleware({
+    serializableCheck: false,
+  }),
 });
 
 export type AppDispatch = typeof store.dispatch;
