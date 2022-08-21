@@ -7,6 +7,7 @@ contract Vault is ERC1155, ReentrancyGuard{
     address public WETH;
     bool public external_lp_enabled;
     address public VAULT_MANAGER;
+    address public VAULT_CREATOR;
     address[] public collections;
     uint256[] public ltvs;
     uint256 initialAPR;
@@ -17,6 +18,9 @@ contract Vault is ERC1155, ReentrancyGuard{
     }
 
     constructor(string memory _VAULT_NAME, address _WETH, address _VAULT_MANAGER, address[] memory _collections, uint256[] memory _ltvs, uint256 _initialAPR, bool _external_lp_enabled) ERC1155("https://example.com"){
+
+        require(_collections.length == _ltvs.length);
+
         VAULT_NAME = _VAULT_NAME;
         WETH = _WETH;
         VAULT_MANAGER = _VAULT_MANAGER;
@@ -24,6 +28,8 @@ contract Vault is ERC1155, ReentrancyGuard{
         collections = _collections;
         ltvs = _ltvs;
         initialAPR = _initialAPR;
+        VAULT_CREATOR = address(this);
+        
     }
 
 
