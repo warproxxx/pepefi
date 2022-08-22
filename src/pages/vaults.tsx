@@ -19,7 +19,7 @@ export const VaultsBox = styled(Box)((props)  => sx({
 }));
 
 
-function IndexPage(props:any) {
+function VaultsPage(props:any) {
   const [addVaultPopupOpen, setAddVaultPopupOpen] = useState(false);
 
   const handleAddVaultPopupClickOpen = () => {
@@ -82,6 +82,6 @@ function IndexPage(props:any) {
   );
 }
 
-IndexPage.getLayout = (page:any) => <DashboardLayout>{page}</DashboardLayout>;
+VaultsPage.getLayout = (page:any) => <DashboardLayout>{page}</DashboardLayout>;
 
-export default IndexPage;
+export default VaultsPage;
