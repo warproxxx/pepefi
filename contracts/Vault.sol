@@ -1,6 +1,8 @@
 pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "./interfaces/IERC20.sol";
+
 
 contract Vault is ERC1155, ReentrancyGuard{
     string public VAULT_NAME;
@@ -11,6 +13,9 @@ contract Vault is ERC1155, ReentrancyGuard{
     address[] public collections;
     uint256[] public ltvs;
     uint256 initialAPR;
+
+    uint32 public constant LIQUIDITY = 0;
+    uint256 public totalSupply = 0;
 
     modifier onlyVaultManager {
         require (msg.sender == VAULT_MANAGER);
@@ -30,6 +35,31 @@ contract Vault is ERC1155, ReentrancyGuard{
         initialAPR = _initialAPR;
         VAULT_CREATOR = address(this);
         
+    }
+
+    function getWETHBalance() public returns (uint256) {
+        //need to add expectation of current loans too
+        return IERC20(WETH).balanceOf(address(this));
+    }
+
+    function addLiquidity(uint256 _amount)  public {
+
+        uint256 shares = 0;
+
+        if (totalSupply > 0) {
+            shares =  _amount * (totalSupply / getWETHBalance());
+        }
+        else {
+            shares = _amount;
+        }
+
+        (bool success, bytes memory data) = WETH.call(abi.encodeWithSelector(0x23b872dd, msg.sender, this, _amount));
+
+        if (success)
+        {
+            _mint(msg.sender, LIQUIDITY, shares, "");
+            totalSupply = totalSupply + shares;
+        }
     }
 
 

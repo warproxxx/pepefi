@@ -18,32 +18,25 @@ Finally, if lenders don't repay their loans by the end of the duration and borro
 
 ## Project Repository
 
-The contracts are coded in hardhat inside contracts/ directory. tests are in /tests and deployment scripts are in /scripts.
+The contracts are coded in hardhat inside contracts/ directory. tests are in /tests and deployment scripts are in /scripts. Create .env from .env-example by adding the private key of deployment contract and Alchemy API.
 
-A local hardhat instance can be started with a mainnet fork using:
->npx hardhat node
-
-Compile the contracts:
+After installing the develepment and normal dependencies, contracts can then be compiled:
 >npx hardhat compile
+
+Start a local hardhat instance with a mainnet fork using:
+>npx hardhat node
 
 
 Then deploy the contracts locally and generate config file: 
 >npm run deploy:localhost
-
 or
-
 >npx hardhat run scripts/deploy.sh --network localhost
 
-
-For mainnet or kovan deployment set the network accordingly
+For mainnet or kovan deployment change the params accordingly
 
 Then start the application using:
 >npm run dev
 
-
-To run the tests:
->npx hardhat test
-
-or
+## Tests
 
 >npm run test
