@@ -75,7 +75,7 @@ function IndexPage(props:any) {
         onClick={()=>{handleAddVaultPopupClickOpen()}}
 
       >
-        <Image src="/static/images/pepes/pepe2.png" height="113px" width="131px" layout="intrinsic"/>
+        <Image src="/static/images/pepes/pepe2.png" height="150px" width="160px" layout="intrinsic"/>
       </Box>
     </>
 
