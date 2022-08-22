@@ -7,7 +7,7 @@ let ERC20_ABI = [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"
 let WETH = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
 let owner;
 let WETH_CONTRACT;
-let vm;
+let vault;
 
 describe('Contract tests', () => {
 
@@ -17,6 +17,11 @@ describe('Contract tests', () => {
         const VaultManager = await ethers.getContractFactory("VaultManager");
         vm = await VaultManager.deploy(WETH);
         await vm.deployed();  
+
+        const Vault = await ethers.getContractFactory("Vault");
+        vault = await Vault.deploy('Test Vault', ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb'], [500, 500, 400], 4500, true, 0)
+        await vault.deployed();  
+
     })
 
 
@@ -28,9 +33,19 @@ describe('Contract tests', () => {
         expect(weth_balance / 10**18 ).to.greaterThan(0.1)
     })
 
-    it("Deploy Vault", async function (){
-        let deployment = await vm.createVault('Initial Vault', ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb'], [500, 500, 400], 4500, true, 0)
-        let res = await deployment.wait()
+    it("Deploying vault", async function (){
+        let deployment = await vm.createVault('Test Vault', ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb'], [500, 500, 400], 4500, true, 0)
+        let vaults = await vm.getAllVaults()
+        expect(vaults.length).to.greaterThanOrEqual(1)
+    })
+
+    it("Add Liquidity", async function () {
+        amt = 10
+        await USER_DAI.approve(liq.address, amt);
+        await liq.addLiquidity(amt);
+
+        expect(await liq.balanceOf(owner.address, 0)).to.equal(amt);
+        expect(await DAI.balanceOf(liq.address)).to.equal(amt);
     })
 
 })

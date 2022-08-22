@@ -24,8 +24,12 @@ contract VaultManager{
         return address(vault);
     }
 
-    function getAllVaults() public returns (address[] memory) {
+    function getAllVaults() public view returns (address[] memory) {
         return vaults;
     }
+
+
+
+
 
 }

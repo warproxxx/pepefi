@@ -46,16 +46,24 @@ async function perform_whale_transfer() {
     const whale_signer = await ethers.provider.getSigner(contracts['WETH']);
     let WETH_CONTRACT = await ethers.getContractAt(JSON.parse(abis['ERC20_ABI']), contracts['WETH'],  whale_signer);
 
-    for (let addy of [owner.address, '0x5664198BDb6AB7337b70742ff4BDD935f81e4Dcd']) {
+    for (let addy of [owner.address, '0x5664198BDb6AB7337b70742ff4BDD935f81e4Dcd', '0x99c6fD3bC02dEB420F192eFb3ED0D6f479856D4B']) {
+        let eth_balance = parseInt((await whale_signer.getBalance())['_hex']) / 10**18
+        let weth_balance = parseInt((await WETH_CONTRACT.balanceOf(contracts['WETH']))['_hex']) / 10**18
 
-        await whale_signer.sendTransaction({
-            to: addy,
-            value: ethers.utils.parseEther("10")
-        });
+        if (eth_balance > 10) {
 
-        await WETH_CONTRACT.transfer(addy, (BigInt(1)*BigInt(10**18)).toString(), {
-            from: contracts['WETH'],
-        });
+            await whale_signer.sendTransaction({
+                to: addy,
+                value: ethers.utils.parseEther("10")
+            });
+        }
+
+        if (weth_balance > 1){
+
+            await WETH_CONTRACT.transfer(addy, (BigInt(1)*BigInt(10**18)).toString(), {
+                from: contracts['WETH'],
+            });
+        }
     }
 
     return [owner, WETH_CONTRACT];
@@ -109,7 +117,6 @@ async function deploy(){
     ABI_STRING = ABI_STRING + "export let VAULT_MANAGER='" + vm.address + "'\n\n"
 
     fs.writeFileSync('src/config.js', ABI_STRING);   
-
 }
 
 if (require.main === module) {
