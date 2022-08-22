@@ -160,9 +160,15 @@ export const DashboardNavbar = (props:any) => {
        
           </>
           :
-          <Button variant="contained" onClick={()=>{connectWallet()}} sx={{width:'140px'}}>
-              Connect Wallet
-          </Button>
+          <Box onClick={()=>{connectWallet()}} sx={{
+            cursor:'pointer',
+            transitionDuration:'0.5s',
+            "&:hover":{
+              transform:'translateY(10px)',
+            }
+            }}>
+            <img src="/static/images/pepes/wallet.png" height="70px" width='70px'/>
+          </Box>
           }
 
         </Toolbar>

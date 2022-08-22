@@ -48,7 +48,7 @@ function IndexPage(props:any) {
           justifyContent: 'center'
         }}
       >
-        <VaultsBox sx={{maxWidth:'1400px'}}>
+        <VaultsBox sx={{maxWidth:'1400px',position:'relative'}}>
           <Grid container spacing={8}>
             <Grid item xl={4} lgp={4} lg={4} md={4} smpad={4} sm={6} xs={12} >
               <VaultCard vaultName={"Goblin Sax Vault"} mainColor={"white"} volume={7000} apr={5} status={'active'} data={[5000,6000,6500,7000]} /*handleVaultDetailPopupClickOpen={handleVaultDetailPopupClickOpen}*//>
@@ -58,14 +58,10 @@ function IndexPage(props:any) {
             </Grid>
 
           </Grid>
-
-        </VaultsBox>
-      </Box>
-      <AddVaultPopup open={addVaultPopupOpen} handleClose={handleAddVaultPopupClose}/>
-      <Box sx={{
-        position: 'fixed',
-        right:"5%",
-        bottom: "5%",
+        <Box sx={{
+        position: 'absolute',
+        right:"0%",
+        bottom: "0%",
         cursor:'pointer',
         transitionDuration:'0.5s',
         "&:hover":{
@@ -77,6 +73,10 @@ function IndexPage(props:any) {
       >
         <Image src="/static/images/pepes/pepe.png" height="113px" width="131px" layout="intrinsic"/>
       </Box>
+        </VaultsBox>
+      </Box>
+      <AddVaultPopup open={addVaultPopupOpen} handleClose={handleAddVaultPopupClose}/>
+
     </>
 
   );
