@@ -10,6 +10,7 @@ import Image from 'next/image'
 import useScrollListener from "src/hooks/useScrollListener";
 import {useState, useEffect, useRef} from 'react';
 import {Link} from 'react-scroll';
+import { useRouter } from 'next/router';
 
 import {web3ModalHelper} from '../../utils/web3ModalFunctions'
 import {truncateAddress,toHex} from '../../utils/helpers'
@@ -17,9 +18,11 @@ import { useAppSelector } from '../../app/hooks';
 import {selectWallets,} from '../../redux/walletsSlice';
 
 const pages = [ 'Loans','Vaults'];
-const links = ["#about_us","#nft_lending","#request_a_loan","#podcast","#contact_us"];
-const links2 = ["about_us","nft_lending","request_a_loan","podcast","contact_us"];
+const links = ["/loans",'/vaults'];
+const keywords = ['loan','vault'];
 export const DashboardNavbar = (props:any) => {
+  const router = useRouter();
+
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [navClassList, setNavClassList] = useState([]);
@@ -63,7 +66,9 @@ export const DashboardNavbar = (props:any) => {
     <AppBar position="fixed" className={navClassList.join(" ")} sx={{boxShadow:"none",transition: "transform 250ms ease-in-out",backgroundColor:'black'}} >
       <Container maxWidth="lg" sx={{width:{xs:'100%'},maxWidth:'1400px !important'}}>
         <Toolbar disableGutters>
-        <Box sx={{
+        <Box 
+        onClick={()=>{router.push('/')}}
+        sx={{
           cursor:'pointer',
           display: { xs: 'none', md: 'flex' },
           alignItems:'center'
@@ -127,8 +132,9 @@ export const DashboardNavbar = (props:any) => {
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } , justifyContent: "flex-start", marginLeft:'50px'}}>
             {pages.map((page,index) => (
                 <Button 
+                  onClick={()=>{router.push(links[index])}}
                   key={page}
-                  sx={{ my: 2, display: 'block',fontSize:"var(--nav-bar-fontSize)", fontFamily: "var(--main-font)", color: `${page=='Vaults' ? "#6aed6f" : "white"}`}}
+                  sx={{ my: 2, display: 'block',fontSize:"var(--nav-bar-fontSize)", fontFamily: "var(--main-font)", color: `${router.asPath.includes(keywords[index]) ? "#6aed6f" : "white"}`}}
                 >
                   {page}
                 </Button>
@@ -167,7 +173,7 @@ export const DashboardNavbar = (props:any) => {
               transform:'translateY(10px)',
             }
             }}>
-            <img src="/static/images/pepes/wallet.png" height="70px" width='70px'/>
+            <img src="/static/images/pepes/wallet.png" height="70px" width='80px'/>
           </Box>
           }
 

@@ -86,7 +86,7 @@ function MyApp(props: any) {
         <Provider store={store}>
           <CssBaseline />
           <NextNProgress
-            color="#29D"
+            color="#5dc961"
             startPosition={0.3}
             stopDelayMs={200}
             height={3}
