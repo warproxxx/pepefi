@@ -58,10 +58,14 @@ function IndexPage(props:any) {
             </Grid>
 
           </Grid>
-        <Box sx={{
+
+        </VaultsBox>
+      </Box>
+      <AddVaultPopup open={addVaultPopupOpen} handleClose={handleAddVaultPopupClose}/>
+      <Box sx={{
         position: 'absolute',
-        right:"0%",
-        bottom: "0%",
+        right:"5%",
+        bottom: "5%",
         cursor:'pointer',
         transitionDuration:'0.5s',
         "&:hover":{
@@ -71,12 +75,8 @@ function IndexPage(props:any) {
         onClick={()=>{handleAddVaultPopupClickOpen()}}
 
       >
-        <Image src="/static/images/pepes/pepe.png" height="113px" width="131px" layout="intrinsic"/>
+        <Image src="/static/images/pepes/pepe2.png" height="113px" width="131px" layout="intrinsic"/>
       </Box>
-        </VaultsBox>
-      </Box>
-      <AddVaultPopup open={addVaultPopupOpen} handleClose={handleAddVaultPopupClose}/>
-
     </>
 
   );
