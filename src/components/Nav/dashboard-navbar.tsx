@@ -19,6 +19,7 @@ import {selectWallets,} from '../../redux/walletsSlice';
 
 const pages = [ 'Loans','Vaults'];
 const links = ["/loans",'/vaults'];
+const keywords = ['loan','vault'];
 export const DashboardNavbar = (props:any) => {
   const router = useRouter();
 
@@ -133,7 +134,7 @@ export const DashboardNavbar = (props:any) => {
                 <Button 
                   onClick={()=>{router.push(links[index])}}
                   key={page}
-                  sx={{ my: 2, display: 'block',fontSize:"var(--nav-bar-fontSize)", fontFamily: "var(--main-font)", color: `${router.asPath.includes(page.toLowerCase()) ? "#6aed6f" : "white"}`}}
+                  sx={{ my: 2, display: 'block',fontSize:"var(--nav-bar-fontSize)", fontFamily: "var(--main-font)", color: `${router.asPath.includes(keywords[index]) ? "#6aed6f" : "white"}`}}
                 >
                   {page}
                 </Button>
