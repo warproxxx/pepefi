@@ -2,16 +2,27 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./interfaces/IERC20.sol";
+import "./interfaces/IDirectLoanBase.sol";
+import "./interfaces/IVaultManager.sol";
+
 import "hardhat/console.sol";
 
 contract Vault is ERC1155, ReentrancyGuard{
     string public VAULT_NAME;
+
     address public WETH;
-    bool public external_lp_enabled;
+    address public NFTFI_CONTRACT;
+    address public NFTFI_TOKEN;
+    address public SUDOSWAP_CONTRACT;
+
     address public VAULT_MANAGER;
     address public VAULT_CREATOR;
+
+    bool public external_lp_enabled;
+
     address[] public collections;
     uint256[] public ltvs;
+    
     uint256 apr;
     uint256 expirityDate;
 
@@ -28,12 +39,11 @@ contract Vault is ERC1155, ReentrancyGuard{
         _;
     }
 
-    constructor(string memory _VAULT_NAME, address _WETH, address _VAULT_MANAGER,  uint256 _expirityDate, address[] memory _collections, uint256[] memory _ltvs, uint256 _apr, bool _external_lp_enabled) ERC1155("https://example.com"){
+    constructor(string memory _VAULT_NAME, address _VAULT_MANAGER,  uint256 _expirityDate, address[] memory _collections, uint256[] memory _ltvs, uint256 _apr, bool _external_lp_enabled) ERC1155("https://example.com"){
 
         require(_collections.length == _ltvs.length);
 
         VAULT_NAME = _VAULT_NAME;
-        WETH = _WETH;
         VAULT_MANAGER = _VAULT_MANAGER;
         expirityDate = _expirityDate;
         external_lp_enabled = _external_lp_enabled;
@@ -42,6 +52,16 @@ contract Vault is ERC1155, ReentrancyGuard{
         apr = _apr;
         VAULT_CREATOR = address(this);
         
+
+        setContracts();
+    }
+
+    function setContracts() public {
+        (address _WETH, address _NFTFI_CONTRACT, address _NFTFI_TOKEN, address _SUDOSWAP_CONTRACT) = IVaultManager(VAULT_MANAGER).getContractAddresses();
+        WETH = _WETH;
+        NFTFI_CONTRACT = _NFTFI_CONTRACT;
+        NFTFI_TOKEN = _NFTFI_TOKEN;
+        SUDOSWAP_CONTRACT = _SUDOSWAP_CONTRACT;
     }
 
     function getWETHBalance() public returns (uint256) {
@@ -68,8 +88,12 @@ contract Vault is ERC1155, ReentrancyGuard{
         totalSupply = totalSupply + shares;
     }
 
-    function takeLoan(uint256 tokenId) public nonReentrant checkExpired {
-        
+    function takeLoan(uint32 tokenId) public nonReentrant checkExpired {
+        //now finish this using nftfi contract
+        (uint256 loanPrincipalAmount, uint256 maximumRepaymentAmount, uint256 nftCollateralId, address loanERC20Denomination, uint32 loanDuration, uint16 loanInterestRateForDurationInBasisPoints, uint16 loanAdminFeeInBasisPoints, address nftCollateralWrapper, uint64 loanStartTime, address nftCollateralContract, address borrower) = IDirectLoanBase(NFTFI_TOKEN).loanIdToLoan(tokenId);
+        console.log(loanPrincipalAmount);
+        console.log(maximumRepaymentAmount);
+
     }
 
     function sellLiquidations() public nonReentrant {

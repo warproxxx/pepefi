@@ -17,12 +17,12 @@ describe('Contract tests', () => {
         WETH_CONTRACT = await ethers.getContractAt(ERC20_ABI, WETH,  owner);
 
         const VaultManager = await ethers.getContractFactory("VaultManager");
-        vm = await VaultManager.deploy(WETH);
+        vm = await VaultManager.deploy(WETH, "0xf896527c49b44aAb3Cf22aE356Fa3AF8E331F280", "0x5660e206496808f7b5cdb8c56a696a96ae5e9b23", "0x2b2e8cda09bba9660dca5cb6233787738ad68329");
         await vm.deployed();  
 
         const Vault = await ethers.getContractFactory("Vault");
-        vault = await Vault.deploy('Test Vault', WETH, vm.address, 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], 4500, true)
-        // await vault.deployed();  
+        vault = await Vault.deploy('Test Vault', vm.address, 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], 4500, true)
+        await vault.deployed();  
 
     })
 
@@ -68,6 +68,8 @@ describe('Contract tests', () => {
                 from: IMPERSO,
             })
         }
+
+        // await vault.takeLoan('14358716824499463741');
 
     })
 })
