@@ -2,10 +2,11 @@ import React from 'react';
 import {DashboardLayout} from 'src/components/Nav/dashboard-layout'
 import Head from "next/head";
 import { useState } from "react";
-import {Button,Box,Grid, Typography,} from "@mui/material";
+import {Button,Box,Grid, Typography, Slider, Divider, Menu, MenuItem} from "@mui/material";
 import { VaultCard } from "src/components/Vaults/VaultCard";
 import {styled, experimental_sx as sx} from '@mui/system';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 export const LoanDetailBox = styled(Box)((props)  => sx({
   minHeight: "80vh",
@@ -63,6 +64,16 @@ export const LoanDetailCollectionDataTypography = styled(Typography)((props)  =>
     fontFamily:'inherit',
 }));
 
+export const LoanDetailBestVaultMenuItem = styled(MenuItem)((props)  => sx({
+  '&:hover':{
+    backgroundColor: "rgba(55, 65, 81, 0.15)"
+  }
+}));
+
+export const LoanDetailBestVaultMenuItemDivier = styled(Divider)((props)  => sx({
+  borderColor:'#26262D'
+}));
+
 const collections = [
     {
         name:'Bored Ape Yacht Club',
@@ -87,6 +98,23 @@ const collections = [
 ]
 
 function LoanDetailPage(props:any) {
+  const router = useRouter();
+
+  const [loanAmount, setLoanAmount] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setLoanAmount(newValue);
+  };
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <>
       <Head>
@@ -113,13 +141,18 @@ function LoanDetailPage(props:any) {
             width:'100%',
             padding: '30px'
           }}>
-            <Box sx={{display:'flex'}}>
-              <Typography variant='h2' sx={{color: "rgba(255, 255, 255, 0.4)",whiteSpace:'pre-wrap'}}>
-                  {"< "}
-              </Typography>
-              <Typography variant='h2' sx={{color:'white'}}>
-                  {"Loans"}
-              </Typography>
+            <Box 
+            sx={{display:'flex', cursor:'pointer',width:'fit-content',color:'rgba(255, 255, 255, 0.4);',transitionDuration:"0.3s",'&:hover':{
+                color:'white'
+            }}}
+            onClick={()=>{router.push("/loans")}}
+            >
+                <Typography variant='h2' sx={{whiteSpace:'pre-wrap'}} id="#vault_previous_page">
+                    {"< "}
+                </Typography>
+                <Typography variant='h2' >
+                    {"Loans"}
+                </Typography>
             </Box>
             <Box sx={{
               display:'flex',
@@ -180,10 +213,15 @@ function LoanDetailPage(props:any) {
                   mt:'20px'
                 }}>
                   <LoanDetailLabelTypography>
-                    Select Vault
+                    Loan Amount
                   </LoanDetailLabelTypography>
+                  <Box sx={{mt:'40px'}}>
+                  <Slider min={1} max={2} valueLabelFormat={value=><div>{`${value} WETH`}</div>} step={0.001} valueLabelDisplay="on" value={loanAmount} onChange={handleChange} />
+                  </Box>
+
 
                 </Box>
+
 
                 <Box sx={{
                   display:'flex',
@@ -191,19 +229,64 @@ function LoanDetailPage(props:any) {
                   mt:'20px'
                 }}>
                   <LoanDetailLabelTypography>
-                    Duration
+                    Best Vault
                   </LoanDetailLabelTypography>
+                  <Box onClick={handleClick} sx={{
+                    display:'flex',
+                    justifyContent:'flex-start',
+                    paddingX:'0px',
+                    color:'white',
+                    background: "#1B1B21",
+                    border: "1px solid #000000",
+                    boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+                    borderRadius: "5px",
+                    paddingY:'20px',
+                    paddingX:'16px',
+                    fontWeight:'700',
+                    mt:'10px',
+                    cursor:'pointer',
+                    '&:hover':{
+                      boxShadow: "inset 0 0 20px 0px #121218"
+                    }
+                  }}>
+                    {`Goblin Sax Vault (10% APR / 30 days)`}
+                    <Box sx={{justifySelf:'flex-end',marginLeft:'auto',height:'30px',width:'30px',marginRight:'20px'}}>
+                      <Image src="/static/images/icons/triangle-down.svg" layout="responsive" height="30px" width="30px"/>
+                    </Box>
+                  </Box>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    MenuListProps={{
+                      'aria-labelledby': 'basic-button',
+                      sx: { 
+                        width: anchorEl && anchorEl.offsetWidth,
+                        color:'white',
+                        fontFamily:'DM Mono',
+                      } 
+                    }}
+                    PaperProps={{
+                      sx:{
+                        // width:'100%'
+                        background: "#1B1B21",
+                        border: "1px solid #000000",
+                        boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+                        borderRadius: "5px",
+                        color:'white',
+                        width: anchorEl && anchorEl.offsetWidth,
+                      }
+                    }}
 
-                </Box>
-
-                <Box sx={{
-                  display:'flex',
-                  flexDirection:'column',
-                  mt:'20px'
-                }}>
-                  <LoanDetailLabelTypography>
-                    Amount
-                  </LoanDetailLabelTypography>
+                  >
+                    <LoanDetailBestVaultMenuItem onClick={handleClose}>{`Goblin Sax Vault (10% APR / 30 days)`}</LoanDetailBestVaultMenuItem>
+                    <LoanDetailBestVaultMenuItemDivier />
+                    <LoanDetailBestVaultMenuItem onClick={handleClose}>{`Vault Number 1 (11% APR / 30 days)`}</LoanDetailBestVaultMenuItem>
+                    <LoanDetailBestVaultMenuItemDivier />
+                    <LoanDetailBestVaultMenuItem onClick={handleClose}>{`Vault Number 2 (12% APR / 30 days)`}</LoanDetailBestVaultMenuItem>
+                    <LoanDetailBestVaultMenuItemDivier />
+                    <LoanDetailBestVaultMenuItem onClick={handleClose}>{`Vault Number 3 (13% APR / 30 days)`}</LoanDetailBestVaultMenuItem>
+                  </Menu>
 
                 </Box>
 
@@ -211,25 +294,37 @@ function LoanDetailPage(props:any) {
                   display:'flex',
                   flexDirection:'row',
                   mt:'20px',
-                  gap:'80px'
+                  justifyContent: 'space-between'
                 }}>
-                  <Box>
-                    <LoanDetailLabelTypography>
-                      APR
-                    </LoanDetailLabelTypography>
-                    <LoanDetailData1Typography>
-                      10 %
-                    </LoanDetailData1Typography>
-                  </Box>
 
                   <Box>
                     <LoanDetailLabelTypography>
-                      Payment
+                      Repayment
                     </LoanDetailLabelTypography>
                     <LoanDetailData1Typography>
                       1.02 WEth
                     </LoanDetailData1Typography>
                   </Box>
+
+                  <Box>
+                    <LoanDetailLabelTypography>
+                      Repayment Date
+                    </LoanDetailLabelTypography>
+                    <LoanDetailData1Typography>
+                      09/21/2022
+                    </LoanDetailData1Typography>
+                  </Box>
+
+
+                  <Box>
+                    <LoanDetailLabelTypography>
+                      Duration
+                    </LoanDetailLabelTypography>
+                    <LoanDetailData1Typography>
+                      30 Days
+                    </LoanDetailData1Typography>
+                  </Box>
+
 
                 </Box>
 

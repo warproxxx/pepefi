@@ -2,10 +2,11 @@ import React from 'react';
 import {DashboardLayout} from 'src/components/Nav/dashboard-layout'
 import Head from "next/head";
 import { useState } from "react";
-import {Button,Box,Grid, Typography,} from "@mui/material";
+import {Button,Box,Grid, Typography, Input,} from "@mui/material";
 import { VaultCard } from "src/components/Vaults/VaultCard";
 import {styled, experimental_sx as sx} from '@mui/system';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 export const VaultDetailBox = styled(Box)((props)  => sx({
   minHeight: "80vh",
@@ -111,6 +112,11 @@ const vaultStats = [
 
 
 function VaultDetailPage(props:any) {
+    const [mode,setMode] = useState("deposit");
+    const [selectedCollection,setSelectedCollection] = useState(-1);
+    const [inputValue, setInputValue] = useState("0");
+
+    const router = useRouter();
   return (
     <>
       <Head>
@@ -131,11 +137,16 @@ function VaultDetailPage(props:any) {
       >
         <VaultDetailBox sx={{maxWidth:'1400px',display:'flex',justifyContent:'space-between',fontFamily:'DM Mono'}}>
             <Box sx={{width:'67%',height:'100%',background: "#121218",boxShadow: "3px 3px 11px rgba(0, 0, 0, 0.25)",borderRadius: "15px",padding:'30px'}}>
-                <Box sx={{display:'flex'}}>
-                    <Typography variant='h2' sx={{color: "rgba(255, 255, 255, 0.4)",whiteSpace:'pre-wrap'}}>
+                <Box 
+                sx={{display:'flex', cursor:'pointer',width:'fit-content',color:'rgba(255, 255, 255, 0.4);',transitionDuration:"0.3s",'&:hover':{
+                    color:'white'
+                }}}
+                onClick={()=>{router.push("/vaults")}}
+                >
+                    <Typography variant='h2' sx={{whiteSpace:'pre-wrap'}} id="#vault_previous_page">
                         {"< "}
                     </Typography>
-                    <Typography variant='h2' sx={{color:'white'}}>
+                    <Typography variant='h2' >
                         {"Vaults"}
                     </Typography>
                 </Box>
@@ -190,7 +201,7 @@ function VaultDetailPage(props:any) {
                                     return(
                                         <Box sx={{
                                         background: "rgba(255, 255, 255, 0.05)",
-                                        boxShadow: `${index == 0 ? "inset 0px 4px 4px rgba(0, 188, 7, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25)" : "0px 4px 4px rgba(0, 0, 0, 0.25)"}`, 
+                                        boxShadow: `${index == selectedCollection ? "inset 0px 4px 4px rgba(0, 188, 7, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25)" : "0px 4px 4px rgba(0, 0, 0, 0.25)"}`, 
                                         borderRadius: "50px",
                                         width:'100%',
                                         height:'50px',
@@ -198,14 +209,16 @@ function VaultDetailPage(props:any) {
                                         alignItems:'center',
                                         px:'5px',
                                         justifyContent:'space-between',
-                                        border:`${index == 0 ? "1px solid #5DC961" : "none"}`,
+                                        border:`${index == selectedCollection ? "1px solid #5DC961" : "none"}`,
                                         cursor:'pointer',
+                                        userSelect: 'none',
                                         '&:hover':{
-                                            boxShadow: `${index == 0 ? "inset 0px 4px 4px rgba(0, 188, 7, 0.25), 0px 8px 8px rgba(0, 0, 0, 0.5)" : "0px 8px 8px rgba(0, 0, 0, 0.5)"}`, 
+                                            boxShadow: `${index == selectedCollection ? "inset 0px 4px 4px rgba(0, 188, 7, 0.25), 0px 8px 8px rgba(0, 0, 0, 0.5)" : "0px 8px 8px rgba(0, 0, 0, 0.5)"}`, 
                                         }
-
-
-                                        }} key={index}>
+                                        }} 
+                                        key={index}
+                                        onClick={()=>{index == selectedCollection ? setSelectedCollection(-1) : setSelectedCollection(index)}}
+                                        >
                                             <Box sx={{borderRadius: "50%",height:'45px',width:'45px',overflow:'hidden'}}>
                                                 <Image src={collection.img} layout="responsive" height="100%" width="100%"></Image>
                                             </Box>
@@ -229,7 +242,7 @@ function VaultDetailPage(props:any) {
 
                 <Box sx={{mt:"40px",display:'flex',flexDirection:'column'}}>
                     <VaultDetailData1Typography>
-                        Vault Stats
+                        {selectedCollection == -1 ? "Vault Stats" : `${collections[selectedCollection].name} Collection Stats`}
                     </VaultDetailData1Typography>
                     <Box sx={{mt:'20px',display:'flex'}}>
                     <Grid container spacing={2}>
@@ -268,7 +281,7 @@ function VaultDetailPage(props:any) {
 
                 <Box sx={{mt:"40px",display:'flex',flexDirection:'column'}}>
                     <VaultDetailData1Typography>
-                        Loanded NFTs
+                    {selectedCollection == -1 ? "All Loanded NFTs" : `${collections[selectedCollection].name} Loanded NFTs`}
                     </VaultDetailData1Typography>
                     <Box 
                     id="vaultDetailNFTBox"
@@ -370,13 +383,21 @@ function VaultDetailPage(props:any) {
             </Box>
             <Box sx={{width:'32%',height:'fit-content',background: "#121218",boxShadow: "3px 3px 11px rgba(0, 0, 0, 0.25)",borderRadius: "15px",paddingBottom:'20px'}}>
                 <Box sx={{display:'flex'}}>
-                    <Box sx={{width:'50%',display:'flex',justifyContent:'center',backgroundColor:'#1B1B21',borderRadius:'5px',padding:'20px'}}>
+                    <Box sx={{width:'50%',display:'flex',justifyContent:'center',backgroundColor:`${mode=="deposit" ? "#121218" : '#1B1B21'}`,borderRadius:'5px',padding:'20px',cursor:'pointer','&:hover':{
+                        boxShadow: "inset 0 0 20px 0px #121218"
+                    }}}
+                    onClick={()=>{setMode('deposit')}}
+                    >
                         <Typography variant='h4' sx={{color:'white',fontFamily:'inherit'}}>
                             DEPOSIT
                         </Typography>
                     </Box>
 
-                    <Box sx={{width:'50%',display:'flex',justifyContent:'center',borderRadius:'5px',padding:'20px'}}>
+                    <Box sx={{width:'50%',display:'flex',justifyContent:'center',backgroundColor:`${mode=="withdrawl" ? "#121218" : '#1B1B21'}`,borderRadius:'5px',padding:'20px',cursor:'pointer','&:hover':{
+                        boxShadow: "inset 0 0 20px 0px #121218"
+                    }}}
+                    onClick={()=>{setMode('withdrawl')}}
+                    >
                         <Typography variant='h4' sx={{color:'white',fontFamily:'inherit'}}>
                             WITHDRAWL
                         </Typography>
@@ -393,14 +414,17 @@ function VaultDetailPage(props:any) {
                         </Box>
 
                         <Box sx={{mt:'20px',background: "#1B1B21", border: "1px solid #000000", borderRadius: "15px",padding:'20px'}}>
-                            <Typography variant="h3"sx={{color: 'rgba(255, 255, 255, 0.4)'}}>
+                            {/* <Typography variant="h3"sx={{color: 'rgba(255, 255, 255, 0.4)'}}>
                                 0
-                            </Typography>                   
-                        </Box>         
+                            </Typography>   */}
+                            <Input disableUnderline value={inputValue} sx={{color: 'white',fontSize:'36px'}} onChange={(e)=>{setInputValue(e.target.value)}}></Input>                      
+                        </Box>   
 
-                        <Box sx={{mt:'70px',background: "#5DC961",boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",borderRadius: "15px",color:'white',padding:'20px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:"30px"}}>
+ 
+
+                        <Button sx={{mt:'70px',borderRadius: "15px",color:'white',padding:'20px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:"30px",width:'100%'}} variant="contained">
                             Confirm
-                        </Box>          
+                        </Button>          
 
 
                     </Box>
