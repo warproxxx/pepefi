@@ -94,10 +94,19 @@ contract Vault is ERC1155, ReentrancyGuard{
     }
 
     function takeLoan(uint32 loanId) public nonReentrant checkExpired {
+        IDirectLoanCoordinator.Loan memory loan = IDirectLoanCoordinator(NFTFI_COORDINATOR).getLoanData(loanId);
+        require(loan.status == IDirectLoanCoordinator.StatusType.NEW, "It needs to be an active loan");
+
+        // move this nft
+        // console.log(loan.smartNftId);
+
+        console.log(loanId);
+        (uint256 loanPrincipalAmount, uint256 maximumRepaymentAmount, uint256 nftCollateralId, address loanERC20Denomination, uint32 loanDuration, uint16 loanInterestRateForDurationInBasisPoints, uint16 loanAdminFeeInBasisPoints, address nftCollateralWrapper, uint64 loanStartTime, address nftCollateralContract, address borrower) = IDirectLoanBase(NFTFI_TOKEN).loanIdToLoan(loanId);
         
-        // (uint256 loanPrincipalAmount, uint256 maximumRepaymentAmount, uint256 nftCollateralId, address loanERC20Denomination, uint32 loanDuration, uint16 loanInterestRateForDurationInBasisPoints, uint16 loanAdminFeeInBasisPoints, address nftCollateralWrapper, uint64 loanStartTime, address nftCollateralContract, address borrower) = IDirectLoanBase(NFTFI_TOKEN).loanIdToLoan(loanId);
         // console.log(loanPrincipalAmount);
         // console.log(maximumRepaymentAmount);
+        // console.log(loanStartTime);
+        // console.log(loanDuration);
 
     }
 

@@ -119,15 +119,19 @@ async function deploy(){
 
 
     let ABI_STRING = ""
+    let export_string = "module.exports = {"
 
     for (const [key, value] of Object.entries(contracts)) {
-        ABI_STRING = ABI_STRING + `export let ${key} = '${value}'\n`        
+        ABI_STRING = ABI_STRING + `let ${key} = '${value}'\n`        
+        export_string = export_string + key + ","
     }
 
     ABI_STRING = ABI_STRING + "\n"
 
     for (const [key, value] of Object.entries(abis)) {
-        ABI_STRING = ABI_STRING + `export let ${key} = ${value}\n`        
+        ABI_STRING = ABI_STRING + `let ${key} = ${value}\n`        
+        export_string = export_string + key + ","
+
     }
 
     ABI_STRING = ABI_STRING + "\n"
@@ -145,7 +149,9 @@ async function deploy(){
 
             let var_name = name.replace(".sol", "").toUpperCase()
             
-            ABI_STRING = ABI_STRING + "export let " + var_name + "_ABI" + " = " + contents.replace(/\s/g, '') + "\n"           
+            ABI_STRING = ABI_STRING + "let " + var_name + "_ABI" + " = " + contents.replace(/\s/g, '') + "\n"  
+            export_string = export_string + var_name + "_ABI,"
+         
         }
     })
 
@@ -156,7 +162,10 @@ async function deploy(){
     await vm.deployed();  
     console.log("Vault Manager Contract Deployed at " + vm.address);
 
-    ABI_STRING = ABI_STRING + "export let VAULT_MANAGER='" + vm.address + "'\n\n"
+    ABI_STRING = ABI_STRING + "let VAULT_MANAGER='" + vm.address + "'\n\n"
+    export_string = export_string + "VAULT_MANAGER}"
+
+    ABI_STRING = ABI_STRING + export_string
 
     fs.writeFileSync('src/config.js', ABI_STRING);   
 }

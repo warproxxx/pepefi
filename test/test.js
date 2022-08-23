@@ -2,7 +2,6 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 const {perform_whale_transfer} =  require("../scripts/deploy.js")
 const {WETH, NFTFI, NFTFI_COORDINATOR, NFTFI_NOTE, SUDOSWAP_ROUTER, ERC20_ABI, ERC721_ABI} =  require("../src/config.js")
-
 let owner;
 let WETH_CONTRACT;
 let vault;
@@ -70,8 +69,8 @@ describe('Contract tests', () => {
         }
 
         let loan = await NFT_CONTRACT.loans(NOTE)
-        console.log(loan)
-        // await vault.takeLoan(14358716824499463741);
+        //use abi to convert this
+        await vault.takeLoan(8173);
 
     })
 })
