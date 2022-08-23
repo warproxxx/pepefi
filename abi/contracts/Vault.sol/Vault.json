@@ -8,13 +8,13 @@
       },
       {
         "internalType": "address",
-        "name": "_WETH",
+        "name": "_VAULT_MANAGER",
         "type": "address"
       },
       {
-        "internalType": "address",
-        "name": "_VAULT_MANAGER",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "_expirityDate",
+        "type": "uint256"
       },
       {
         "internalType": "address[]",
@@ -28,7 +28,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "_initialAPR",
+        "name": "_apr",
         "type": "uint256"
       },
       {
@@ -166,6 +166,58 @@
         "internalType": "uint32",
         "name": "",
         "type": "uint32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "NFTFI_CONTRACT",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "NFTFI_COORDINATOR",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "NFTFI_TOKEN",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "SUDOSWAP_CONTRACT",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -439,6 +491,13 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "sellLiquidations",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -452,6 +511,13 @@
       }
     ],
     "name": "setApprovalForAll",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "setContracts",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -473,6 +539,19 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint32",
+        "name": "loanId",
+        "type": "uint32"
+      }
+    ],
+    "name": "takeLoan",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -505,6 +584,19 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "withdrawLiquidity",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   }
 ]

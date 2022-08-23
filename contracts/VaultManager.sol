@@ -5,6 +5,8 @@ import "./Vault.sol";
 contract VaultManager{
 
     address public WETH;
+    address public NFTFI_COORDINATOR;
+
     address public NFTFI_CONTRACT;
     address public NFTFI_TOKEN;
     address public SUDOSWAP_CONTRACT;
@@ -12,11 +14,12 @@ contract VaultManager{
     address[] vaults;
 
 
-    constructor(address _WETH, address _NFTFI_CONTRACT, address _NFTFI_TOKEN, address _SUDOSWAP_CONTRACT){
+    constructor(address _WETH, address _NFTFI_CONTRACT, address _NFTFI_COORDINATOR, address _NFTFI_TOKEN, address _SUDOSWAP_CONTRACT){
         WETH = _WETH;
         NFTFI_CONTRACT = _NFTFI_CONTRACT;
         NFTFI_TOKEN = _NFTFI_TOKEN;
         SUDOSWAP_CONTRACT = _SUDOSWAP_CONTRACT;
+        NFTFI_COORDINATOR = _NFTFI_COORDINATOR;
     }
 
     function createVault( string calldata _VAULT_NAME, uint256 _expirityDate, address[] memory _collections, uint256[] memory _ltvs, uint256 _initialAPR, bool _external_lp_enabled, uint256 liquidityAdded) public returns (address) {
@@ -35,8 +38,8 @@ contract VaultManager{
         return vaults;
     }
 
-    function getContractAddresses() public returns (address, address, address, address){
-        return (WETH, NFTFI_CONTRACT, NFTFI_TOKEN, SUDOSWAP_CONTRACT);
+    function getContractAddresses() public returns (address, address, address, address, address){
+        return (WETH, NFTFI_CONTRACT, NFTFI_COORDINATOR, NFTFI_TOKEN, SUDOSWAP_CONTRACT);
     }
 
 

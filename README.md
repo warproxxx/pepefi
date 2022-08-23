@@ -38,5 +38,5 @@ Then start the application using:
 >npm run dev
 
 ## Tests
-
+Before running tests, make sure to run npm run deploy:localhost to create the configuration file. Then run tests using:
 >npm run test

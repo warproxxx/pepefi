@@ -1,51 +1,7 @@
 [
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_WETH",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_NFTFI_CONTRACT",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_NFTFI_COORDINATOR",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_NFTFI_TOKEN",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_SUDOSWAP_CONTRACT",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
     "inputs": [],
     "name": "NFTFI_CONTRACT",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "NFTFI_COORDINATOR",
     "outputs": [
       {
         "internalType": "address",
@@ -99,7 +55,7 @@
     "inputs": [
       {
         "internalType": "string",
-        "name": "_VAULT_NAME",
+        "name": "",
         "type": "string"
       },
       {
@@ -109,12 +65,12 @@
       },
       {
         "internalType": "address[]",
-        "name": "_collections",
+        "name": "",
         "type": "address[]"
       },
       {
         "internalType": "uint256[]",
-        "name": "_ltvs",
+        "name": "",
         "type": "uint256[]"
       },
       {

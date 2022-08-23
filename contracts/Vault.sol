@@ -4,6 +4,8 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./interfaces/IERC20.sol";
 import "./interfaces/IDirectLoanBase.sol";
 import "./interfaces/IVaultManager.sol";
+import "./interfaces/IDirectLoanCoordinator.sol";
+
 
 import "hardhat/console.sol";
 
@@ -12,6 +14,8 @@ contract Vault is ERC1155, ReentrancyGuard{
 
     address public WETH;
     address public NFTFI_CONTRACT;
+    address public NFTFI_COORDINATOR;
+
     address public NFTFI_TOKEN;
     address public SUDOSWAP_CONTRACT;
 
@@ -57,9 +61,10 @@ contract Vault is ERC1155, ReentrancyGuard{
     }
 
     function setContracts() public {
-        (address _WETH, address _NFTFI_CONTRACT, address _NFTFI_TOKEN, address _SUDOSWAP_CONTRACT) = IVaultManager(VAULT_MANAGER).getContractAddresses();
+        (address _WETH, address _NFTFI_CONTRACT, address _NFTFI_COORDINATOR, address _NFTFI_TOKEN, address _SUDOSWAP_CONTRACT) = IVaultManager(VAULT_MANAGER).getContractAddresses();
         WETH = _WETH;
         NFTFI_CONTRACT = _NFTFI_CONTRACT;
+        NFTFI_COORDINATOR = _NFTFI_COORDINATOR;
         NFTFI_TOKEN = _NFTFI_TOKEN;
         SUDOSWAP_CONTRACT = _SUDOSWAP_CONTRACT;
     }
@@ -88,11 +93,11 @@ contract Vault is ERC1155, ReentrancyGuard{
         totalSupply = totalSupply + shares;
     }
 
-    function takeLoan(uint32 tokenId) public nonReentrant checkExpired {
-        //now finish this using nftfi contract
-        (uint256 loanPrincipalAmount, uint256 maximumRepaymentAmount, uint256 nftCollateralId, address loanERC20Denomination, uint32 loanDuration, uint16 loanInterestRateForDurationInBasisPoints, uint16 loanAdminFeeInBasisPoints, address nftCollateralWrapper, uint64 loanStartTime, address nftCollateralContract, address borrower) = IDirectLoanBase(NFTFI_TOKEN).loanIdToLoan(tokenId);
-        console.log(loanPrincipalAmount);
-        console.log(maximumRepaymentAmount);
+    function takeLoan(uint32 loanId) public nonReentrant checkExpired {
+        
+        // (uint256 loanPrincipalAmount, uint256 maximumRepaymentAmount, uint256 nftCollateralId, address loanERC20Denomination, uint32 loanDuration, uint16 loanInterestRateForDurationInBasisPoints, uint16 loanAdminFeeInBasisPoints, address nftCollateralWrapper, uint64 loanStartTime, address nftCollateralContract, address borrower) = IDirectLoanBase(NFTFI_TOKEN).loanIdToLoan(loanId);
+        // console.log(loanPrincipalAmount);
+        // console.log(maximumRepaymentAmount);
 
     }
 
