@@ -198,7 +198,7 @@ export const AddVaultPopup = (props) => {
               disableTouchListener 
               enterDelay={700}
               placement="top">
-                <QuestionTextField
+              <AddVaultPopupQuestionTextField
                     label={inputs[3]}
                     variant="filled"
                     margin="normal"
@@ -228,7 +228,7 @@ export const AddVaultPopup = (props) => {
               disableTouchListener 
               enterDelay={700}
               placement="top">
-                <QuestionTextField
+              <AddVaultPopupQuestionTextField
                   label={inputs[4]}
                   variant="filled"
                   margin="normal"
@@ -267,9 +267,9 @@ export const AddVaultPopup = (props) => {
                       <Typography sx={{}}>
                         {input}:
                       </Typography>
-                      <Typography sx={{color: "#5048e5",fontWeight: "bold", width:`${index==1 ? '70%' : 'auto'}`, overflowX: 'auto'}}>
+                      <Typography sx={{color: "#5dc961",fontWeight: "bold", width:`${index==1 ? '70%' : 'auto'}`, overflowX: 'auto'}}>
                         {Object.values(values)[index]}
-                        {index==2  ? ' DAI' : ''}
+                        {index==2  ? ' WETH' : ''}
                         {index==3 || index==4 ? '%' : ''}
                       </Typography>
                     </Box>
@@ -311,7 +311,7 @@ export const AddVaultPopup = (props) => {
         {
           activeStep == 2
           ?
-          <Button onClick={()=>handleNext()}>
+          <Button onClick={()=>{}}>
                 Finish
           </Button>
           :

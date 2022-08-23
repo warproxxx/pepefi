@@ -235,6 +235,9 @@ export const theme = createTheme({
     button: {
       fontWeight: 600
     },
+    allVariants: {
+      color: "white"
+    },
     body1: {
       fontSize: '1rem',
       fontWeight: 400,
