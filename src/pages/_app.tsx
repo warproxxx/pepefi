@@ -6,13 +6,15 @@ import { Provider } from 'react-redux';
 import { store } from 'src/app/store';
 
 import NextNProgress from "nextjs-progressbar";
-import { CssBaseline } from "@mui/material";
+import { CssBaseline, Typography } from "@mui/material";
 
 import { theme } from "src/styles/theme";
 import { ThemeProvider } from "@mui/material/styles";
 import { CacheProvider } from "@emotion/react";
 import { CircularProgress,Box } from '@mui/material';
 import { createEmotionCache } from "../utils/create-emotion-cache";
+
+import Image from 'next/image';
 
 import {
   setAccount,
@@ -72,8 +74,12 @@ function MyApp(props: any) {
   return (
   <>
     {!loading ? 
-    <Box sx={{display:'flex',justifyContent:'center',alignContent:'center',alignItems:"center",height:'100vh',width:'100vw'}}>
-      <CircularProgress size={"100px"}/>
+    <Box sx={{height:'100vh',width:'100vw',backgroundColor:'#020710'}}>
+      <Box sx={{  margin: 'auto',position: 'absolute',top: '0', left: '0', bottom: '0', right: '0',height:'fit-content',width:'fit-content'}}>
+      <Typography sx={{color:'white',mx:'auto',width:'fit-content',fontSize:'5rem'}}>PepeFi</Typography>
+      <Image src="/static/images/pepes/music.gif" layout="intrinsic" height="300%" width="300%"/>
+      </Box>
+
     </Box>
     : 
       <React.StrictMode>
