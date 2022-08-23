@@ -21,8 +21,8 @@ describe('Contract tests', () => {
         await vm.deployed();  
 
         const Vault = await ethers.getContractFactory("Vault");
-        vault = await Vault.deploy('Test Vault', WETH, vm.address, 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400], 4500, true)
-        await vault.deployed();  
+        vault = await Vault.deploy('Test Vault', WETH, vm.address, 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], 4500, true)
+        // await vault.deployed();  
 
     })
 
@@ -36,7 +36,7 @@ describe('Contract tests', () => {
     })
 
     it("Deploying vault", async function (){
-        let deployment = await vm.createVault('Test Vault', 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400], 4500, true, 0)
+        let deployment = await vm.createVault('Test Vault', 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], 4500, true, 0)
         let vaults = await vm.getAllVaults()
         expect(vaults.length).to.greaterThanOrEqual(1)
     })
@@ -51,19 +51,23 @@ describe('Contract tests', () => {
     })
     
     it("Take and Repay Loan", async function () {
-        // let IMPERSO = '0xC6a6f43d5D52C855EBE1f825C717937A7b901732'
+        let IMPERSO = '0xC6a6f43d5D52C855EBE1f825C717937A7b901732'
 
-        // await hre.network.provider.request({
-        //     method: "hardhat_impersonateAccount",
-        //     params: [IMPERSO],
-        // });
+        await hre.network.provider.request({
+            method: "hardhat_impersonateAccount",
+            params: [IMPERSO],
+        });
 
-        // const nft_signer = await ethers.provider.getSigner(IMPERSO);
-        // let NFT_CONTRACT = await ethers.getContractAt(ERC721_ABI, '0x5660E206496808F7b5cDB8C56A696a96AE5E9b23', nft_signer);
+        const nft_signer = await ethers.provider.getSigner(IMPERSO);
+        let NFT_CONTRACT = await ethers.getContractAt(ERC721_ABI, '0x5660e206496808f7b5cdb8c56a696a96ae5e9b23', nft_signer);
 
-        // await NFT_CONTRACT.transferFrom(IMPERSO, owner.address, '14358716824499463741', {
-        //     from: IMPERSO,
-        // })
+        if ((await NFT_CONTRACT.ownerOf('14358716824499463741')).toLowerCase() == IMPERSO.toLowerCase())
+        { 
+            console.log("Transferring CloneX")
+            await NFT_CONTRACT.transferFrom(IMPERSO, owner.address, '14358716824499463741', {
+                from: IMPERSO,
+            })
+        }
 
     })
 })
