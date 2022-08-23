@@ -44,7 +44,8 @@ async function perform_whale_transfer() {
 
     //Transfer from a whale to our account to run tests
     const whale_signer = await ethers.provider.getSigner(contracts['WETH']);
-    let WETH_CONTRACT = await ethers.getContractAt(JSON.parse(abis['ERC20_ABI']), contracts['WETH'],  whale_signer);
+    let WETH_CONTRACT = await ethers.getContractAt(JSON.parse(abis['ERC20_ABI']), contracts['WETH'], whale_signer);
+
 
     for (let addy of [owner.address, '0x5664198BDb6AB7337b70742ff4BDD935f81e4Dcd', '0x99c6fD3bC02dEB420F192eFb3ED0D6f479856D4B']) {
         let eth_balance = parseInt((await whale_signer.getBalance())['_hex']) / 10**18
@@ -66,7 +67,7 @@ async function perform_whale_transfer() {
         }
     }
 
-    return [owner, WETH_CONTRACT];
+    return owner;
 }
 
 async function deploy(){

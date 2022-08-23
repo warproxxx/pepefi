@@ -12,14 +12,15 @@ let vault;
 describe('Contract tests', () => {
 
     before('Deploy Contract and Transfer Tokens', async () => {
-        [owner, WETH_CONTRACT] = await perform_whale_transfer();
+        owner = await perform_whale_transfer();
+        WETH_CONTRACT = await ethers.getContractAt(ERC20_ABI, WETH,  owner);
 
         const VaultManager = await ethers.getContractFactory("VaultManager");
         vm = await VaultManager.deploy(WETH);
         await vm.deployed();  
 
         const Vault = await ethers.getContractFactory("Vault");
-        vault = await Vault.deploy('Test Vault', ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb'], [500, 500, 400], 4500, true, 0)
+        vault = await Vault.deploy('Test Vault', WETH, vm.address, 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb'], [500, 500, 400], 4500, true)
         await vault.deployed();  
 
     })
@@ -34,18 +35,21 @@ describe('Contract tests', () => {
     })
 
     it("Deploying vault", async function (){
-        let deployment = await vm.createVault('Test Vault', ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb'], [500, 500, 400], 4500, true, 0)
+        let deployment = await vm.createVault('Test Vault', 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb'], [500, 500, 400], 4500, true, 0)
         let vaults = await vm.getAllVaults()
         expect(vaults.length).to.greaterThanOrEqual(1)
     })
 
     it("Add Liquidity", async function () {
         amt = 10
-        await USER_DAI.approve(liq.address, amt);
-        await liq.addLiquidity(amt);
-
-        expect(await liq.balanceOf(owner.address, 0)).to.equal(amt);
-        expect(await DAI.balanceOf(liq.address)).to.equal(amt);
+        await WETH_CONTRACT.approve(vault.address, ethers.constants.MaxUint256);
+        await vault.addLiquidity(amt);
+        
+        expect(await vault.balanceOf(owner.address, 0)).to.equal(amt);
+        expect(parseInt(await WETH_CONTRACT.balanceOf(vault.address))).to.greaterThanOrEqual(parseInt(amt));
     })
-
+    
+    it("Take Loan", async function () {
+        
+    })
 })
