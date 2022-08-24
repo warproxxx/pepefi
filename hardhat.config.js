@@ -1,6 +1,7 @@
 require("@nomiclabs/hardhat-waffle");
 require('hardhat-abi-exporter');
 require("hardhat-interface-generator");
+require('hardhat-contract-sizer');
 require('dotenv').config()
 /**
  * @type import('hardhat/config').HardhatUserConfig
@@ -33,5 +34,9 @@ module.exports = {
     currency: 'USD',
     gasPrice: 21
   },
-  allowUnlimitedContractSize: true
+  allowUnlimitedContractSize: true,
+  optimizer: {
+    enabled: true,
+    runs: 1
+  }
 };

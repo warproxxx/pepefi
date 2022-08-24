@@ -10,7 +10,6 @@
     "lint": "next lint",
     "test": "npx hardhat test --network localhost",
     "compile": "npx hardhat compile"
-
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "^3.5.0",
@@ -21,7 +20,9 @@
     "@openzeppelin/contracts": "^4.7.3",
     "@walletconnect/web3-provider": "^1.8.0",
     "apexcharts": "^3.35.3",
+    "axios": "^0.27.2",
     "dotenv": "^16.0.1",
+    "hardhat-contract-sizer": "^2.6.1",
     "next": "12.2.1",
     "next-redux-wrapper": "^7.0.5",
     "nextjs-progressbar": "^0.0.14",

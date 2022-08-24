@@ -12,8 +12,12 @@ describe('Contract tests', () => {
         owner = await perform_whale_transfer();
         WETH_CONTRACT = await ethers.getContractAt(ERC20_ABI, WETH,  owner);
 
+        const OracleManager = await ethers.getContractFactory("PepeFiOracle");
+        or = await OracleManager.deploy(owner.address);
+        await or.deployed();  
+
         const VaultManager = await ethers.getContractFactory("VaultManager");
-        vm = await VaultManager.deploy(WETH, NFTFI, NFTFI_COORDINATOR,  NFTFI_NOTE, "0x2b2e8cda09bba9660dca5cb6233787738ad68329");
+        vm = await VaultManager.deploy(WETH, NFTFI, NFTFI_COORDINATOR,  NFTFI_NOTE, or.address);
         await vm.deployed();  
 
         const Vault = await ethers.getContractFactory("Vault");
@@ -32,9 +36,9 @@ describe('Contract tests', () => {
     })
 
     it("Deploying vault", async function (){
-        // let deployment = await vm.createVault('Test Vault', 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], [4500, 4500, 4500, 4500], true, 0)
-        // let vaults = await vm.getAllVaults()
-        // expect(vaults.length).to.greaterThanOrEqual(1)
+        let deployment = await vm.createVault('Test Vault', 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], [4500, 4500, 4500, 4500], true, 0)
+        let vaults = await vm.getAllVaults()
+        expect(vaults.length).to.greaterThanOrEqual(1)
     })
 
     it("Add Liquidity", async function () {

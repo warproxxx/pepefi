@@ -23,7 +23,7 @@
       },
       {
         "internalType": "address",
-        "name": "_SUDOSWAP_CONTRACT",
+        "name": "_ORACLE_CONTRACT",
         "type": "address"
       }
     ],
@@ -71,7 +71,7 @@
   },
   {
     "inputs": [],
-    "name": "SUDOSWAP_CONTRACT",
+    "name": "ORACLE_CONTRACT",
     "outputs": [
       {
         "internalType": "address",
@@ -118,9 +118,9 @@
         "type": "uint256[]"
       },
       {
-        "internalType": "uint256",
-        "name": "_initialAPR",
-        "type": "uint256"
+        "internalType": "uint256[]",
+        "name": "_aprs",
+        "type": "uint256[]"
       },
       {
         "internalType": "bool",
