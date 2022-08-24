@@ -9,16 +9,16 @@ contract VaultManager{
 
     address public NFTFI_CONTRACT;
     address public NFTFI_TOKEN;
-    address public ORACLE_CONTRACT;
+    address public SUDOSWAP_CONTRACT;
 
     address[] vaults;
 
 
-    constructor(address _WETH, address _NFTFI_CONTRACT, address _NFTFI_COORDINATOR, address _NFTFI_TOKEN, address _ORACLE_CONTRACT){
+    constructor(address _WETH, address _NFTFI_CONTRACT, address _NFTFI_COORDINATOR, address _NFTFI_TOKEN, address _SUDOSWAP_CONTRACT){
         WETH = _WETH;
         NFTFI_CONTRACT = _NFTFI_CONTRACT;
         NFTFI_TOKEN = _NFTFI_TOKEN;
-        ORACLE_CONTRACT = _ORACLE_CONTRACT;
+        SUDOSWAP_CONTRACT = _SUDOSWAP_CONTRACT;
         NFTFI_COORDINATOR = _NFTFI_COORDINATOR;
     }
 
@@ -39,7 +39,7 @@ contract VaultManager{
     }
 
     function getContractAddresses() public returns (address, address, address, address, address){
-        return (WETH, NFTFI_CONTRACT, NFTFI_COORDINATOR, NFTFI_TOKEN, ORACLE_CONTRACT);
+        return (WETH, NFTFI_CONTRACT, NFTFI_COORDINATOR, NFTFI_TOKEN, SUDOSWAP_CONTRACT);
     }
 
 

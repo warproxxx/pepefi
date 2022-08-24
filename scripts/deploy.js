@@ -168,7 +168,7 @@ async function deploy(){
 
     ABI_STRING = ABI_STRING + "let ORACLE_CONTRACT='" + or.address + "'\n"
     ABI_STRING = ABI_STRING + "let VAULT_MANAGER='" + vm.address + "'\n\n"
-    export_string = export_string + "VAULT_MANAGER}"
+    export_string = export_string + "ORACLE_CONTRACT,VAULT_MANAGER}"
 
     ABI_STRING = ABI_STRING + export_string
 

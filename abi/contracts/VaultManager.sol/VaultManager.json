@@ -23,7 +23,7 @@
       },
       {
         "internalType": "address",
-        "name": "_ORACLE_CONTRACT",
+        "name": "_SUDOSWAP_CONTRACT",
         "type": "address"
       }
     ],
@@ -71,7 +71,7 @@
   },
   {
     "inputs": [],
-    "name": "ORACLE_CONTRACT",
+    "name": "SUDOSWAP_CONTRACT",
     "outputs": [
       {
         "internalType": "address",

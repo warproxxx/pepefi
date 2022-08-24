@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 const {perform_whale_transfer} =  require("../scripts/deploy.js")
-const {WETH, NFTFI, NFTFI_COORDINATOR, NFTFI_NOTE, SUDOSWAP_ROUTER, ERC20_ABI, ERC721_ABI} =  require("../src/config.js")
+const {WETH, NFTFI, NFTFI_COORDINATOR, NFTFI_NOTE, ERC20_ABI, ERC721_ABI} =  require("../src/config.js")
 let owner;
 let WETH_CONTRACT;
 let vault;
@@ -24,6 +24,9 @@ describe('Contract tests', () => {
         vault = await Vault.deploy('Test Vault', vm.address, 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], [4500, 4500, 4500, 4500], true)
         await vault.deployed();  
 
+        //now set prices for testing
+
+
     })
 
 
@@ -36,9 +39,9 @@ describe('Contract tests', () => {
     })
 
     it("Deploying vault", async function (){
-        let deployment = await vm.createVault('Test Vault', 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], [4500, 4500, 4500, 4500], true, 0)
-        let vaults = await vm.getAllVaults()
-        expect(vaults.length).to.greaterThanOrEqual(1)
+        // let deployment = await vm.createVault('Test Vault', 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], [4500, 4500, 4500, 4500], true, 0)
+        // let vaults = await vm.getAllVaults()
+        // expect(vaults.length).to.greaterThanOrEqual(1)
     })
 
     it("Add Liquidity", async function () {

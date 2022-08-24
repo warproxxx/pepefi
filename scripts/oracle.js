@@ -1,5 +1,6 @@
 const axios = require('axios')
 const { ethers } = require("hardhat");
+const { ORACLE_CONTRACT, PEPEFIORACLE_ABI } =  require("../src/config.js")
 
 async function deployOracle(admin){
     
@@ -11,18 +12,35 @@ let slug_dict = {'0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d': 'boredapeyachtclu
 
 async function updateOnce(contracts = ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6']){
 
+    const ORACLE = await ethers.getContractAt("PepeFiOracle", ORACLE_CONTRACT);
+
     let prices = {}
+    let addys = []
+    let newPrice = []
+
     for (contract of contracts){
-        let res = await axios.get(`https://api.reservoir.tools/oracle/collections/${contract}/floor-ask/v1`);
-        prices['reservoir'] = res['data']['price'] * 10**18
+        try {
+            let res = await axios.get(`https://api.reservoir.tools/oracle/collections/${contract}/floor-ask/v1`);
+            prices['reservoir'] = res['data']['price'] * 10**18
+        } catch (error) {
+            console.error(error);
+        }
+          
         
-        let rare = await axios.get(`https://api.looksrare.org/api/v1/collections/stats?address=${contract}`)
-        prices['looksrare'] = parseInt(rare['data']['data']['floorPrice'])
+        try {
+            let rare = await axios.get(`https://api.looksrare.org/api/v1/collections/stats?address=${contract}`)
+            prices['looksrare'] = parseInt(rare['data']['data']['floorPrice'])
+        } catch (error) {
+            console.error(error);
+        }
 
-
-        //most important because collection is not unique
-        let open = await axios.get(`https://api.opensea.io/api/v1/collection/${slug_dict[contract]}/stats`)
-        prices['opensea'] = open['data']['stats']['floor_price'] * 10**18
+        try {
+            //most important because collection is not unique
+            let open = await axios.get(`https://api.opensea.io/api/v1/collection/${slug_dict[contract]}/stats`)
+            prices['opensea'] = open['data']['stats']['floor_price'] * 10**18
+        } catch (error) {
+            console.error(error);
+        }
 
 
         //now loop thru to find the minimum which is not nan or 0
@@ -39,12 +57,21 @@ async function updateOnce(contracts = ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f1
             }
         }
 
-
         if (minimum != 0){
-            console.log(minimum)
+            let oraclePrice = await ORACLE.getPrice(contract)
+
+            if (oraclePrice <= minimum * 0.95 || oraclePrice >= minimum * 1.05){
+                console.log(`Updating ${contract} price to ${minimum} from ${oraclePrice}`)
+
+                addys.push(contract)
+                newPrice.push(minimum.toString())
+            }
         }
         
     }
+
+    await ORACLE.updatePrices(addys, newPrice)
+
 }
 
 updateOnce()

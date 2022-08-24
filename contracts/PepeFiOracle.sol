@@ -13,9 +13,14 @@ contract PepeFiOracle {
         updater = _updater;
     }
 
-    function updatePrice(address _collection, uint256 _value) public onlyUpdater{
-        prices[_collection] = _value;
-        emit OracleUpdate(_collection, _value, block.timestamp);
+    function updatePrices(address[] calldata _collections, uint256[] calldata _values) public onlyUpdater{
+
+        require(_collections.length == _values.length, "The length of two arrays must be same");
+
+        for (uint i=0; i<_collections.length; i++) {
+            prices[_collections[i]] = _values[i];
+            emit OracleUpdate(_collections[i], _values[i], block.timestamp);
+        }
     }
 
     function getPrice(address _collection) public view returns (uint256) {
