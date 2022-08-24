@@ -1,6 +1,8 @@
 pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/math/Math.sol";
 import "./interfaces/IERC20.sol";
 import "./interfaces/IDirectLoanBase.sol";
 import "./interfaces/IVaultManager.sol";
@@ -31,6 +33,9 @@ contract Vault is ERC1155, ReentrancyGuard{
     uint256 expirityDate;
 
     uint32 public constant LIQUIDITY = 0;
+    /// The ID of the next token that will be minted. Skips 0
+    uint256 private _nextId = 1;
+
     uint256 public totalSupply = 0;
 
     modifier onlyVaultManager {
@@ -42,6 +47,17 @@ contract Vault is ERC1155, ReentrancyGuard{
         require(block.timestamp < expirityDate);
         _;
     }
+
+    struct loanDetails {
+        uint256 timestamp; //unix timestamp of when the bet was made
+        uint256 expirity; //expirity date of loan
+        uint8 loanType; //0 for PN. 1 for nft
+        uint256 loanPrincipalAmount; //principal taken
+        uint256 repaymentAmount; //repayment amount
+
+    }
+
+    mapping(uint256 => loanDetails) public _loans;
 
     constructor(string memory _VAULT_NAME, address _VAULT_MANAGER,  uint256 _expirityDate, address[] memory _collections, uint256[] memory _ltvs, uint256 _apr, bool _external_lp_enabled) ERC1155("https://example.com"){
 
@@ -89,24 +105,48 @@ contract Vault is ERC1155, ReentrancyGuard{
 
         require(success, "Failed to send WETH");
 
-        _mint(msg.sender, LIQUIDITY, shares, "");
+        _mint(msg.sender, LIQUIDITY, shares, ""); //0 is liquidity token
         totalSupply = totalSupply + shares;
     }
 
-    function takeLoan(uint32 loanId) public nonReentrant checkExpired {
+    function takePNNFILoan(uint32 loanId) public nonReentrant checkExpired {
         IDirectLoanCoordinator.Loan memory loan = IDirectLoanCoordinator(NFTFI_COORDINATOR).getLoanData(loanId);
         require(loan.status == IDirectLoanCoordinator.StatusType.NEW, "It needs to be an active loan");
 
-        // move this nft
+        // move this nft to our Vault
+
         // console.log(loan.smartNftId);
 
-        console.log(loanId);
-        (uint256 loanPrincipalAmount, uint256 maximumRepaymentAmount, uint256 nftCollateralId, address loanERC20Denomination, uint32 loanDuration, uint16 loanInterestRateForDurationInBasisPoints, uint16 loanAdminFeeInBasisPoints, address nftCollateralWrapper, uint64 loanStartTime, address nftCollateralContract, address borrower) = IDirectLoanBase(NFTFI_TOKEN).loanIdToLoan(loanId);
+        (uint256 loanPrincipalAmount, uint256 maximumRepaymentAmount, uint256 nftCollateralId, address loanERC20Denomination, uint32 loanDuration, uint16 loanInterestRateForDurationInBasisPoints, uint16 loanAdminFeeInBasisPoints, address nftCollateralWrapper, uint64 loanStartTime, address nftCollateralContract, address borrower) = IDirectLoanBase(NFTFI_CONTRACT).loanIdToLoan(loanId);
         
-        // console.log(loanPrincipalAmount);
-        // console.log(maximumRepaymentAmount);
-        // console.log(loanStartTime);
-        // console.log(loanDuration);
+        require(loanERC20Denomination == 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2, "The Loan must be in WETH");
+
+        //check nftCollateralContract exists and get the terms for it. Also verify the oracle
+
+
+
+        _loans[_nextId+1] = loanDetails({
+                timestamp: block.timestamp,
+                expirity: Math.min(loanStartTime + loanDuration,  expirityDate),
+                loanType: 0,
+                loanPrincipalAmount: loanPrincipalAmount, //just testing. this should be based on ltv
+                repaymentAmount: maximumRepaymentAmount
+            });
+
+        console.log(loanPrincipalAmount);
+        console.log(maximumRepaymentAmount);
+        console.log(loanStartTime);
+        console.log(loanDuration);
+
+
+
+        _mint(msg.sender, _nextId+1, 1, "");
+        _nextId++;
+        
+
+    }
+
+    function takeERC721Loan() public nonReentrant checkExpired{
 
     }
 

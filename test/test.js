@@ -70,7 +70,7 @@ describe('Contract tests', () => {
 
         let loan = await NFT_CONTRACT.loans(NOTE)
         //use abi to convert this
-        await vault.takeLoan(8173);
+        await vault.takePNNFILoan(loan['loanId']);
 
     })
 })
