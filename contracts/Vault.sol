@@ -1,8 +1,10 @@
 pragma solidity ^0.8.9;
+
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
+
 import "./interfaces/IERC20.sol";
 import "./interfaces/IDirectLoanBase.sol";
 import "./interfaces/IVaultManager.sol";
@@ -28,8 +30,8 @@ contract Vault is ERC1155, ReentrancyGuard{
 
     address[] public collections;
     uint256[] public ltvs;
-    
-    uint256 apr;
+    uint256[] public aprs;
+
     uint256 expirityDate;
 
     uint32 public constant LIQUIDITY = 0;
@@ -59,7 +61,7 @@ contract Vault is ERC1155, ReentrancyGuard{
 
     mapping(uint256 => loanDetails) public _loans;
 
-    constructor(string memory _VAULT_NAME, address _VAULT_MANAGER,  uint256 _expirityDate, address[] memory _collections, uint256[] memory _ltvs, uint256 _apr, bool _external_lp_enabled) ERC1155("https://example.com"){
+    constructor(string memory _VAULT_NAME, address _VAULT_MANAGER,  uint256 _expirityDate, address[] memory _collections, uint256[] memory _ltvs, uint256[] memory _aprs, bool _external_lp_enabled) ERC1155("https://example.com"){
 
         require(_collections.length == _ltvs.length);
 
@@ -69,7 +71,7 @@ contract Vault is ERC1155, ReentrancyGuard{
         external_lp_enabled = _external_lp_enabled;
         collections = _collections;
         ltvs = _ltvs;
-        apr = _apr;
+        aprs = _aprs;
         VAULT_CREATOR = address(this);
         
 
@@ -120,6 +122,8 @@ contract Vault is ERC1155, ReentrancyGuard{
         (uint256 loanPrincipalAmount, uint256 maximumRepaymentAmount, uint256 nftCollateralId, address loanERC20Denomination, uint32 loanDuration, uint16 loanInterestRateForDurationInBasisPoints, uint16 loanAdminFeeInBasisPoints, address nftCollateralWrapper, uint64 loanStartTime, address nftCollateralContract, address borrower) = IDirectLoanBase(NFTFI_CONTRACT).loanIdToLoan(loanId);
         
         require(loanERC20Denomination == 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2, "The Loan must be in WETH");
+
+
 
         //check nftCollateralContract exists and get the terms for it. Also verify the oracle
 

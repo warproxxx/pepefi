@@ -17,7 +17,7 @@ describe('Contract tests', () => {
         await vm.deployed();  
 
         const Vault = await ethers.getContractFactory("Vault");
-        vault = await Vault.deploy('Test Vault', vm.address, 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], 4500, true)
+        vault = await Vault.deploy('Test Vault', vm.address, 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], [4500, 4500, 4500, 4500], true)
         await vault.deployed();  
 
     })
@@ -32,7 +32,7 @@ describe('Contract tests', () => {
     })
 
     it("Deploying vault", async function (){
-        let deployment = await vm.createVault('Test Vault', 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], 4500, true, 0)
+        let deployment = await vm.createVault('Test Vault', 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], [4500, 4500, 4500, 4500], true, 0)
         let vaults = await vm.getAllVaults()
         expect(vaults.length).to.greaterThanOrEqual(1)
     })
