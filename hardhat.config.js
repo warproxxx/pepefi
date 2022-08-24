@@ -32,5 +32,6 @@ module.exports = {
   gasReporter: {
     currency: 'USD',
     gasPrice: 21
-  }
+  },
+  allowUnlimitedContractSize: true
 };

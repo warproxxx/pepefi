@@ -32,9 +32,9 @@ describe('Contract tests', () => {
     })
 
     it("Deploying vault", async function (){
-        let deployment = await vm.createVault('Test Vault', 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], [4500, 4500, 4500, 4500], true, 0)
-        let vaults = await vm.getAllVaults()
-        expect(vaults.length).to.greaterThanOrEqual(1)
+        // let deployment = await vm.createVault('Test Vault', 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], [4500, 4500, 4500, 4500], true, 0)
+        // let vaults = await vm.getAllVaults()
+        // expect(vaults.length).to.greaterThanOrEqual(1)
     })
 
     it("Add Liquidity", async function () {
@@ -68,9 +68,19 @@ describe('Contract tests', () => {
             })
         }
 
+        //converting ID
         let loan = await NFT_CONTRACT.loans(NOTE)
-        //use abi to convert this
+
+        let TEST_CONTRACT = await ethers.getContractAt(ERC721_ABI, NFTFI_NOTE, owner);
+
+        //approve contract to spend this nft
+        // await TEST_CONTRACT.approve(vault.address, loan['loanId'])
         await vault.takePNNFILoan(loan['loanId']);
+
+        let loans = await vault.getAllLoans()
+        expect(loans.length).to.greaterThanOrEqual(1)
+
+        console.log(loans[0])
 
     })
 })

@@ -28,6 +28,8 @@ contract Vault is ERC1155, ReentrancyGuard{
 
     bool public external_lp_enabled;
 
+    uint256[] public all_loans; //all loans taken from our vault
+
     address[] public collections;
     uint256[] public ltvs;
     uint256[] public aprs;
@@ -56,14 +58,20 @@ contract Vault is ERC1155, ReentrancyGuard{
         uint8 loanType; //0 for PN. 1 for nft
         uint256 loanPrincipalAmount; //principal taken
         uint256 repaymentAmount; //repayment amount
+    }
 
+    struct assetDetails {
+        address collection;
+        uint256 ltv;
+        uint256 apr;
     }
 
     mapping(uint256 => loanDetails) public _loans;
 
     constructor(string memory _VAULT_NAME, address _VAULT_MANAGER,  uint256 _expirityDate, address[] memory _collections, uint256[] memory _ltvs, uint256[] memory _aprs, bool _external_lp_enabled) ERC1155("https://example.com"){
 
-        require(_collections.length == _ltvs.length);
+        require(_collections.length == _ltvs.length );
+        require(_collections.length == _aprs.length );
 
         VAULT_NAME = _VAULT_NAME;
         VAULT_MANAGER = _VAULT_MANAGER;
@@ -85,6 +93,10 @@ contract Vault is ERC1155, ReentrancyGuard{
         NFTFI_COORDINATOR = _NFTFI_COORDINATOR;
         NFTFI_TOKEN = _NFTFI_TOKEN;
         SUDOSWAP_CONTRACT = _SUDOSWAP_CONTRACT;
+    }
+
+    function getAllLoans() public view returns (uint256[] memory){
+        return all_loans;
     }
 
     function getWETHBalance() public returns (uint256) {
@@ -111,22 +123,29 @@ contract Vault is ERC1155, ReentrancyGuard{
         totalSupply = totalSupply + shares;
     }
 
-    function takePNNFILoan(uint32 loanId) public nonReentrant checkExpired {
+    function takePNNFILoan(uint32 loanId) public nonReentrant checkExpired returns (uint256) {
+        //make this an array so multiple loans at once?
+
         IDirectLoanCoordinator.Loan memory loan = IDirectLoanCoordinator(NFTFI_COORDINATOR).getLoanData(loanId);
         require(loan.status == IDirectLoanCoordinator.StatusType.NEW, "It needs to be an active loan");
 
-        // move this nft to our Vault
-
-        // console.log(loan.smartNftId);
+        // IERC721(NFTFI_TOKEN).transferFrom(msg.sender, address(this), loan.smartNftId); //Transfer the NFT to our wallet. Commenting out is as it messes the flow of test unless repaid too
 
         (uint256 loanPrincipalAmount, uint256 maximumRepaymentAmount, uint256 nftCollateralId, address loanERC20Denomination, uint32 loanDuration, uint16 loanInterestRateForDurationInBasisPoints, uint16 loanAdminFeeInBasisPoints, address nftCollateralWrapper, uint64 loanStartTime, address nftCollateralContract, address borrower) = IDirectLoanBase(NFTFI_CONTRACT).loanIdToLoan(loanId);
         
         require(loanERC20Denomination == 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2, "The Loan must be in WETH");
 
+        assetDetails memory details;
 
+        for (uint i=0; i<collections.length; i++) {
+            if (collections[i] == nftCollateralContract){
+                details.collection = collections[i];
+                details.ltv = ltvs[i];
+                details.apr = aprs[i];
+            }
+        }
 
-        //check nftCollateralContract exists and get the terms for it. Also verify the oracle
-
+        require(details.ltv != 0, "Collection not in whitelist");
 
 
         _loans[_nextId+1] = loanDetails({
@@ -134,20 +153,29 @@ contract Vault is ERC1155, ReentrancyGuard{
                 expirity: Math.min(loanStartTime + loanDuration,  expirityDate),
                 loanType: 0,
                 loanPrincipalAmount: loanPrincipalAmount, //just testing. this should be based on ltv
-                repaymentAmount: maximumRepaymentAmount
+                repaymentAmount: maximumRepaymentAmount //this should be based on our APR
             });
 
-        console.log(loanPrincipalAmount);
-        console.log(maximumRepaymentAmount);
-        console.log(loanStartTime);
-        console.log(loanDuration);
 
-
+        all_loans.push(_nextId+1);
 
         _mint(msg.sender, _nextId+1, 1, "");
         _nextId++;
         
+        return _nextId;
+    }
 
+    function repayLoan(uint32 loanId) public nonReentrant {
+        //make this an array so multiple loans at once?
+
+        loanDetails storage curr_loan = _loans[loanId];
+
+
+        (bool success, bytes memory data) = WETH.call(abi.encodeWithSelector(0x23b872dd, msg.sender, address(this), curr_loan.repaymentAmount));
+        require(success, "Cannot transfer WETH");
+
+        delete _loans[loanId];
+        _burn(msg.sender, loanId, 1);
     }
 
     function takeERC721Loan() public nonReentrant checkExpired{
@@ -161,7 +189,7 @@ contract Vault is ERC1155, ReentrancyGuard{
 
 
     function withdrawLiquidity(uint256 _amount) public nonReentrant {
-        require(block.timestamp > expirityDate);
+        require(block.timestamp > expirityDate); //require liquidations are sold too. or maybe not
     }
 
 
