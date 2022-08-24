@@ -1,5 +1,6 @@
 export const lendingNFT = {
         name: 'Doodle #2799',
+        openseaSrc: '',
         collection: 'Doodle',
         imgSrc: "/static/images/loans/NFT1.png",
         valuation: 9.602,

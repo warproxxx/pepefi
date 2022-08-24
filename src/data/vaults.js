@@ -1,6 +1,7 @@
 export const vaults =  [
     {
         name: "Goblin Sax Vault",
+        etherScanSrc: '',
         contractAddy: '0XCC32...9624',
         data: {
             totalWETH: 5000,
@@ -38,6 +39,7 @@ export const vaults =  [
             {
                 name: 'Bored Ape Yacht Club',
                 imgSrc: '/static/images/vaults/collection1.png',
+                openseaSrc: '',
                 price: "25.67 WETH/+10.16%",
                 totalWETH: 0.0,
                 LTV: [0.0],
@@ -47,6 +49,7 @@ export const vaults =  [
                 NFTs: [
                     {
                         imgSrc: '',
+                        openseaSrc: '',
                         duration: 0.0,
                         APR: 0.0,
                         amount: 0.0
@@ -56,6 +59,7 @@ export const vaults =  [
             {
                 name: 'Otherdeed for Otherside',
                 imgSrc: '/static/images/vaults/collection2.png',
+                openseaSrc: '',
                 price: '1.7 WETH/+5.16%',
                 totalWETH: 0.0,
                 LTV: [0.0],
@@ -64,6 +68,7 @@ export const vaults =  [
                 NFTs: [
                     {
                         imgSrc: '',
+                        openseaSrc: '',
                         duration: 0.0,
                         APR: 0.0,
                         amount: 0.0
@@ -73,6 +78,7 @@ export const vaults =  [
             {
                 name: 'Doodle',
                 imgSrc: '/static/images/vaults/collection3.png',
+                openseaSrc: '',
                 price: '7.5 WETH/+3.16%',
                 totalWETH: 0.0,
                 LTV: [0.0],
@@ -81,6 +87,7 @@ export const vaults =  [
                 NFTs: [
                     {
                         imgSrc: '',
+                        openseaSrc: '',
                         duration: 0.0,
                         apr: 0.0,
                         amount: 0.0
@@ -90,6 +97,7 @@ export const vaults =  [
             {
                 name: 'Moonbirds',
                 imgSrc: '/static/images/vaults/collection4.png',
+                openseaSrc: '',
                 price: '12.4 WETH/-5.16%',
                 totalWETH: 0.0,
                 LTV: [0.0],
@@ -98,6 +106,7 @@ export const vaults =  [
                 NFTs: [
                     {
                         imgSrc: '',
+                        openseaSrc: '',
                         duration: 0.0,
                         APR: 0.0,
                         amount: 0.0
@@ -106,59 +115,6 @@ export const vaults =  [
             },
         ]
     },
-    {
-        name: "",
-        data: {
-            totalWETH: 8000,
-            contractAddy: '',
-            LTV: {
-                range: [20.0,92.0],
-                average: 72.0,
-                min: 0.0,
-                max: 100.0,
-                marks: []
-            },
-            APR: {
-                range: [20.0,60.0],
-                average: 35.0,
-                min: 10.0,
-                max: 70.0,
-                marks: []
-            },
-            duration: {
-                range: [8,60],
-                average: 30.0,
-                min: 0.0,
-                max: 90.0,
-                marks: []
-            },
-            imgSrc:
-                [
-                    "/static/images/vaults/collection1.png",
-                    "/static/images/vaults/collection2.png", 
-                    "/static/images/vaults/collection3.png",
-                    "/static/images/vaults/collection4.png"
-                ]
-        },
-        collections:[
-            {
-                name: '',
-                imgSrc: '',
-                totalWETH: 0.0,
-                LTV: [0.0],
-                apr: [0.0],
-                duration: [0.0],
-                NFTs: [
-                    {
-                        imgSrc: '',
-                        duration: 0.0,
-                        apr: 0.0,
-                        amount: 0.0
-                    }
-                ]
-            }
-        ]
-    }
 ]
 
 vaults.map((vault,index)=>{

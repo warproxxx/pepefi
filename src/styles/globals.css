@@ -1,6 +1,6 @@
 :root {
-  --main-font: Roboto, Sans-serif;
-  --main-header-font: Libre Baskerville;
+  --main-font: 'DM Mono',
+  --main-header-font: 'DM Mono',
   --main-color: /*#02BFBF;*/ #5dff63;
   --main-font-2: Inter;
   --main-header-fontSize: 75px;
@@ -17,8 +17,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: 'DM Mono'
 }
 
 @font-face {

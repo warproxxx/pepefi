@@ -242,7 +242,7 @@ function VaultDetailPage(props:any) {
                         {
                             dataRows.map((row,index)=>{
                                 return(
-                                    <Grid item xl={4} lgp={4} lg={4} md={4} smpad={4} sm={4} xs={6} key={index}>
+                                    <Grid item xl={4} lg={4} md={4} sm={4} xs={6} key={index}>
                                         <Box sx={{
                                             background: "#1B1B21",
                                             border: "1px solid #000000",

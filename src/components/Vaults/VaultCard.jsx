@@ -117,7 +117,7 @@ export const RangeSlider = styled(Slider)((props)  => sx({
         backgroundColor:"#939393",
         height: "1px"
     },
-    '& :nth-child(3), & :nth-child(7)':{
+    '& :nth-of-type(3), & :nth-of-type(7)':{
         width:'7px',
         height:'7px',
         borderRadius:'50%'
