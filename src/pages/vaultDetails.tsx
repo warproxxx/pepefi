@@ -2,11 +2,13 @@ import React from 'react';
 import {DashboardLayout} from 'src/components/Nav/dashboard-layout'
 import Head from "next/head";
 import { useState } from "react";
-import {Button,Box,Grid, Typography, Input,} from "@mui/material";
+import {Button,Box,Grid, Typography, Input, Tooltip} from "@mui/material";
 import { VaultCard } from "src/components/Vaults/VaultCard";
 import {styled, experimental_sx as sx} from '@mui/system';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+
+import { vaults } from 'src/data/vaults';
 
 export const VaultDetailBox = styled(Box)((props)  => sx({
   minHeight: "80vh",
@@ -17,7 +19,8 @@ export const VaultDetailLabelTypography = styled(Typography)((props)  => sx({
     fontSize:'20px',
     fontWeight: 'normal',
     color:'rgba(255, 255, 255, 0.4)',
-    fontFamily:'inherit'
+    fontFamily:'inherit',
+    cursor:'pointer'
 }));
 
 export const VaultDetailLabel2Typography = styled(Typography)((props)  => sx({
@@ -57,56 +60,45 @@ export const VaultDetailCollectionDataTypography = styled(Typography)((props)  =
     fontFamily:'inherit',
 }));
 
-
-
-
-const collections = [
-    {
-        name:'Bored Ape Yacht Club',
-        price:"25.67 WETH/+10.16%",
-        img: '/static/images/vaults/collection1.png'
-    },
-    {
-        name:'Otherdeed for Otherside',
-        price:"1.7 WETH/+5.16%",
-        img: '/static/images/vaults/collection2.png'
-    },
-    {
-        name:'Doodle',
-        price:"7.5 WETH/+3.16%",
-        img: '/static/images/vaults/collection3.png'
-    },
-    {
-        name:'Moonbirds',
-        price:"12.4 WETH/-5.16%",
-        img: '/static/images/vaults/collection4.png'
-    },
-]
-
-const vaultStats = [
+const dataRows = [
     {
         name:'Total Supply',
-        data:'8000 WETH'
+        dataName: 'totalWETH',
+        nameDescription: 'Total supply is ...',
+        unit: 'WETH'
     },
     {
-        name:'APY',
-        data:'5%'
+        name:'APR',
+        dataName:'APR',
+        nameDescription: 'APR is ...',
+        unit: '%'
     },
     {
         name:'Duration',
-        data:'25 - 80 days'
+        dataName:'duration',
+        nameDescription: 'Duration is ...',
+        unit: 'days'
     },
     {
         name:'...',
-        data:'...'
+        dataName:'empty',
+        nameDescription: '...',
+        data:'...',
+        unit: ''
     },
     {
         name:'...',
-        data:'...'
+        dataName:'empty',
+        nameDescription: '...',
+        data:'...',
+        unit: ''
     },
     {
         name:'...',
-        data:'...'
+        dataName:'empty',
+        nameDescription: '...',
+        data:'...',
+        unit: ''
     },
 ]
 
@@ -116,6 +108,7 @@ function VaultDetailPage(props:any) {
     const [selectedCollection,setSelectedCollection] = useState(-1);
     const [inputValue, setInputValue] = useState("0");
 
+    const vault = vaults[0];
     const router = useRouter();
   return (
     <>
@@ -158,11 +151,11 @@ function VaultDetailPage(props:any) {
                                 Vault Name
                             </VaultDetailLabelTypography>
                             <VaultDetailData1Typography>
-                                Goblin Sax Vault
+                                {vault.name}
                             </VaultDetailData1Typography>
                             <Box sx={{display:'flex',gap:'10px',alignItems:'center'}}> 
                                 <VaultDetailLabelTypography>
-                                    0XCC32...9624
+                                    {vault.contractAddy}
                                 </VaultDetailLabelTypography>
                                 <Box sx={{cursor:'pointer'}}>
                                     <Image src="/static/images/icons/copy-paste.svg" height="20px" width='20px'/>
@@ -197,7 +190,7 @@ function VaultDetailPage(props:any) {
                             </VaultDetailLabelTypography>  
                             <Box sx={{display:'grid',gridTemplateColumns: "repeat(2, 1fr)",gap:'20px',mt:'20px'}}>
                             {
-                                collections.map((collection,index)=>{
+                                vault.collections.map((collection,index)=>{
                                     return(
                                         <Box sx={{
                                         background: "rgba(255, 255, 255, 0.05)",
@@ -220,16 +213,16 @@ function VaultDetailPage(props:any) {
                                         onClick={()=>{index == selectedCollection ? setSelectedCollection(-1) : setSelectedCollection(index)}}
                                         >
                                             <Box sx={{borderRadius: "50%",height:'45px',width:'45px',overflow:'hidden'}}>
-                                                <Image src={collection.img} layout="responsive" height="100%" width="100%"></Image>
+                                                <Image src={collection.imgSrc} layout="responsive" height="100%" width="100%"></Image>
                                             </Box>
                                             <Box sx={{display: "flex", width: "75%", justifyContent: "center",flexDirection:'column',alignItems:'center',gap:'5px'}}>
                                                 <VaultDetailCollectionTitleTypography>
                                                     {collection.name}
                                                 </VaultDetailCollectionTitleTypography>
+
                                                 <VaultDetailCollectionDataTypography>
                                                     {collection.price}
-                                                </VaultDetailCollectionDataTypography>                                   
-                                                
+                                                </VaultDetailCollectionDataTypography>                                       
                                             </Box>
                                         </Box>
                                     )
@@ -242,12 +235,12 @@ function VaultDetailPage(props:any) {
 
                 <Box sx={{mt:"40px",display:'flex',flexDirection:'column'}}>
                     <VaultDetailData1Typography>
-                        {selectedCollection == -1 ? "Vault Stats" : `${collections[selectedCollection].name} Collection Stats`}
+                        {selectedCollection == -1 ? "Vault Data" : `${vault.collections[selectedCollection].name} Collection Data`}
                     </VaultDetailData1Typography>
                     <Box sx={{mt:'20px',display:'flex'}}>
                     <Grid container spacing={2}>
                         {
-                            vaultStats.map((stat,index)=>{
+                            dataRows.map((row,index)=>{
                                 return(
                                     <Grid item xl={4} lgp={4} lg={4} md={4} smpad={4} sm={4} xs={6} key={index}>
                                         <Box sx={{
@@ -263,13 +256,19 @@ function VaultDetailPage(props:any) {
                                             alignItems:'center',
                                             gap: '15%'
                                         }}>
-                                            <VaultDetailLabelTypography>
-                                            {stat.name}
-                                            </VaultDetailLabelTypography>
-            
+                                            <Tooltip title={row.nameDescription} placement="top">
+                                                <VaultDetailLabelTypography>
+                                                {row.name}
+                                                </VaultDetailLabelTypography>
+                                            </Tooltip>
+
+                                            
                                             <VaultDetailData2Typography>
-                                            {stat.data}
+                                                {typeof(vault.data[row.dataName]) == 'object' ?
+                                                 `${vault.data[row.dataName]?.min}/${vault.data[row.dataName]?.average}/${vault.data[row.dataName]?.max} ${row.unit}` :
+                                                `${vault.data[row.dataName]} ${row.unit}`}
                                             </VaultDetailData2Typography>
+
                                         </Box>
                                     </Grid>
                                 )
@@ -281,7 +280,7 @@ function VaultDetailPage(props:any) {
 
                 <Box sx={{mt:"40px",display:'flex',flexDirection:'column'}}>
                     <VaultDetailData1Typography>
-                    {selectedCollection == -1 ? "All Loanded NFTs" : `${collections[selectedCollection].name} Loanded NFTs`}
+                    {selectedCollection == -1 ? "All Loanded NFTs" : `${vault.collections[selectedCollection].name} Loanded NFTs`}
                     </VaultDetailData1Typography>
                     <Box 
                     id="vaultDetailNFTBox"
