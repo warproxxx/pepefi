@@ -117,7 +117,7 @@ export const RangeSlider = styled(Slider)((props)  => sx({
         backgroundColor:"#939393",
         height: "1px"
     },
-    '& :nth-child(3), & :nth-child(7)':{
+    '& :nth-of-type(3), & :nth-of-type(7)':{
         width:'7px',
         height:'7px',
         borderRadius:'50%'
@@ -150,99 +150,31 @@ const vaultCardRows = [
         description: 'Total WETH tooltip description',
         unit: 'WETH'
     },
+]
+const vaultCardSliderRows = [
     {
         name:'LTV',
+        dataName: 'LTV',
         description: 'LTV tooltip description',
         unit:'%',
-        slider: {
-            value: [20, 92],
-            min: 0,
-            max: 100,
-            marks:[
-                {
-                    value:20,
-                    label:'20%',
-
-                },
-                {
-                    value:70,
-                    label:'70%'
-                },
-                {
-                    value:92,
-                    label:'92%'
-                },                      
-            ]
-        }
     },
     {
         name:'APR',
+        dataName: 'APR',
         description: 'APR tooltip description',
         unit:'%',
-        slider: {
-            value: [20, 60],
-            min: 10,
-            max: 70,
-            marks:[
-                {
-                    value:20,
-                    label:'20%',
-
-                },
-                {
-                    value:35,
-                    label:'35%'
-                },
-                {
-                    value:60,
-                    label:'60%'
-                },                      
-            ]
-        }
     },
     {
         name:'Duration',
+        dataName:'duration',
         description: 'Duration tooltip description',
-        unit:'%',
-        slider: {
-            value: [8, 60],
-            min: 0,
-            max: 90,
-            marks:[
-                {
-                    value:8,
-                    label:'8 days',
-
-                },
-                {
-                    value:30,
-                    label:'30 days'
-                },
-                {
-                    value:60,
-                    label:'60 days'
-                },                      
-            ]
-        }
+        unit:'day',
     },
 ]
 
-const collectionPicturesPath = [
-    "/static/images/vaults/collection1.png",
-    "/static/images/vaults/collection2.png", 
-    "/static/images/vaults/collection3.png",
-    "/static/images/vaults/collection4.png",
-]
-
 export const VaultCard = (props) => {
-    const plotData = props.data;
-    const mainColor = props.mainColor;
-    const vaultName = props.vaultName;
-    const volume = props.Volume;
-    const apr = props.apr;
-    const status = props.status;
+    const vault = props.vault;
     const router = useRouter();
-
 
     return(
         <Card sx={{ 
@@ -267,13 +199,13 @@ export const VaultCard = (props) => {
                     }}>
                         <CollectionPictureBox>
                             <CollectionPictureInnerBox>
-                                <Image src={collectionPicturesPath[0]} layout="responsive" height="100%" width="100%"></Image>
+                                <Image src={vault.data.imgSrc[0]} layout="responsive" height="100%" width="100%"></Image>
                             </CollectionPictureInnerBox>
                         </CollectionPictureBox>
 
                         <CollectionPictureBox>
                             <CollectionPictureInnerBox>
-                                <Image src={collectionPicturesPath[1]} layout="responsive" height="100%" width="100%"></Image>
+                                <Image src={vault.data.imgSrc[1]} layout="responsive" height="100%" width="100%"></Image>
                             </CollectionPictureInnerBox>
                         </CollectionPictureBox>
                     </Box>
@@ -283,69 +215,60 @@ export const VaultCard = (props) => {
                     }}>
                         <CollectionPictureBox>
                             <CollectionPictureInnerBox>
-                                <Image src={collectionPicturesPath[2]} layout="responsive" height="100%" width="100%"></Image>
+                                <Image src={vault.data.imgSrc[2]} layout="responsive" height="100%" width="100%"></Image>
                             </CollectionPictureInnerBox>
                         </CollectionPictureBox>
 
                         <CollectionPictureBox>
                             <CollectionPictureInnerBox>
-                                <Image src={collectionPicturesPath[3]} layout="responsive" height="100%" width="100%"></Image>
+                                <Image src={vault.data.imgSrc[3]} layout="responsive" height="100%" width="100%"></Image>
                             </CollectionPictureInnerBox>
                         </CollectionPictureBox>
                     </Box>
 
                 </Box>
-                <VaultsCardNameTypography maincolor={props.mainColor}>
-                {props.vaultName}
-                </VaultsCardNameTypography>
                 <Box sx={{my:"15px"}}>
+                    <Box sx={{display:'flex',justifyContent:'space-between',my:'7px'}}>
+                        <Box sx={{display:'flex'}}>
+                            <VaultsCardDataTypography>
+                                {vaultCardRows[0].name}:
+                            </VaultsCardDataTypography>
+                            <Box sx={{mx:'2px'}}></Box>
+                            <Box sx={{display:'flex',alignItems:'center',cursor:'pointer'}}>
+                                {questionMarkSvg(vaultCardRows[0].description)}
+                            </Box>
+
+                        </Box>
+                        <VaultsCardDataNumberTypography>
+                            {`${vault.data.totalWETH} ${vaultCardRows[0].unit}`}
+                        </VaultsCardDataNumberTypography>
+                    </Box>
                     {
-                        vaultCardRows.map((row,index)=>{
-                            if(row.slider){
-                                return(
-                                    <Box sx={{display:'flex',justifyContent:'space-between',my:'7px',alignItems: 'center'}} key={index}>
-                                        <Box sx={{display:'flex'}}>
-                                            <VaultsCardDataTypography>
-                                                {row.name}:
-                                            </VaultsCardDataTypography>
-                                            <Box sx={{mx:'2px'}}></Box>
-                                            <Box sx={{display:'flex',alignItems:'center',cursor:'pointer'}}>
-                                                {questionMarkSvg(row.description)}
-                                            </Box>
-
-                                        </Box>
-
-                                        <Box sx={{width:'70%'}}>
-                                            <RangeSlider
-                                                value={row.slider.value}
-                                                min={row.slider.min}
-                                                max={row.slider.max}
-                                                marks={row.slider.marks}
-                                            />  
+                        vaultCardSliderRows.map((row,index)=>{
+                            return(
+                                <Box sx={{display:'flex',justifyContent:'space-between',my:'7px',alignItems: 'center'}} key={index}>
+                                    <Box sx={{display:'flex'}}>
+                                        <VaultsCardDataTypography>
+                                            {row.name}:
+                                        </VaultsCardDataTypography>
+                                        <Box sx={{mx:'2px'}}></Box>
+                                        <Box sx={{display:'flex',alignItems:'center',cursor:'pointer'}}>
+                                            {questionMarkSvg(row.description)}
                                         </Box>
 
                                     </Box>
-                                )
-                            }
-                            else{
-                                return(
-                                    <Box sx={{display:'flex',justifyContent:'space-between',my:'7px'}} key={index}>
-                                        <Box sx={{display:'flex'}}>
-                                            <VaultsCardDataTypography>
-                                                {row.name}:
-                                            </VaultsCardDataTypography>
-                                            <Box sx={{mx:'2px'}}></Box>
-                                            <Box sx={{display:'flex',alignItems:'center',cursor:'pointer'}}>
-                                                {questionMarkSvg(row.description)}
-                                            </Box>
 
-                                        </Box>
-                                        <VaultsCardDataNumberTypography>
-                                            {`${5000} ${row.unit}`}
-                                        </VaultsCardDataNumberTypography>
+                                    <Box sx={{width:'70%'}}>
+                                        <RangeSlider
+                                            value={vault.data[row.dataName].range}
+                                            min={vault.data[row.dataName].min}
+                                            max={vault.data[row.dataName].max}
+                                            marks={vault.data[row.dataName].marks}
+                                        />  
                                     </Box>
-                                )
-                            }
+
+                                </Box>
+                            )
                         })
                     }
                 </Box>

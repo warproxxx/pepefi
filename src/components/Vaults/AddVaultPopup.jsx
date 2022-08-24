@@ -107,6 +107,7 @@ export const AddVaultPopup = (props) => {
             backdropFilter:"blur(30px)",
             borderRadius: "20px",
             alignItems: "center",
+            fontFamily:'DM Mono'
           }
         }}
         

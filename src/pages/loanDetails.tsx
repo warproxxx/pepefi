@@ -8,6 +8,10 @@ import {styled, experimental_sx as sx} from '@mui/system';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
+import { lendingNFT } from 'src/data/lendingNFT';
+
+
+
 export const LoanDetailBox = styled(Box)((props)  => sx({
   minHeight: "80vh",
   width: '100%'
@@ -74,29 +78,6 @@ export const LoanDetailBestVaultMenuItemDivier = styled(Divider)((props)  => sx(
   borderColor:'#26262D'
 }));
 
-const collections = [
-    {
-        name:'Bored Ape Yacht Club',
-        price:"25.67 WETH/+10.16%",
-        img: '/static/images/vaults/collection1.png'
-    },
-    {
-        name:'Otherdeed for Otherside',
-        price:"1.7 WETH/+5.16%",
-        img: '/static/images/vaults/collection2.png'
-    },
-    {
-        name:'Doodle',
-        price:"7.5 WETH/+3.16%",
-        img: '/static/images/vaults/collection3.png'
-    },
-    {
-        name:'Moonbirds',
-        price:"12.4 WETH/-5.16%",
-        img: '/static/images/vaults/collection4.png'
-    },
-]
-
 function LoanDetailPage(props:any) {
   const router = useRouter();
 
@@ -114,6 +95,8 @@ function LoanDetailPage(props:any) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const [selectedVaultIndex,setSelectedVaultIndex] = useState(0);
 
   return (
     <>
@@ -168,7 +151,7 @@ function LoanDetailPage(props:any) {
                   height:'100%',
                   overflow: 'clip'
                 }}>
-                  <Image src="/static/images/loans/NFT1.png" layout="responsive" height="100%" width="100%"/>
+                  <Image src={lendingNFT.imgSrc} layout="responsive" height="100%" width="100%"/>
                 </Box>
 
               </Box>
@@ -187,10 +170,10 @@ function LoanDetailPage(props:any) {
                     NFT Information
                   </LoanDetailLabelTypography>
                   <LoanDetailData1Typography>
-                    Doodle #2799
+                    {lendingNFT.name}
                   </LoanDetailData1Typography>
                   <LoanDetailNFTNameTypography>
-                    Doodle
+                    {lendingNFT.name}
                   </LoanDetailNFTNameTypography>
                 </Box>
 
@@ -203,7 +186,7 @@ function LoanDetailPage(props:any) {
                     NFT Valuation
                   </LoanDetailLabelTypography>
                   <LoanDetailData1Typography>
-                    9.602 WETH
+                    {lendingNFT.valuation} WETH
                   </LoanDetailData1Typography>
                 </Box>
 
@@ -216,10 +199,8 @@ function LoanDetailPage(props:any) {
                     Loan Amount
                   </LoanDetailLabelTypography>
                   <Box sx={{mt:'40px'}}>
-                  <Slider min={1} max={2} valueLabelFormat={value=><div>{`${value} WETH`}</div>} step={0.001} valueLabelDisplay="on" value={loanAmount} onChange={handleChange} />
+                  <Slider min={lendingNFT.loanAmountMin} max={lendingNFT.loanAmountMax} valueLabelFormat={value=><div>{`${value} WETH`}</div>} step={lendingNFT.loanAmountSliderStep} valueLabelDisplay="on" value={loanAmount} onChange={handleChange} />
                   </Box>
-
-
                 </Box>
 
 
@@ -249,7 +230,7 @@ function LoanDetailPage(props:any) {
                       boxShadow: "inset 0 0 20px 0px #121218"
                     }
                   }}>
-                    {`Goblin Sax Vault (10% APR / 30 days)`}
+                    {lendingNFT.avaliableVaultsStrs[selectedVaultIndex]}
                     <Box sx={{justifySelf:'flex-end',marginLeft:'auto',height:'30px',width:'30px',marginRight:'20px'}}>
                       <Image src="/static/images/icons/triangle-down.svg" layout="responsive" height="30px" width="30px"/>
                     </Box>
@@ -279,13 +260,16 @@ function LoanDetailPage(props:any) {
                     }}
 
                   >
-                    <LoanDetailBestVaultMenuItem onClick={handleClose}>{`Goblin Sax Vault (10% APR / 30 days)`}</LoanDetailBestVaultMenuItem>
-                    <LoanDetailBestVaultMenuItemDivier />
-                    <LoanDetailBestVaultMenuItem onClick={handleClose}>{`Vault Number 1 (11% APR / 30 days)`}</LoanDetailBestVaultMenuItem>
-                    <LoanDetailBestVaultMenuItemDivier />
-                    <LoanDetailBestVaultMenuItem onClick={handleClose}>{`Vault Number 2 (12% APR / 30 days)`}</LoanDetailBestVaultMenuItem>
-                    <LoanDetailBestVaultMenuItemDivier />
-                    <LoanDetailBestVaultMenuItem onClick={handleClose}>{`Vault Number 3 (13% APR / 30 days)`}</LoanDetailBestVaultMenuItem>
+                     {
+                      lendingNFT.avaliableVaultsStrs.map((vault,index)=>{
+                        return(
+                          <Box key={index}>
+                            <LoanDetailBestVaultMenuItem onClick={()=>{handleClose();setSelectedVaultIndex(index)}}>{vault}</LoanDetailBestVaultMenuItem>
+                            <LoanDetailBestVaultMenuItemDivier />
+                          </Box>
+                        )
+                      })
+                     }
                   </Menu>
 
                 </Box>
@@ -302,7 +286,16 @@ function LoanDetailPage(props:any) {
                       Repayment
                     </LoanDetailLabelTypography>
                     <LoanDetailData1Typography>
-                      1.02 WEth
+                      {lendingNFT.repayment} WEth
+                    </LoanDetailData1Typography>
+                  </Box>
+
+                  <Box>
+                    <LoanDetailLabelTypography>
+                      Duration
+                    </LoanDetailLabelTypography>
+                    <LoanDetailData1Typography>
+                      {lendingNFT.duration} Days
                     </LoanDetailData1Typography>
                   </Box>
 
@@ -311,17 +304,7 @@ function LoanDetailPage(props:any) {
                       Repayment Date
                     </LoanDetailLabelTypography>
                     <LoanDetailData1Typography>
-                      09/21/2022
-                    </LoanDetailData1Typography>
-                  </Box>
-
-
-                  <Box>
-                    <LoanDetailLabelTypography>
-                      Duration
-                    </LoanDetailLabelTypography>
-                    <LoanDetailData1Typography>
-                      30 Days
+                      {lendingNFT.repaymentDate}
                     </LoanDetailData1Typography>
                   </Box>
 

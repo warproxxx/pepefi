@@ -9,9 +9,7 @@ import { VaultDetailsPopup } from "src/components/Vaults/VaultDetailsPopup";
 import {styled, experimental_sx as sx} from '@mui/system';
 import Image from 'next/image';
 
-import { ethers } from "ethers";
-import Web3Modal from "web3modal";
-
+import { vaults } from 'src/data/vaults';
 
 export const VaultsBox = styled(Box)((props)  => sx({
   minHeight: "80vh",
@@ -50,12 +48,15 @@ function VaultsPage(props:any) {
       >
         <VaultsBox sx={{maxWidth:'1400px',position:'relative'}}>
           <Grid container spacing={8}>
-            <Grid item xl={4} lgp={4} lg={4} md={4} smpad={4} sm={6} xs={12} >
-              <VaultCard vaultName={"Goblin Sax Vault"} mainColor={"white"} volume={7000} apr={5} status={'active'} data={[5000,6000,6500,7000]} /*handleVaultDetailPopupClickOpen={handleVaultDetailPopupClickOpen}*//>
-            </Grid>
-            <Grid item xl={4} lgp={4} lg={4} md={4} smpad={4} sm={6} xs={12} >
-              <VaultCard vaultName={"Goblin Sax Vault"} mainColor={"white"} volume={7000} apr={5} status={'active'} data={[5000,6000,6500,7000]} /*handleVaultDetailPopupClickOpen={handleVaultDetailPopupClickOpen}*//>
-            </Grid>
+            {
+              vaults.map((vault,index)=>{
+                return(
+                  <Grid item xl={4} lg={4} md={4} sm={6} xs={12} key={index}>
+                    <VaultCard vault={vault}/>
+                  </Grid>
+                )
+              })
+            }
 
           </Grid>
 
