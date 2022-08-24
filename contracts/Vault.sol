@@ -131,7 +131,7 @@ contract Vault is ERC1155, ReentrancyGuard{
 
         // IERC721(NFTFI_TOKEN).transferFrom(msg.sender, address(this), loan.smartNftId); //Transfer the NFT to our wallet. Commenting out is as it messes the flow of test unless repaid too
 
-        (uint256 loanPrincipalAmount, uint256 maximumRepaymentAmount, uint256 nftCollateralId, address loanERC20Denomination, uint32 loanDuration, uint16 loanInterestRateForDurationInBasisPoints, uint16 loanAdminFeeInBasisPoints, address nftCollateralWrapper, uint64 loanStartTime, address nftCollateralContract, address borrower) = IDirectLoanBase(NFTFI_CONTRACT).loanIdToLoan(loanId);
+        (uint256 loanPrincipalAmount, uint256 maximumRepaymentAmount, , address loanERC20Denomination, uint32 loanDuration, uint16 loanInterestRateForDurationInBasisPoints, , , uint64 loanStartTime, address nftCollateralContract, ) = IDirectLoanBase(NFTFI_CONTRACT).loanIdToLoan(loanId);
         
         require(loanERC20Denomination == 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2, "The Loan must be in WETH");
 
@@ -179,11 +179,11 @@ contract Vault is ERC1155, ReentrancyGuard{
     }
 
     function takeERC721Loan() public nonReentrant checkExpired{
-
+        
     }
 
     function sellLiquidations() public nonReentrant {
-
+        
     }
 
 
