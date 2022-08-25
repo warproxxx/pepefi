@@ -106,12 +106,12 @@ describe('Contract tests', () => {
         expect(loanDetails.loanType).to.equal(0);
         expect(loanDetails.loanPrincipalAmount).to.equal('1000000000000000000');
 
-        console.log(await vault.getWETHBalance()) //run test on this here as there is active loan on + equity
+        expect(await vault.getWETHBalance()).to.equal("2000000000000000010") //run test on this here as there is active loan on + equity
 
         await WETH_CONTRACT.approve(vault.address, ethers.constants.MaxUint256);
         await vault.repayLoan(loans[0], 0)
 
-        console.log(console.log(await vault.getWETHBalance()) )
+        expect((await vault.getWETHBalance()/10**18).toFixed(4)).to.be.oneOf(['2.0031', '2.0032', '2.0033']);
 
     })
 

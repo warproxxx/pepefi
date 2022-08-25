@@ -117,7 +117,7 @@ contract Vault is ERC1155, ReentrancyGuard{
 
         //this loop thru active loans and liquidated assets. 2 birds 1 stone.
         for (uint i=0; i<all_loans.length; i++) {
-            loanDetails memory details = _loans[i];
+            loanDetails memory details = _loans[all_loans[i]];
             
             uint256 oraclePrice = IPepeFiOracle(ORACLE_CONTRACT).getPrice(details.collateral);
 
@@ -127,6 +127,7 @@ contract Vault is ERC1155, ReentrancyGuard{
                 loanBalance = loanBalance + details.loanPrincipalAmount;
             }
         }
+
 
         return wethBalance + loanBalance;
     }
