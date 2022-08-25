@@ -22,7 +22,7 @@ contract Vault is ERC1155, ReentrancyGuard{
     address public NFTFI_COORDINATOR;
 
     address public NFTFI_TOKEN;
-    address public SUDOSWAP_CONTRACT;
+    address public ORACLE_CONTRACT;
 
     address public VAULT_MANAGER;
     address public VAULT_CREATOR;
@@ -88,12 +88,12 @@ contract Vault is ERC1155, ReentrancyGuard{
     }
 
     function setContracts() public {
-        (address _WETH, address _NFTFI_CONTRACT, address _NFTFI_COORDINATOR, address _NFTFI_TOKEN, address _SUDOSWAP_CONTRACT) = IVaultManager(VAULT_MANAGER).getContractAddresses();
+        (address _WETH, address _NFTFI_CONTRACT, address _NFTFI_COORDINATOR, address _NFTFI_TOKEN, address _ORACLE_CONTRACT) = IVaultManager(VAULT_MANAGER).getContractAddresses();
         WETH = _WETH;
         NFTFI_CONTRACT = _NFTFI_CONTRACT;
         NFTFI_COORDINATOR = _NFTFI_COORDINATOR;
         NFTFI_TOKEN = _NFTFI_TOKEN;
-        SUDOSWAP_CONTRACT = _SUDOSWAP_CONTRACT;
+        ORACLE_CONTRACT = _ORACLE_CONTRACT;
     }
 
     function getAllLoans() public view returns (uint256[] memory){
@@ -124,15 +124,15 @@ contract Vault is ERC1155, ReentrancyGuard{
         totalSupply = totalSupply + shares;
     }
 
-    function takePNNFILoan(uint32 loanId) public nonReentrant checkExpired returns (uint256) {
+    function takePNNFILoan(uint32 _loanId, uint256 _loanAmount, uint256 _repaymentDate) public nonReentrant checkExpired returns (uint256) {
         //make this an array so multiple loans at once?
 
-        IDirectLoanCoordinator.Loan memory loan = IDirectLoanCoordinator(NFTFI_COORDINATOR).getLoanData(loanId);
+        IDirectLoanCoordinator.Loan memory loan = IDirectLoanCoordinator(NFTFI_COORDINATOR).getLoanData(_loanId);
         require(loan.status == IDirectLoanCoordinator.StatusType.NEW, "It needs to be an active loan");
 
-        // IERC721(NFTFI_TOKEN).transferFrom(msg.sender, address(this), loan.smartNftId); //Transfer the NFT to our wallet. Commenting out is as it messes the flow of test unless repaid too
+        IERC721(NFTFI_TOKEN).transferFrom(msg.sender, address(this), loan.smartNftId); //Transfer the NFT to our wallet. 
 
-        (uint256 loanPrincipalAmount, uint256 maximumRepaymentAmount, , address loanERC20Denomination, uint32 loanDuration, uint16 loanInterestRateForDurationInBasisPoints, , , uint64 loanStartTime, address nftCollateralContract, ) = IDirectLoanBase(NFTFI_CONTRACT).loanIdToLoan(loanId);
+        (uint256 loanPrincipalAmount, uint256 maximumRepaymentAmount, , address loanERC20Denomination, uint32 loanDuration, uint16 loanInterestRateForDurationInBasisPoints, , , uint64 loanStartTime, address nftCollateralContract, ) = IDirectLoanBase(NFTFI_CONTRACT).loanIdToLoan(_loanId);
         
         require(loanERC20Denomination == 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2, "The Loan must be in WETH");
 
@@ -148,13 +148,19 @@ contract Vault is ERC1155, ReentrancyGuard{
 
         require(details.ltv != 0, "Collection not in whitelist");
 
+        uint256 loanPrincipal = Math.min(_loanAmount, details.ltv * IPepeFiOracle(ORACLE_CONTRACT).getPrice(details.collection));
+        uint256 loanExpirty = Math.min(Math.min(loanStartTime + loanDuration,  expirityDate), _repaymentDate);
+
+        require(loanExpirty > block.timestamp, "Loans can only expire in future");
+
+        uint256 repaymentAmount = (((loanExpirty-block.timestamp)/3153600000) * details.apr * loanPrincipal) + loanPrincipal;
 
         _loans[_nextId+1] = loanDetails({
                 timestamp: block.timestamp,
-                expirity: Math.min(loanStartTime + loanDuration,  expirityDate),
+                expirity: loanExpirty,
                 loanType: 0,
-                loanPrincipalAmount: loanPrincipalAmount, //just testing. this should be based on ltv
-                repaymentAmount: maximumRepaymentAmount //this should be based on our APR
+                loanPrincipalAmount: loanPrincipal, 
+                repaymentAmount: repaymentAmount //this should be based on our APR
             });
 
 
@@ -166,17 +172,20 @@ contract Vault is ERC1155, ReentrancyGuard{
         return _nextId;
     }
 
-    function repayLoan(uint32 loanId) public nonReentrant {
+    function repayLoan(uint32 _loanId) public nonReentrant {
         //make this an array so multiple loans at once?
 
-        loanDetails storage curr_loan = _loans[loanId];
+        loanDetails storage curr_loan = _loans[_loanId];
 
 
         (bool success, bytes memory data) = WETH.call(abi.encodeWithSelector(0x23b872dd, msg.sender, address(this), curr_loan.repaymentAmount));
         require(success, "Cannot transfer WETH");
 
-        delete _loans[loanId];
-        _burn(msg.sender, loanId, 1);
+        IDirectLoanCoordinator.Loan memory loan = IDirectLoanCoordinator(NFTFI_COORDINATOR).getLoanData(_loanId);
+        IERC721(NFTFI_TOKEN).transferFrom(msg.sender, address(this), loan.smartNftId); //Transfer the NFT from our wallet to user
+
+        delete _loans[_loanId];
+        _burn(msg.sender, _loanId, 1);
     }
 
     function takeERC721Loan() public nonReentrant checkExpired{
