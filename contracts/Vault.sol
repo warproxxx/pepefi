@@ -128,7 +128,7 @@ contract Vault is ERC1155, ReentrancyGuard{
             }
         }
 
-        return wethBalance;
+        return wethBalance + loanBalance;
     }
 
     function addLiquidity(uint256 _amount)  public nonReentrant checkExpired {
@@ -178,6 +178,12 @@ contract Vault is ERC1155, ReentrancyGuard{
        
         require(loanExpirty > block.timestamp, "Loans can only expire in future");
 
+        require(IERC20(WETH).balanceOf(address(this)) >= loanPrincipal, "Not enough WETH balance");
+
+        (bool success, ) = WETH.call(abi.encodeWithSelector(0x23b872dd, address(this), msg.sender, loanPrincipal));
+        require(success, "Cannot transfer WETH");
+
+
         uint256 repaymentAmount = (((loanExpirty-block.timestamp) * details.apr * loanPrincipal))/31536000000 + loanPrincipal;
         _loans[_nextId+1] = loanDetails({
                 timestamp: block.timestamp,
@@ -192,6 +198,7 @@ contract Vault is ERC1155, ReentrancyGuard{
 
 
         all_loans.push(_nextId+1);
+
 
         _mint(msg.sender, _nextId+1, 1, "");
         _nextId++;

@@ -63,7 +63,10 @@ describe('Contract tests', () => {
         expect(parseInt(await WETH_CONTRACT.balanceOf(vault.address))).to.greaterThanOrEqual(parseInt(amt));
     })
     
-    it("Take and Repay Loan", async function () {
+    it("Take and Repay Loan and verify liquidity addition", async function () {
+        //first add ETH to liquidity pool
+        await vault.addLiquidity((2*10**18).toString());
+
         let IMPERSO = '0xC6a6f43d5D52C855EBE1f825C717937A7b901732'
 
         await hre.network.provider.request({
@@ -103,12 +106,13 @@ describe('Contract tests', () => {
         expect(loanDetails.loanType).to.equal(0);
         expect(loanDetails.loanPrincipalAmount).to.equal('1000000000000000000');
 
+        console.log(await vault.getWETHBalance()) //run test on this here as there is active loan on + equity
+
         await WETH_CONTRACT.approve(vault.address, ethers.constants.MaxUint256);
         await vault.repayLoan(loans[0], 0)
 
+        console.log(console.log(await vault.getWETHBalance()) )
+
     })
 
-    it("Correct Liquidity addition", async function () {
-        
-    })
 })
