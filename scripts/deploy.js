@@ -59,9 +59,9 @@ async function perform_whale_transfer() {
             });
         }
 
-        if (weth_balance > 1){
+        if (weth_balance > 10){
 
-            await WETH_CONTRACT.transfer(addy, (BigInt(1)*BigInt(10**18)).toString(), {
+            await WETH_CONTRACT.transfer(addy, (BigInt(10)*BigInt(10**18)).toString(), {
                 from: contracts['WETH'],
             });
         }

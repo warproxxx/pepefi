@@ -21,11 +21,11 @@ describe('Contract tests', () => {
         await vm.deployed();  
 
         const Vault = await ethers.getContractFactory("Vault");
-        vault = await Vault.deploy('Test Vault', vm.address, 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], [4500, 4500, 4500, 4500], true)
+        vault = await Vault.deploy('Test Vault', vm.address, 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], [450, 450, 450, 450], true)
         await vault.deployed();  
 
         //now set prices for testing
-
+        await or.updatePrices(['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], ['76000000000000000000', '6000000000000000000', '3000000000000000000', '74000000000000000000'])
 
     })
 
@@ -36,6 +36,16 @@ describe('Contract tests', () => {
 
         let weth_balance = await WETH_CONTRACT.balanceOf(owner.address)
         expect(weth_balance / 10**18 ).to.greaterThan(0.1)
+    })
+
+    it("Verify Oracle Price", async function () {
+        //also this
+
+        expect((await or.getPrice('0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d'))/10**18).to.equal(76)
+        expect((await or.getPrice('0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b'))/10**18).to.equal(6)
+        expect((await or.getPrice('0x42069abfe407c60cf4ae4112bedead391dba1cdb'))/10**18).to.equal(3)
+        expect((await or.getPrice('0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'))/10**18).to.equal(74)
+
     })
 
     it("Deploying vault", async function (){
@@ -77,17 +87,24 @@ describe('Contract tests', () => {
 
         //converting ID
         let loan = await NFT_CONTRACT.loans(NOTE)
-
         let TEST_CONTRACT = await ethers.getContractAt(ERC721_ABI, NFTFI_NOTE, owner);
 
         //approve contract to spend this nft
-        // await TEST_CONTRACT.approve(vault.address, loan['loanId'])
-        await vault.takePNNFILoan(loan['loanId']);
+        await TEST_CONTRACT.approve(vault.address, NOTE)
+        await vault.takePNNFILoan(loan['loanId'], '1000000000000000000', '1661438551'); //past time works as we are using old fork
 
         let loans = await vault.getAllLoans()
         expect(loans.length).to.greaterThanOrEqual(1)
 
+        let loanDetails = await vault.getLoanDetails(loans[0])
+        console.log(loanDetails)
+
+        //allow spending weth
+        await WETH_CONTRACT.approve(vault.address, ethers.constants.MaxUint256);
+
         console.log(loans[0])
+        //need nft id here
+        await vault.repayLoan(loans[0])
 
     })
 })

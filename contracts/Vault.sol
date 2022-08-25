@@ -100,6 +100,10 @@ contract Vault is ERC1155, ReentrancyGuard{
         return all_loans;
     }
 
+    function getLoanDetails(uint256 _loanId) public view returns (loanDetails memory){
+        return _loans[_loanId];
+    }
+
     function getWETHBalance() public returns (uint256) {
         //need to add expectation of current loans too
         return IERC20(WETH).balanceOf(address(this));
@@ -150,17 +154,23 @@ contract Vault is ERC1155, ReentrancyGuard{
 
         uint256 loanPrincipal = Math.min(_loanAmount, details.ltv * IPepeFiOracle(ORACLE_CONTRACT).getPrice(details.collection));
         uint256 loanExpirty = Math.min(Math.min(loanStartTime + loanDuration,  expirityDate), _repaymentDate);
-
+       
         require(loanExpirty > block.timestamp, "Loans can only expire in future");
+        console.log(loanPrincipal);
 
-        uint256 repaymentAmount = (((loanExpirty-block.timestamp)/3153600000) * details.apr * loanPrincipal) + loanPrincipal;
+        console.log((loanExpirty-block.timestamp) );
+        console.log(details.apr);
+
+        uint256 repaymentAmount = (((loanExpirty-block.timestamp) * details.apr * loanPrincipal))/31536000000 + loanPrincipal;
+        console.log("Repayment");
+        console.log(repaymentAmount);
 
         _loans[_nextId+1] = loanDetails({
                 timestamp: block.timestamp,
                 expirity: loanExpirty,
                 loanType: 0,
                 loanPrincipalAmount: loanPrincipal, 
-                repaymentAmount: repaymentAmount //this should be based on our APR
+                repaymentAmount: repaymentAmount
             });
 
 
@@ -192,7 +202,7 @@ contract Vault is ERC1155, ReentrancyGuard{
 
     }
 
-    function sellLiquidations() public nonReentrant {
+    function sellLiquidations(uint32 _loanId) public nonReentrant {
 
     }
 
