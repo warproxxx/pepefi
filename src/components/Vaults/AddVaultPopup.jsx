@@ -14,9 +14,17 @@ import {
   InputAdornment,
   Slide,
   Checkbox,
-  Tooltip
+  Tooltip,
+  Divider
 } from "@mui/material";
+
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+
 import { styled, experimental_sx as sx } from '@mui/system';
+
+import {truncateAddress} from '../../utils/helpers'
 
 
   const steps = [
@@ -27,7 +35,7 @@ import { styled, experimental_sx as sx } from '@mui/system';
   
   const inputs = [
     "Vault Name",
-    "Provider Address",
+    "Vault Manager Address",
     "Initial Vault Deposit",
     "Imbalance Threshold",
     "Imbalance Ratio"
@@ -55,11 +63,33 @@ import { styled, experimental_sx as sx } from '@mui/system';
     },
   }));
 
-
+const defaultCollectionDetails = {
+  collectionAddress: '',
+  collectionLTV: '5',
+  collectionAPR: '3'
+}
 
 export const AddVaultPopup = (props) => {
     
     const [activeStep, setActiveStep] = useState(0);
+    
+    
+    const [showAddCollection, setShowAddcollection] = useState(false);
+    const [collectionDetail,setCollectionDetail] = useState(defaultCollectionDetails)
+    const [collections,setCollections] = useState([]);
+
+    const handleSetCollectionDetail = (prop) => (event) => {
+      setCollectionDetail({ ...collectionDetail, [prop]: event.target.value});
+    };
+
+    const handleAddCollection = () =>{
+      setCollections([...collections,collectionDetail])
+    }
+
+    const [datePickerVaule, setDatePickerValue] = useState(new Date());
+    const handleDatePickerValueChange = (value) => {
+      setDatePickerValue(value);
+    }
 
     const handleNext = () => {
       if(activeStep==2)
@@ -75,7 +105,7 @@ export const AddVaultPopup = (props) => {
 
     const [values, setValues] = useState({
       vaultName: '',
-      providerAddress: '',
+      vaultManagerAddress: '',
       fundSize: '0',
       riskTolerance: '5',
       vigorish: '3',
@@ -122,9 +152,6 @@ export const AddVaultPopup = (props) => {
               '& .MuiStepLabel-label.Mui-active':{
                 color:'#5dc961'
               },
-              // '& .MuiStepConnector-alternativeLabel.Mui-active span':{
-              //   borderColor:'#5dc961'
-              // }
             }}>
               {steps.map((label) => (
                 <Step key={label}>
@@ -134,8 +161,6 @@ export const AddVaultPopup = (props) => {
             </Stepper>
           </Box>
           <Box sx={{
-            // background: "#1B1B21",
-            // boxShadow: "0px 5px 2px 1px rgba(0, 0, 0, 0.25)",
             backgroundColor: '#00000000',
             borderRadius: "8px",
             paddingX: '20px',
@@ -159,7 +184,6 @@ export const AddVaultPopup = (props) => {
                   margin="normal"
                   value={values.vaultName}
                   onChange={handleChange('vaultName')}
-                  color="secondary"
                 />
                 <AddVaultPopupQuestionTextField
                   label={inputs[1]}
@@ -168,19 +192,16 @@ export const AddVaultPopup = (props) => {
                   value={values.providerAddress}
                   onChange={handleChange('providerAddress')}
                   placeholder="0x000...000"
-                  helperText="Ethereum address that will provide odds"
-                  color="secondary"
                 />
               <AddVaultPopupQuestionTextField
                   label={inputs[2]}
                   variant="filled"
                   margin="normal"
                   InputProps={{
-                    endAdornment: <InputAdornment position="end">DAI</InputAdornment>,
+                    endAdornment: <InputAdornment position="end">WETH</InputAdornment>,
                   }}
                   value={values.fundSize}
                   onChange={handleChange('fundSize')}
-                  color="secondary"
               />
               </Box>            
               : 
@@ -193,57 +214,142 @@ export const AddVaultPopup = (props) => {
                 display: 'flex',
                 flexDirection: 'column'
               }}>
-              <Tooltip title={"This is  % of total liquidity betted in a single outcome after which the inbalance ratio check and limit will kick off."} 
-              arrow 
-              disableFocusListener 
-              disableTouchListener 
-              enterDelay={700}
-              placement="top">
-              <AddVaultPopupQuestionTextField
-                    label={inputs[3]}
-                    variant="filled"
-                    margin="normal"
-                    InputProps={{
-                      endAdornment: <InputAdornment position="end">%</InputAdornment>,
-                      inputMode: 'numeric', 
-                      pattern: '[0-9]*' 
+                <Typography variant="h5">NFT Collections</Typography>
+                <Box sx={{mb:'20px'}}>
+                  {
+                    collections.map((collection,index)=>{
+                      return(
+                        <Box sx={{"background":"#1B1B21","boxShadow":"0px 5px 2px 1px rgba(0, 0, 0, 0.25)","borderRadius":"8px",px:'10px',py:'5px',mt:'10px'}} key={index}>
+                          <Typography >
+                            {`${index+1}: ${truncateAddress(collection.collectionAddress)}, ${collection.collectionLTV}% LTV, ${collection.collectionAPR}% APR`}
+                          </Typography>
+                        </Box>
+
+                      )
+                    })
+                  }
+                </Box>
+
+                {showAddCollection ?
+                <Box sx={{"background":"#ffffff0a","boxShadow":"0px 5px 2px 1px rgb(0 0 0 / 25%)","borderRadius":"8px","py":"10px",mb:'20px',px:'20px'}}>
+                  <Typography>New Collection</Typography>
+                  <Tooltip title={"Ethereum contract address for the collection"} 
+                    arrow 
+                    disableFocusListener 
+                    disableTouchListener 
+                    enterDelay={700}
+                    placement="top">
+                    <AddVaultPopupQuestionTextField
+                        label={"collection address"}
+                        variant="filled"
+                        margin="normal"
+                        fullWidth
+                        placeholder="0x000...000"
+                        value={collectionDetail.collectionAddress}
+                        onChange={handleSetCollectionDetail('collectionAddress')}
+                      />
+                    </Tooltip>
+                    <Tooltip title={"Collection LTV"} 
+                      arrow 
+                      disableFocusListener 
+                      fullWidth
+                      disableTouchListener 
+                      enterDelay={700}
+                      placement="top">
+                      <AddVaultPopupQuestionTextField
+                          label={"collection LTV"}
+                          variant="filled"
+                          margin="normal"
+                          placeholder="5"
+                          InputProps={{
+                            endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                          }}
+                          value={collectionDetail.collectionLTV}
+                          onChange={handleSetCollectionDetail('collectionLTV')}
+                        />
+                      </Tooltip>
+                        <Tooltip title={"collection APR"} 
+                        arrow 
+                        disableFocusListener 
+                        fullWidth
+                        disableTouchListener 
+                        enterDelay={700}
+                        placement="top">
+                        <AddVaultPopupQuestionTextField
+                            label={"collection APR"}
+                            variant="filled"
+                            margin="normal"
+                            placeholder="5"
+                            InputProps={{
+                              endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                            }}
+                            value={collectionDetail.collectionAPR}
+                            onChange={handleSetCollectionDetail('collectionAPR')}
+                          />
+                        </Tooltip>
+                  <Box sx={{display:'flex',justifyContent:'center',marginTop:'10px'}}>
+                  <Button 
+                    onClick={()=>{
+                      setShowAddcollection(false);setCollectionDetail(defaultCollectionDetails)
                     }}
-                    value={values.riskTolerance}
-                    onChange={handleChange('riskTolerance')}
-                    InputLabelProps={{
-                      sx:{
-                        display:'flex !important',
-                        '&::after':{
-                            content: `"?"`,
-                            color: 'black',
-                            justifySelf:'flex-end'
-                        }
+                    sx={{
+                      color:'white',
+                      padding:'0px',
+                      '&:hover':{
+                        'backgroundColor':'transparent',
+                        color:'#5dc961'
+
                       }
+                    }}>Cancel</Button>
+                    <Button 
+                    onClick={()=>{
+                      handleAddCollection();setShowAddcollection(false);setCollectionDetail(defaultCollectionDetails)
                     }}
-                  />
-              </Tooltip>
+                    sx={{
+                      color:'white',
+                      padding:'0px',
+                      '&:hover':{
+                        'backgroundColor':'transparent',
+                        color:'#5dc961'
 
-              <Tooltip title={"If the imbalance threshold has been met and one outcome gets n% of the bets, stop taking bet in that outcome, where is the number selected."} 
-              arrow 
-              disableFocusListener 
-              disableTouchListener 
-              enterDelay={700}
-              placement="top">
-              <AddVaultPopupQuestionTextField
-                  label={inputs[4]}
-                  variant="filled"
-                  margin="normal"
-                  InputProps={{
-                    endAdornment: <InputAdornment position="end">%</InputAdornment>,
-                    inputMode: 'numeric', 
-                    pattern: '[0-9]*' 
-                  }}
-                  value={values.vigorish}
-                  onChange={handleChange('vigorish')}
-                />
-              </Tooltip>
+                      }
+                    }}>Add</Button>
+                  </Box>
+
+                </Box> 
+                : 
+                void(0)
+                }
 
 
+
+                <Box sx={{display:'flex',justifyContent:'space-between',mb:'8px',alignItems:'center'}}>
+                  <Typography sx={{textDecoration: 'underline',cursor:'pointer'}} onClick={()=>(setShowAddcollection(true))}>Add One Collection</Typography>
+                </Box>
+                
+                <Typography variant="h5" sx={{mt:'50px'}}>Misc.</Typography>
+                <Box sx={{display:'flex',justifyContent:'space-between',mt:'0px',mb:'0px',alignItems:'center'}}>
+                  <Typography>Vault Expired Date</Typography>
+                  <Box sx={{
+                    width:'40%',
+                    "& .MuiSvgIcon-root":{
+                      color:'#5dc961'
+                    }
+                  }}>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DesktopDatePicker
+                          inputFormat="MM/dd/yyyy"
+                          value={datePickerVaule}
+                          onChange={(handleDatePickerValueChange)}
+                          renderInput={(params) => <TextField {...params} />}
+
+                        />
+                    </LocalizationProvider>
+                  </Box>
+
+
+
+                </Box>
 
                 <Box sx={{display:'flex',justifyContent:'space-between',mt:'16px',mb:'8px',alignItems:'center'}}>
                   <Typography>Allow external LP?</Typography>
