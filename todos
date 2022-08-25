@@ -1,6 +1,3 @@
-Fix the weth amount at given time.
-
-
 Then sell liquidation
 Finally takeERC721Loan 
 

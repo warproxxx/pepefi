@@ -98,16 +98,17 @@ describe('Contract tests', () => {
 
         let loanDetails = await vault.getLoanDetails(loans[0])
 
-        expect((loanDetails.repaymentAmount/10**18).toFixed(4).toString()).to.equal('1.0032');
+        expect((loanDetails.repaymentAmount/10**18).toFixed(4)).to.be.oneOf(['1.0031', '1.0032', '1.0033']);
         expect(loanDetails.expirity).to.equal(1661438551);
         expect(loanDetails.loanType).to.equal(0);
         expect(loanDetails.loanPrincipalAmount).to.equal('1000000000000000000');
 
-        //allow spending weth
         await WETH_CONTRACT.approve(vault.address, ethers.constants.MaxUint256);
-        //need nft id here
-
         await vault.repayLoan(loans[0], 0)
 
+    })
+
+    it("Correct Liquidity addition", async function () {
+        
     })
 })

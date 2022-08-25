@@ -113,12 +113,25 @@ contract Vault is ERC1155, ReentrancyGuard{
     function getWETHBalance() public view returns (uint256) {
         uint256 wethBalance = IERC20(WETH).balanceOf(address(this));
 
-        //now loop thru active loans
+        uint256 loanBalance = 0;
+
+        //this loop thru active loans and liquidated assets. 2 birds 1 stone.
+        for (uint i=0; i<all_loans.length; i++) {
+            loanDetails memory details = _loans[i];
+            
+            uint256 oraclePrice = IPepeFiOracle(ORACLE_CONTRACT).getPrice(details.collateral);
+
+            if (oraclePrice < details.repaymentAmount){
+                loanBalance = loanBalance + oraclePrice;
+            } else {
+                loanBalance = loanBalance + details.loanPrincipalAmount;
+            }
+        }
+
         return wethBalance;
     }
 
     function addLiquidity(uint256 _amount)  public nonReentrant checkExpired {
-
         uint256 shares = 0;
 
         if (totalSupply > 0) {
@@ -211,6 +224,12 @@ contract Vault is ERC1155, ReentrancyGuard{
         loanDetails storage curr_loan = _loans[_loanId];
         require(all_loans[_loanIndex] == _loanId, "Data modified");
         require(curr_loan.expirity < block.timestamp, "Loan must expire");
+        
+        //selling logic here
+
+        delete _loans[_loanId];
+        delete all_loans[_loanIndex];
+        _burn(msg.sender, _loanId, 1);
 
     }
 
