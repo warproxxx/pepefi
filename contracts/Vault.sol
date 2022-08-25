@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/utils/math/Math.sol";
 import "./interfaces/IERC20.sol";
 import "./interfaces/IDirectLoanBase.sol";
 import "./interfaces/IVaultManager.sol";
+import "./interfaces/IPepeFiOracle.sol";
 import "./interfaces/IDirectLoanCoordinator.sol";
 
 

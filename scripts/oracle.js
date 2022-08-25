@@ -10,7 +10,7 @@ async function deployOracle(admin){
 //calling 0xb7f7f6c52f2e2fdb1963eab30438024864c313f6 cryptpunks and not wrapped-cryptopunks is a feature not a bug. Also this should be updated for more collection. Opensea has an endpoint which provides slug in response to collection X id
 let slug_dict = {'0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d': 'boredapeyachtclub', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b': 'clonex', '0x42069abfe407c60cf4ae4112bedead391dba1cdb': 'cryptodickbutts-s3', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6': 'cryptopunks'}
 
-async function updateOnce(contracts = ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6']){
+async function updateOracleOnce(contracts = ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6']){
 
     const ORACLE = await ethers.getContractAt("PepeFiOracle", ORACLE_CONTRACT);
 
@@ -74,4 +74,13 @@ async function updateOnce(contracts = ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f1
 
 }
 
-updateOnce()
+async function runOracle(){
+    await updateOracleOnce()
+    setTimeout(runOracle, 5000);
+}
+
+if (require.main === module) {
+    runOracle()
+}
+
+module.exports = {updateOracleOnce, runOracle};
