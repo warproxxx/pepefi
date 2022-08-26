@@ -7,10 +7,13 @@ import {styled, experimental_sx as sx} from '@mui/system';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
+import { lendingNFT as not_redux_lendingNFT } from 'src/data/lendingNFT';
 import { loans as not_redux_loans } from 'src/data/loans';
 
 import { useAppSelector, useAppDispatch } from 'src/app/hooks';
 import { selectLoans,setLoans } from 'src/redux/loansSlice';
+import { setLendingNFT } from 'src/redux/lendingNFTSlice';
+
 
 export const LoansBox = styled(Box)((props)  => sx({
   minHeight: "80vh",
@@ -73,7 +76,10 @@ function LoansPage(props:any) {
                           boxShadow: "3px 2px 10px 1px rgba(115, 137, 217, 0.5)",
                       }
                     }}
-                    onClick={()=>{router.push("/loanDetails")}}
+                    onClick={()=>{
+                      dispatch(setLendingNFT(not_redux_lendingNFT));
+                      router.push("/loanDetails");
+                    }}
                     >
                       <Box sx={{
                           borderRadius: "15px",

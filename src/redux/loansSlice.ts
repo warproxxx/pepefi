@@ -5,7 +5,12 @@ import { NFTType } from 'src/types';
 
 export interface LoansState {
   selectedNFTIndex: Number,
-  allNFTs:Array<NFTType>
+  allNFTs:Array<{
+    openseaSrc: string;
+    collection: string;
+    name: string;
+    imgSrc: string;
+}>
 }
 
 const initialState: LoansState = {
@@ -26,13 +31,18 @@ export const LoansSlice = createSlice({
     setSelectedNFTIndex: (state, action: PayloadAction<Number>) => {
       state.selectedNFTIndex = action.payload;
     },
-    setAllNFTs: (state, action: PayloadAction<Array<NFTType>>) => {
+    setAllNFTs: (state, action: PayloadAction<Array<{
+      openseaSrc: string;
+      collection: string;
+      name: string;
+      imgSrc: string;
+    }>>) => {
       state.allNFTs = action.payload;
     },  
   },
 });
 
-export const { setLoans } = LoansSlice.actions;
+export const { setLoans,setSelectedNFTIndex,setAllNFTs } = LoansSlice.actions;
 export const selectLoans = (state: RootState) => state.loans;
 
 export default LoansSlice.reducer;
