@@ -106,14 +106,7 @@ export const AddVaultPopup = (props) => {
     const [collectionDetailError, setCollectionDetailError] = useState(defaultCollectionDetailsError)
     const [collections,setCollections] = useState([]);
 
-    let finalFormReturnValues = {
-      vaultName: value.vaultName,
-      vaultManagerAddress: value.vaultManagerAddress,
-      initialVaultDeposit: value.initialVaultDeposit,
-      collections: collections,
-      expiredDate: datePickerVaule,
-      allowExternalLP: value.allowExternalLP,
-    }
+
 
   
     const handleSetCollectionDetail = (prop) => (event) => {
@@ -170,8 +163,16 @@ export const AddVaultPopup = (props) => {
       else{
         setValues({ ...values, [prop]: event.target.value });
       }
-
     };
+
+    let finalFormReturnValues = {
+      vaultName: values.vaultName,
+      vaultManagerAddress: values.vaultManagerAddress,
+      initialVaultDeposit: values.initialVaultDeposit,
+      collections: collections,
+      expiredDate: datePickerVaule,
+      allowExternalLP: values.allowExternalLP,
+    }
 
     const page0Content = (
       <Box sx={{
@@ -379,8 +380,8 @@ export const AddVaultPopup = (props) => {
         flexDirection: 'column',
         mt:'20px'
       }}>
-      {
-        finalFormReturnValues. ((value,index)=>{
+      {/* {
+        Object.entries(finalFormReturnValues).map ((value,index)=>{
           return(
             <Box sx={{display: 'flex', justifyContent:'space-between'}} key={index}>
               <Typography sx={{}}>
@@ -394,7 +395,7 @@ export const AddVaultPopup = (props) => {
             </Box>
           )
         })
-      }
+      } */}
 
 
       </Box>   
