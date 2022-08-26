@@ -10,6 +10,8 @@ import { useRouter } from 'next/router';
 
 import { vaults } from 'src/data/vaults';
 
+import {truncateAddress} from 'src/utils/helpers'
+
 export const VaultDetailBox = styled(Box)((props)  => sx({
   minHeight: "80vh",
   width: '100%'
@@ -68,6 +70,12 @@ const dataRows = [
         unit: 'WETH'
     },
     {
+        name:'LTV',
+        dataName:'LTV',
+        nameDescription: 'LTV is ...',
+        unit: '%'
+    },
+    {
         name:'APR',
         dataName:'APR',
         nameDescription: 'APR is ...',
@@ -80,25 +88,16 @@ const dataRows = [
         unit: 'days'
     },
     {
-        name:'...',
-        dataName:'empty',
-        nameDescription: '...',
-        data:'...',
-        unit: ''
+        name:'Oracle Price',
+        dataName:'oraclePrice',
+        nameDescription: 'Oracle price is ...',
+        unit: 'WETH'
     },
     {
-        name:'...',
-        dataName:'empty',
-        nameDescription: '...',
-        data:'...',
-        unit: ''
-    },
-    {
-        name:'...',
-        dataName:'empty',
-        nameDescription: '...',
-        data:'...',
-        unit: ''
+        name:'Open Sea Price',
+        dataName:'openseaPrice',
+        nameDescription: 'Open Sea price is ...',
+        unit: 'WETH'
     },
 ]
 
@@ -128,7 +127,7 @@ function VaultDetailPage(props:any) {
           justifyContent: 'center'
         }}
       >
-        <VaultDetailBox sx={{maxWidth:'1400px',display:'flex',justifyContent:'space-between',fontFamily:'DM Mono'}}>
+        <VaultDetailBox sx={{maxWidth:'1400px',display:'flex',justifyContent:'space-between',fontFamily:'DM Mono',minHeight:'1300px'}}>
             <Box sx={{width:'67%',height:'100%',background: "#121218",boxShadow: "3px 3px 11px rgba(0, 0, 0, 0.25)",borderRadius: "15px",padding:'30px'}}>
                 <Box 
                 sx={{display:'flex', cursor:'pointer',width:'fit-content',color:'rgba(255, 255, 255, 0.4);',transitionDuration:"0.3s",'&:hover':{
@@ -155,14 +154,18 @@ function VaultDetailPage(props:any) {
                             </VaultDetailData1Typography>
                             <Box sx={{display:'flex',gap:'10px',alignItems:'center'}}> 
                                 <VaultDetailLabelTypography>
-                                    {vault.contractAddy}
+                                    {truncateAddress(vault.contractAddy)}
                                 </VaultDetailLabelTypography>
-                                <Box sx={{cursor:'pointer'}}>
+                                <Box onClick={()=>{navigator.clipboard.writeText(vault.contractAddy)}} sx={{cursor:'pointer',transitionDuration:'0.3s','&:hover':{transform:'translateY(-3px)'}}}>
                                     <Image src="/static/images/icons/copy-paste.svg" height="20px" width='20px'/>
                                 </Box>
-                                <Box sx={{cursor:'pointer'}}>
-                                    <Image src="/static/images/icons/external-link.svg" height="20px" width='20px'/>
-                                </Box>
+
+                                <a target="_blank" href={vault.etherScanSrc} rel="noopener noreferrer">
+                                    <Box sx={{cursor:'pointer',transitionDuration:'0.3s','&:hover':{transform:'translateY(-3px)'}}}>
+                                        <Image src="/static/images/icons/external-link.svg" height="20px" width='20px'/>
+                                    </Box>
+                                </a>
+
                             </Box>
                         </Box>
                         <Box sx={{display:'flex',mt:'20px'}}>
@@ -262,12 +265,19 @@ function VaultDetailPage(props:any) {
                                                 </VaultDetailLabelTypography>
                                             </Tooltip>
 
-                                            
-                                            <VaultDetailData2Typography>
-                                                {typeof(vault.data[row.dataName]) == 'object' ?
-                                                 `${vault.data[row.dataName]?.min}/${vault.data[row.dataName]?.average}/${vault.data[row.dataName]?.max} ${row.unit}` :
-                                                `${vault.data[row.dataName]} ${row.unit}`}
-                                            </VaultDetailData2Typography>
+                                            {
+                                                selectedCollection == -1 ?
+                                                <VaultDetailData2Typography>
+                                                    {typeof(vault.data[row.dataName]) == 'object' ?
+                                                    `${vault.data[row.dataName]?.range[0]}/${vault.data[row.dataName]?.average}/${vault.data[row.dataName]?.range[1]} ${row.unit}` :
+                                                    `${vault.data[row.dataName]} ${row.unit}`}
+                                                </VaultDetailData2Typography>
+                                                :
+                                                <VaultDetailData2Typography>
+                                                    {`${vault.collections[selectedCollection][row.dataName]} ${row.unit}`}
+                                                </VaultDetailData2Typography>
+                                            }
+
 
                                         </Box>
                                     </Grid>
@@ -280,7 +290,7 @@ function VaultDetailPage(props:any) {
 
                 <Box sx={{mt:"40px",display:'flex',flexDirection:'column'}}>
                     <VaultDetailData1Typography>
-                    {selectedCollection == -1 ? "All Loanded NFTs" : `${vault.collections[selectedCollection].name} Loanded NFTs`}
+                    {selectedCollection == -1 ? "Lended NFTs" : `${vault.collections[selectedCollection].name} Lended NFTs`}
                     </VaultDetailData1Typography>
                     <Box 
                     id="vaultDetailNFTBox"
@@ -292,88 +302,96 @@ function VaultDetailPage(props:any) {
                         overflowY:'hidden',
                         py:'20px',
                     }}>
-                        {[0,1,2,3].map((collection,index)=>{
-                            return(
-                                <Box 
-                                    key={index}
-                                    sx={{
-                                    background: "#1B1B21",
-                                    border: "1px solid #000000",
-                                    boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-                                    borderRadius: "15px",
-                                    aspectRatio:'1/1.4',
-                                    width:'31.5%',
-                                    padding:'15px',
-                                    display:'flex',
-                                    flexDirection:'column',
-                                }}>
-                                    <Box sx={{
+                        {
+                        selectedCollection == -1 ? 
+                        <Typography>Please select a collection to display its lended NFTs here.</Typography>
+                        :
+                            vault.collections[selectedCollection].NFTs.map((NFT,index)=>{
+                                return(
+                                    <Box 
+                                        key={index}
+                                        sx={{
+                                        background: "#1B1B21",
+                                        border: "1px solid #000000",
+                                        boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
                                         borderRadius: "15px",
-                                        overflow:'hidden',
-                                        width:'100%',
-                                        aspectRatio:'1/0.8',
-                                    }}>
-                                        <Image src="/static/images/vaults/collection1.png" layout="responsive" height="100%" width="100%"></Image>
-                                    </Box>
-                                    <Box sx={{
+                                        aspectRatio:'1/1.4',
+                                        width:'31.5%',
+                                        padding:'15px',
                                         display:'flex',
-                                        mt:'20px',
-                                        flexDirection:'column'
+                                        flexDirection:'column',
+                                        cursor:'pointer',
+                                        transitionDuration:'0.3s',
+                                        '&:hover':{
+                                            boxShadow:"0px 4px 15px 1px rgba(0, 0, 0, 0.7)",
+                                        }
                                     }}>
                                         <Box sx={{
-                                            display:'flex',
-                                            justifyContent:'space-between'
+                                            borderRadius: "15px",
+                                            overflow:'hidden',
+                                            width:'100%',
+                                            aspectRatio:'1/0.8',
                                         }}>
-                                            <Box sx={{width:'50%'}}>
-                                                <VaultDetailLabel2Typography>
-                                                    {'NFT Value'}
-                                                </VaultDetailLabel2Typography>
-                
-                                                <VaultDetailData2Typography>
-                                                    {'55 WETH'}
-                                                </VaultDetailData2Typography>
-                                            </Box>
-        
-                                            <Box sx={{width:'50%'}}>
-                                                <VaultDetailLabel2Typography>
-                                                    {'Duration'}
-                                                </VaultDetailLabel2Typography>
-                
-                                                <VaultDetailData2Typography>
-                                                    {'30 days'}
-                                                </VaultDetailData2Typography>
-                                            </Box>
+                                            <Image src={NFT.imgSrc} layout="responsive" height="100%" width="100%"></Image>
                                         </Box>
                                         <Box sx={{
                                             display:'flex',
-                                            justifyContent:'space-between'
+                                            mt:'20px',
+                                            flexDirection:'column'
                                         }}>
-                                            <Box sx={{width:'50%'}}>
-                                                <VaultDetailLabel2Typography>
-                                                    {'Loan Amount'}
-                                                </VaultDetailLabel2Typography>
-                
-                                                <VaultDetailData2Typography>
-                                                    {'20 WETH'}
-                                                </VaultDetailData2Typography>
+                                            <Box sx={{
+                                                display:'flex',
+                                                justifyContent:'space-between'
+                                            }}>
+                                                <Box sx={{width:'50%'}}>
+                                                    <VaultDetailLabel2Typography>
+                                                        {'NFT Value'}
+                                                    </VaultDetailLabel2Typography>
+                    
+                                                    <VaultDetailData2Typography>
+                                                        {`${NFT.value} WETH`}
+                                                    </VaultDetailData2Typography>
+                                                </Box>
+            
+                                                <Box sx={{width:'50%'}}>
+                                                    <VaultDetailLabel2Typography>
+                                                        {'Duration'}
+                                                    </VaultDetailLabel2Typography>
+                    
+                                                    <VaultDetailData2Typography>
+                                                        {`${NFT.duration} days`}
+                                                    </VaultDetailData2Typography>
+                                                </Box>
                                             </Box>
-        
-                                            <Box sx={{width:'50%'}}>
-                                                <VaultDetailLabel2Typography>
-                                                    {'APR'}
-                                                </VaultDetailLabel2Typography>
-                
-                                                <VaultDetailData2Typography>
-                                                    {'10 %'}
-                                                </VaultDetailData2Typography>
-                                            </Box>
-                                        </Box> 
+                                            <Box sx={{
+                                                display:'flex',
+                                                justifyContent:'space-between'
+                                            }}>
+                                                <Box sx={{width:'50%'}}>
+                                                    <VaultDetailLabel2Typography>
+                                                        {'Loan Amount'}
+                                                    </VaultDetailLabel2Typography>
+                    
+                                                    <VaultDetailData2Typography>
+                                                        {`${NFT.loanAmount} WETH`}
+                                                    </VaultDetailData2Typography>
+                                                </Box>
+            
+                                                <Box sx={{width:'50%'}}>
+                                                    <VaultDetailLabel2Typography>
+                                                        {'APR'}
+                                                    </VaultDetailLabel2Typography>
+                    
+                                                    <VaultDetailData2Typography>
+                                                        {`${NFT.APR} %`}
+                                                    </VaultDetailData2Typography>
+                                                </Box>
+                                            </Box> 
+                                        </Box>
                                     </Box>
-        
-        
-                                </Box>
-                            )
-                        })}
+                                )
+                            })
+                        }
 
                     </Box>
                 </Box>                

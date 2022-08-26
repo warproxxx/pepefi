@@ -1,0 +1,1 @@
+export const tooltipDelay = 700;

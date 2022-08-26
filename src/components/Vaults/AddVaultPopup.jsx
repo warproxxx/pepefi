@@ -17,6 +17,7 @@ import {
   Tooltip,
   Divider
 } from "@mui/material";
+import AddVaultPopupCollectionSearch from "./AddVaultPopupCollectionSearch";
 
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -25,6 +26,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { styled, experimental_sx as sx } from '@mui/system';
 
 import {truncateAddress} from '../../utils/helpers'
+import { tooltipDelay } from "src/constants/tooltip";
 
 
   const steps = [
@@ -51,36 +53,92 @@ import {truncateAddress} from '../../utils/helpers'
     }
   }));
 
-  export const AddVaultPopupQuestionTextField = styled(QuestionTextField)((props)  => sx({
+  export const AddVaultPopupQuestionTextField = styled(QuestionTextField)((props)  => 
+  {
+    let border = "2px solid #3D3C40"
+    let helperTextColor = 'white';
+    if(props.customerror){
+      props.customerror == "false" ? border = "2px solid #3D3C40" : border = `2px solid ${props.theme.palette.error.main}`
+      props.customerror == "false" ? helperTextColor = `${props.theme.palette.text.primary}` : helperTextColor = `${props.theme.palette.error.main}`
+    }
+    return(
+    sx({
     '& .MuiFilledInput-root':{
       backgroundColor: '#0A0C0B',
       color: 'white',
-      border: "2px solid #3D3C40",
+      border: border,
       borderRadius: "5px"
     },
     '& .MuiFilledInput-root:after':{
       border:'none'
     },
-  }));
+    '& .MuiFormHelperText-root':{
+      color:helperTextColor
+    },
+  })
+)});
 
 const defaultCollectionDetails = {
+  collectionName: '',
   collectionAddress: '',
   collectionLTV: '5',
   collectionAPR: '3'
 }
 
+const defaultValues = {
+  vaultName: '',
+  vaultManagerAddress: '',
+  initialVaultDeposit: '0',
+  allowExternalLP: true
+}
+
+const defaultCollectionDetailsError = {
+  collectionLTV: false,
+  collectionAPR: false
+}
+
 export const AddVaultPopup = (props) => {
     
     const [activeStep, setActiveStep] = useState(0);
-    
-    
+  
     const [showAddCollection, setShowAddcollection] = useState(false);
     const [collectionDetail,setCollectionDetail] = useState(defaultCollectionDetails)
+    const [collectionDetailError, setCollectionDetailError] = useState(defaultCollectionDetailsError)
     const [collections,setCollections] = useState([]);
 
+    let finalFormReturnValues = {
+      vaultName: value.vaultName,
+      vaultManagerAddress: value.vaultManagerAddress,
+      initialVaultDeposit: value.initialVaultDeposit,
+      collections: collections,
+      expiredDate: datePickerVaule,
+      allowExternalLP: value.allowExternalLP,
+    }
+
+  
     const handleSetCollectionDetail = (prop) => (event) => {
+      const value = event.target.value;
+      if(prop == 'collectionAPR' || prop == 'collectionLTV'){
+        if(Number.isNaN(Number(value)))
+          return;
+        if(Number(value) > 100 || Number(value) < 0){
+          setCollectionDetailError({ ...collectionDetailError, [prop]: true});
+          setTimeout(()=>{
+            setCollectionDetailError({ ...collectionDetailError, [prop]: false});
+          },3000)
+          return
+        }
+        else
+          setCollectionDetailError({ ...collectionDetailError, [prop]: false});
+      } 
+
       setCollectionDetail({ ...collectionDetail, [prop]: event.target.value});
     };
+
+    const setSelectedCollectionAddressAndName = (address,name="") => {
+      setCollectionDetail({ ...collectionDetail, collectionAddress: address, collectionName:name});
+    }
+
 
     const handleAddCollection = () =>{
       setCollections([...collections,collectionDetail])
@@ -103,14 +161,7 @@ export const AddVaultPopup = (props) => {
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const [values, setValues] = useState({
-      vaultName: '',
-      vaultManagerAddress: '',
-      fundSize: '0',
-      riskTolerance: '5',
-      vigorish: '3',
-      allowExternalLP: true
-    });
+    const [values, setValues] = useState(defaultValues);
   
     const handleChange = (prop) => (event) => {
       if(prop=="allowExternalLP"){
@@ -120,8 +171,234 @@ export const AddVaultPopup = (props) => {
         setValues({ ...values, [prop]: event.target.value });
       }
 
-
     };
+
+    const page0Content = (
+      <Box sx={{
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        <AddVaultPopupQuestionTextField
+          label={inputs[0]}
+          variant="filled"
+          margin="normal"
+          value={values.vaultName}
+          onChange={handleChange('vaultName')}
+        />
+          <Tooltip title={"Vault manager address is the address of ..."} 
+            arrow 
+            disableFocusListener 
+            disableTouchListener 
+            enterDelay={tooltipDelay}
+            placement="top">
+              <AddVaultPopupQuestionTextField
+                label={inputs[1]}
+                variant="filled"
+                margin="normal"
+                value={values.providerAddress}
+                onChange={handleChange('providerAddress')}
+                placeholder="0x000...000"
+              />
+          </Tooltip>
+      <Tooltip title={"Initial vault deposit is ..."} 
+        arrow 
+        disableFocusListener 
+        disableTouchListener 
+        enterDelay={tooltipDelay}
+        placement="top">
+        <AddVaultPopupQuestionTextField
+            label={inputs[2]}
+            variant="filled"
+            margin="normal"
+            InputProps={{
+              endAdornment: <InputAdornment position="end">WETH</InputAdornment>,
+            }}
+            value={values.initialVaultDeposit}
+            onChange={handleChange('initialVaultDeposit')}
+        />
+      </Tooltip>
+      </Box>        
+    )
+
+    const page1Content = (
+      <Box sx={{
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        <Typography variant="h5">NFT Collections</Typography>
+        <Box sx={{mb:'20px'}}>
+          {
+            collections.map((collection,index)=>{
+              return(
+                <Box sx={{"background":"#1B1B21","boxShadow":"0px 5px 2px 1px rgba(0, 0, 0, 0.25)","borderRadius":"8px",px:'10px',py:'5px',mt:'10px'}} key={index}>
+                  <Typography >
+                    {`${collection.collectionName}, ${truncateAddress(collection.collectionAddress)}`}
+                  </Typography>
+                  <Typography >
+                    {`${collection.collectionLTV}% LTV, ${collection.collectionAPR}% APR`}
+                  </Typography>
+                </Box>
+              )
+            })
+          }
+        </Box>
+
+        {showAddCollection ?
+        <Box sx={{"background":"#ffffff0a","boxShadow":"0px 5px 2px 1px rgb(0 0 0 / 25%)","borderRadius":"8px","py":"10px",mb:'20px',px:'20px'}}>
+          <Typography>New Collection</Typography>
+            <AddVaultPopupCollectionSearch value={collectionDetail.collectionAddress} setSelectedCollectionAddressAndName={setSelectedCollectionAddressAndName}/>
+            <Tooltip title={"Collection Name ..."} 
+              arrow 
+              disableFocusListener 
+              fullWidth
+              disableTouchListener 
+              enterDelay={tooltipDelay}
+              placement="top">
+              <AddVaultPopupQuestionTextField
+                  label={"collection Name"}
+                  variant="filled"
+                  margin="normal"
+                  value={collectionDetail.collectionName}
+                  onChange={handleSetCollectionDetail('collectionName')}
+                />
+            </Tooltip>
+            <Tooltip title={"Collection LTV is numbers only, between 0 - 100"} 
+              arrow 
+              disableFocusListener 
+              fullWidth
+              disableTouchListener 
+              enterDelay={tooltipDelay}
+              placement="top">
+              <AddVaultPopupQuestionTextField
+                  label={"collection LTV"}
+                  variant="filled"
+                  margin="normal"
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                  }}
+                  value={collectionDetail.collectionLTV}
+                  helperText={collectionDetailError.collectionLTV ? "Numbers only, 0 - 100" : ""}
+                  onChange={handleSetCollectionDetail('collectionLTV')}
+                  customerror={collectionDetailError.collectionLTV }
+                />
+            </Tooltip>
+            <Tooltip title={"collection APR is numbers only, between 0 - 100"} 
+            arrow 
+            disableFocusListener 
+            fullWidth
+            disableTouchListener 
+            enterDelay={tooltipDelay}
+            placement="top">
+            <AddVaultPopupQuestionTextField
+                label={"collection APR"}
+                variant="filled"
+                margin="normal"
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                }}
+                value={collectionDetail.collectionAPR}
+                helperText={collectionDetailError.collectionAPR ? "Numbers only, 0 - 100" : ""}
+                onChange={handleSetCollectionDetail('collectionAPR')}
+                customerror={collectionDetailError.collectionAPR }
+              />
+            </Tooltip>
+          <Box sx={{display:'flex',justifyContent:'center',marginTop:'10px'}}>
+          <Button 
+            onClick={()=>{
+              setShowAddcollection(false);setCollectionDetail(defaultCollectionDetails)
+            }}
+            sx={{
+              color:'white',
+              padding:'0px',
+              '&:hover':{
+                'backgroundColor':'transparent',
+                color:'#5dc961'
+
+              }
+            }}>Cancel</Button>
+            <Button 
+            onClick={()=>{
+              handleAddCollection();setShowAddcollection(false);setCollectionDetail(defaultCollectionDetails)
+            }}
+            sx={{
+              color:'white',
+              padding:'0px',
+              '&:hover':{
+                'backgroundColor':'transparent',
+                color:'#5dc961'
+
+              }
+            }}>Add</Button>
+          </Box>
+
+        </Box> 
+        : 
+        void(0)
+        }
+
+
+
+        <Box sx={{display:'flex',justifyContent:'space-between',mb:'8px',alignItems:'center'}}>
+          <Typography sx={{textDecoration: 'underline',cursor:'pointer'}} onClick={()=>(setShowAddcollection(true))}>Add NFT Collection</Typography>
+        </Box>
+        
+        <Typography variant="h5" sx={{mt:'50px'}}>Misc.</Typography>
+        <Box sx={{display:'flex',justifyContent:'space-between',mt:'0px',mb:'0px',alignItems:'center'}}>
+          <Typography>Vault Expired Date</Typography>
+          <Box sx={{
+            width:'40%',
+            "& .MuiSvgIcon-root":{
+              color:'#5dc961'
+            }
+          }}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DesktopDatePicker
+                  inputFormat="MM/dd/yyyy"
+                  value={datePickerVaule}
+                  onChange={(handleDatePickerValueChange)}
+                  renderInput={(params) => <TextField {...params} />}
+
+                />
+            </LocalizationProvider>
+          </Box>
+
+
+
+        </Box>
+
+        <Box sx={{display:'flex',justifyContent:'space-between',mt:'16px',mb:'8px',alignItems:'center'}}>
+          <Typography>Allow external LP?</Typography>
+          <Checkbox checked={values.allowExternalLP} onChange={handleChange("allowExternalLP")} />
+        </Box>
+      </Box> 
+    )
+
+    const page2Content = (
+      <Box sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        mt:'20px'
+      }}>
+      {
+        finalFormReturnValues. ((value,index)=>{
+          return(
+            <Box sx={{display: 'flex', justifyContent:'space-between'}} key={index}>
+              <Typography sx={{}}>
+                {value}:
+              </Typography>
+              <Typography sx={{color: "#5dc961",fontWeight: "bold", width:`${index==1 ? '70%' : 'auto'}`, overflowX: 'auto'}}>
+                {Object.values(values)[index]}
+                {index==2  ? ' WETH' : ''}
+                {index==3 || index==4 ? '%' : ''}
+              </Typography>
+            </Box>
+          )
+        })
+      }
+
+
+      </Box>   
+    )
 
     return (
         <Dialog
@@ -160,7 +437,8 @@ export const AddVaultPopup = (props) => {
               ))}
             </Stepper>
           </Box>
-          <Box sx={{
+          <Box 
+          sx={{
             backgroundColor: '#00000000',
             borderRadius: "8px",
             paddingX: '20px',
@@ -174,225 +452,25 @@ export const AddVaultPopup = (props) => {
                 sx={{minHeight:'263px'}}
               >
               { activeStep == 0 ? 
-                <Box sx={{
-                display: 'flex',
-                flexDirection: 'column'
-              }}>
-                <AddVaultPopupQuestionTextField
-                  label={inputs[0]}
-                  variant="filled"
-                  margin="normal"
-                  value={values.vaultName}
-                  onChange={handleChange('vaultName')}
-                />
-                <AddVaultPopupQuestionTextField
-                  label={inputs[1]}
-                  variant="filled"
-                  margin="normal"
-                  value={values.providerAddress}
-                  onChange={handleChange('providerAddress')}
-                  placeholder="0x000...000"
-                />
-              <AddVaultPopupQuestionTextField
-                  label={inputs[2]}
-                  variant="filled"
-                  margin="normal"
-                  InputProps={{
-                    endAdornment: <InputAdornment position="end">WETH</InputAdornment>,
-                  }}
-                  value={values.fundSize}
-                  onChange={handleChange('fundSize')}
-              />
-              </Box>            
+                page0Content
               : 
                   void(0)
               }
 
-              
               { activeStep == 1 ? 
-                <Box sx={{
-                display: 'flex',
-                flexDirection: 'column'
-              }}>
-                <Typography variant="h5">NFT Collections</Typography>
-                <Box sx={{mb:'20px'}}>
-                  {
-                    collections.map((collection,index)=>{
-                      return(
-                        <Box sx={{"background":"#1B1B21","boxShadow":"0px 5px 2px 1px rgba(0, 0, 0, 0.25)","borderRadius":"8px",px:'10px',py:'5px',mt:'10px'}} key={index}>
-                          <Typography >
-                            {`${index+1}: ${truncateAddress(collection.collectionAddress)}, ${collection.collectionLTV}% LTV, ${collection.collectionAPR}% APR`}
-                          </Typography>
-                        </Box>
-
-                      )
-                    })
-                  }
-                </Box>
-
-                {showAddCollection ?
-                <Box sx={{"background":"#ffffff0a","boxShadow":"0px 5px 2px 1px rgb(0 0 0 / 25%)","borderRadius":"8px","py":"10px",mb:'20px',px:'20px'}}>
-                  <Typography>New Collection</Typography>
-                  <Tooltip title={"Ethereum contract address for the collection"} 
-                    arrow 
-                    disableFocusListener 
-                    disableTouchListener 
-                    enterDelay={700}
-                    placement="top">
-                    <AddVaultPopupQuestionTextField
-                        label={"collection address"}
-                        variant="filled"
-                        margin="normal"
-                        fullWidth
-                        placeholder="0x000...000"
-                        value={collectionDetail.collectionAddress}
-                        onChange={handleSetCollectionDetail('collectionAddress')}
-                      />
-                    </Tooltip>
-                    <Tooltip title={"Collection LTV"} 
-                      arrow 
-                      disableFocusListener 
-                      fullWidth
-                      disableTouchListener 
-                      enterDelay={700}
-                      placement="top">
-                      <AddVaultPopupQuestionTextField
-                          label={"collection LTV"}
-                          variant="filled"
-                          margin="normal"
-                          placeholder="5"
-                          InputProps={{
-                            endAdornment: <InputAdornment position="end">%</InputAdornment>,
-                          }}
-                          value={collectionDetail.collectionLTV}
-                          onChange={handleSetCollectionDetail('collectionLTV')}
-                        />
-                      </Tooltip>
-                        <Tooltip title={"collection APR"} 
-                        arrow 
-                        disableFocusListener 
-                        fullWidth
-                        disableTouchListener 
-                        enterDelay={700}
-                        placement="top">
-                        <AddVaultPopupQuestionTextField
-                            label={"collection APR"}
-                            variant="filled"
-                            margin="normal"
-                            placeholder="5"
-                            InputProps={{
-                              endAdornment: <InputAdornment position="end">%</InputAdornment>,
-                            }}
-                            value={collectionDetail.collectionAPR}
-                            onChange={handleSetCollectionDetail('collectionAPR')}
-                          />
-                        </Tooltip>
-                  <Box sx={{display:'flex',justifyContent:'center',marginTop:'10px'}}>
-                  <Button 
-                    onClick={()=>{
-                      setShowAddcollection(false);setCollectionDetail(defaultCollectionDetails)
-                    }}
-                    sx={{
-                      color:'white',
-                      padding:'0px',
-                      '&:hover':{
-                        'backgroundColor':'transparent',
-                        color:'#5dc961'
-
-                      }
-                    }}>Cancel</Button>
-                    <Button 
-                    onClick={()=>{
-                      handleAddCollection();setShowAddcollection(false);setCollectionDetail(defaultCollectionDetails)
-                    }}
-                    sx={{
-                      color:'white',
-                      padding:'0px',
-                      '&:hover':{
-                        'backgroundColor':'transparent',
-                        color:'#5dc961'
-
-                      }
-                    }}>Add</Button>
-                  </Box>
-
-                </Box> 
-                : 
-                void(0)
-                }
-
-
-
-                <Box sx={{display:'flex',justifyContent:'space-between',mb:'8px',alignItems:'center'}}>
-                  <Typography sx={{textDecoration: 'underline',cursor:'pointer'}} onClick={()=>(setShowAddcollection(true))}>Add One Collection</Typography>
-                </Box>
-                
-                <Typography variant="h5" sx={{mt:'50px'}}>Misc.</Typography>
-                <Box sx={{display:'flex',justifyContent:'space-between',mt:'0px',mb:'0px',alignItems:'center'}}>
-                  <Typography>Vault Expired Date</Typography>
-                  <Box sx={{
-                    width:'40%',
-                    "& .MuiSvgIcon-root":{
-                      color:'#5dc961'
-                    }
-                  }}>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <DesktopDatePicker
-                          inputFormat="MM/dd/yyyy"
-                          value={datePickerVaule}
-                          onChange={(handleDatePickerValueChange)}
-                          renderInput={(params) => <TextField {...params} />}
-
-                        />
-                    </LocalizationProvider>
-                  </Box>
-
-
-
-                </Box>
-
-                <Box sx={{display:'flex',justifyContent:'space-between',mt:'16px',mb:'8px',alignItems:'center'}}>
-                  <Typography>Allow external LP?</Typography>
-                  <Checkbox checked={values.allowExternalLP} onChange={handleChange("allowExternalLP")} />
-                </Box>
-              </Box>            
+                  page1Content
               : 
                   void(0)
               }
-
 
               { activeStep == 2 ? 
-                <Box sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                mt:'20px'
-              }}>
-              {
-                inputs.map((input,index)=>{
-                  return(
-                    <Box sx={{display: 'flex', justifyContent:'space-between'}} key={index}>
-                      <Typography sx={{}}>
-                        {input}:
-                      </Typography>
-                      <Typography sx={{color: "#5dc961",fontWeight: "bold", width:`${index==1 ? '70%' : 'auto'}`, overflowX: 'auto'}}>
-                        {Object.values(values)[index]}
-                        {index==2  ? ' WETH' : ''}
-                        {index==3 || index==4 ? '%' : ''}
-                      </Typography>
-                    </Box>
-                  )
-                })
-              }
-
-
-              </Box>            
+                  page2Content
               : 
                   void(0)
               }
               
             </Box>
           </Box>
-
 
         </DialogContent>
         <DialogActions>

@@ -154,13 +154,19 @@ export const DashboardNavbar = (props:any) => {
             MenuListProps={{
               'aria-labelledby': 'basic-button',
             }}
+            PaperProps={{
+              sx:{
+                width: anchorElUser && anchorElUser.offsetWidth,
+              }
+            }}
             sx={{
               "& .MuiPaper-root": {
-                backgroundColor: "white"
+                backgroundColor: "white",
               }
             }}
           >
-            <MenuItem onClick={()=>{disconnect();handleCloseUserMenu();}}>Disconnect</MenuItem>
+            <MenuItem onClick={()=>{handleCloseUserMenu()}} sx={{color:'black'}}>My Loans</MenuItem>
+            <MenuItem onClick={()=>{disconnect();handleCloseUserMenu();}} sx={{color:'black'}}>Disconnect</MenuItem>
           </Menu>  
             </Box>
        

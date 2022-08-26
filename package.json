@@ -21,6 +21,7 @@
     "@openzeppelin/contracts": "^4.7.3",
     "@walletconnect/web3-provider": "^1.8.0",
     "apexcharts": "^3.35.3",
+    "autosuggest-highlight": "^3.3.4",
     "axios": "^0.27.2",
     "date-fns": "^2.29.2",
     "dotenv": "^16.0.1",

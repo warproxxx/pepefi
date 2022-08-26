@@ -1,8 +1,8 @@
 export const vaults =  [
     {
         name: "Goblin Sax Vault",
-        etherScanSrc: '',
-        contractAddy: '0XCC32...9624',
+        contractAddy: '0x99c6fD3bC02dEB420F192eFb3ED0D6f479856D4B',
+        etherScanSrc: ``,
         data: {
             totalWETH: 5000,
             LTV: {
@@ -26,7 +26,8 @@ export const vaults =  [
                 max: 90.0,
                 marks: []
             },
-            empty:'...',
+            openseaPrice: 17.3,
+            oraclePrice: 17.0,
             imgSrc:
                 [
                     "/static/images/vaults/collection1.png",
@@ -41,20 +42,23 @@ export const vaults =  [
                 imgSrc: '/static/images/vaults/collection1.png',
                 openseaSrc: '',
                 etherScanSrc: '',
-                oraclePrice: "25.67 WETH/+10.16%",
-                openseaPrice: '',
-                totalWETH: 0.0,
-                LTV: [0.0],
-                APR: [0.0],
-                duration: [0.0],
+                price: '12.4 WETH/+5.16%',
+                openseaPrice: 12.4,
+                oraclePrice: 12.3,
+                totalWETH: 1000,
+                LTV: 5.0,
+                APR: 10.0,
+                duration: 30,
 
                 NFTs: [
                     {
-                        imgSrc: '',
+                        imgSrc: '/static/images/vaults/collection1.png',
                         openseaSrc: '',
-                        duration: 0.0,
-                        APR: 0.0,
-                        amount: 0.0
+                        etherScanSrc: '',
+                        value: 55,
+                        duration: 30,
+                        APR: 10,
+                        loanAmount: 20
                     }
                 ]
             },
@@ -62,18 +66,23 @@ export const vaults =  [
                 name: 'Otherdeed for Otherside',
                 imgSrc: '/static/images/vaults/collection2.png',
                 openseaSrc: '',
-                price: '1.7 WETH/+5.16%',
-                totalWETH: 0.0,
-                LTV: [0.0],
-                APR: [0.0],
-                duration: [0.0],
+                etherScanSrc: '',
+                price: '15.3 WETH/+5.16%',
+                openseaPrice: 15.3,
+                oraclePrice: 15.3,
+                totalWETH: 2000,
+                LTV: 7.0,
+                APR: 18.0,
+                duration: 60,
                 NFTs: [
                     {
-                        imgSrc: '',
+                        imgSrc: '/static/images/vaults/collection2.png',
                         openseaSrc: '',
-                        duration: 0.0,
-                        APR: 0.0,
-                        amount: 0.0
+                        etherScanSrc: '',
+                        value: 55,
+                        duration: 30,
+                        APR: 10,
+                        loanAmount: 20
                     }
                 ]
             },
@@ -81,18 +90,23 @@ export const vaults =  [
                 name: 'Doodle',
                 imgSrc: '/static/images/vaults/collection3.png',
                 openseaSrc: '',
-                price: '7.5 WETH/+3.16%',
-                totalWETH: 0.0,
-                LTV: [0.0],
-                APR: [0.0],
-                duration: [0.0],
+                etherScanSrc: '',
+                price: '13.4 WETH/+3.16%',
+                openseaPrice: 13.4,
+                oraclePrice: 12.4,
+                totalWETH: 1534,
+                LTV: 10.0,
+                APR: 7.0,
+                duration: 60,
                 NFTs: [
                     {
-                        imgSrc: '',
+                        imgSrc: '/static/images/vaults/collection3.png',
                         openseaSrc: '',
-                        duration: 0.0,
-                        apr: 0.0,
-                        amount: 0.0
+                        etherScanSrc: '',
+                        value: 60,
+                        duration: 30,
+                        APR: 10,
+                        loanAmount: 20
                     }
                 ]
             },
@@ -100,18 +114,23 @@ export const vaults =  [
                 name: 'Moonbirds',
                 imgSrc: '/static/images/vaults/collection4.png',
                 openseaSrc: '',
-                price: '12.4 WETH/-5.16%',
-                totalWETH: 0.0,
-                LTV: [0.0],
-                APR: [0.0],
-                duration: [0.0],
+                etherScanSrc: '',
+                price: '19.4 WETH/-5.16%',
+                openseaPrice: 19.4,
+                oraclePrice: 18.4,
+                totalWETH: 3001,
+                LTV: 15.0,
+                APR: 9.0,
+                duration: 90,
                 NFTs: [
                     {
-                        imgSrc: '',
+                        imgSrc: '/static/images/vaults/collection4.png',
                         openseaSrc: '',
-                        duration: 0.0,
-                        APR: 0.0,
-                        amount: 0.0
+                        etherScanSrc: '',
+                        value: 34,
+                        duration: 30,
+                        APR: 10,
+                        loanAmount: 20
                     }
                 ]
             },
@@ -119,7 +138,10 @@ export const vaults =  [
     },
 ]
 
+
+
 vaults.map((vault,index)=>{
+    vault.etherScanSrc = `https://etherscan.io/address/${vault.contractAddy}`
     vault.data.LTV.marks = [
         {
             value: vault.data.LTV.range[0],
