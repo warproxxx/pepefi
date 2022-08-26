@@ -84,26 +84,26 @@ async function perform_whale_transfer() {
     
 
     //only transfer if owned
-    if ((await NFT_CONTRACT.ownerOf('12699013038842394238')).toLowerCase() == WHALE.toLowerCase())
-    {    
-        console.log("Transferring Dickbutts")
+    // if ((await NFT_CONTRACT.ownerOf('12699013038842394238')).toLowerCase() == WHALE.toLowerCase())
+    // {    
+    //     console.log("Transferring Dickbutts")
 
-        await NFT_CONTRACT.transferFrom(WHALE, '0x5664198BDb6AB7337b70742ff4BDD935f81e4Dcd', '12699013038842394238', { 
-            from: WHALE,
-        })
+    //     await NFT_CONTRACT.transferFrom(WHALE, '0x5664198BDb6AB7337b70742ff4BDD935f81e4Dcd', '12699013038842394238', { 
+    //         from: WHALE,
+    //     })
 
-        // https://etherscan.io/tx/0x378de6d4712b911ba9c51ec5112d1c6c63ebf8dc2257854cbf1826f14892ccbf // 2192
-    }
+    //     // https://etherscan.io/tx/0x378de6d4712b911ba9c51ec5112d1c6c63ebf8dc2257854cbf1826f14892ccbf // 2192
+    // }
 
-    if ((await NFT_CONTRACT.ownerOf('14103957916149294123')).toLowerCase() == WHALE.toLowerCase())
-    { 
-        console.log("Transferring Dickbutts")
-        await NFT_CONTRACT.transferFrom(WHALE, '0x99c6fD3bC02dEB420F192eFb3ED0D6f479856D4B', '14103957916149294123', {
-            from: WHALE,
-        })
+    // if ((await NFT_CONTRACT.ownerOf('14103957916149294123')).toLowerCase() == WHALE.toLowerCase())
+    // { 
+    //     console.log("Transferring Dickbutts")
+    //     await NFT_CONTRACT.transferFrom(WHALE, '0x99c6fD3bC02dEB420F192eFb3ED0D6f479856D4B', '14103957916149294123', {
+    //         from: WHALE,
+    //     })
 
-        // https://etherscan.io/tx/0x4561823f2241f1fa503f4051d737d33b0c28e970a05e88ac4ea6ae156cf33c5c // 2317
-    }
+    //     // https://etherscan.io/tx/0x4561823f2241f1fa503f4051d737d33b0c28e970a05e88ac4ea6ae156cf33c5c // 2317
+    // }
 
 
 

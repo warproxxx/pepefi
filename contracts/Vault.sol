@@ -9,6 +9,7 @@ import "./interfaces/IERC20.sol";
 import "./interfaces/IDirectLoanBase.sol";
 import "./interfaces/IVaultManager.sol";
 import "./interfaces/IPepeFiOracle.sol";
+import "./interfaces/IPepeAuction.sol";
 import "./interfaces/IDirectLoanCoordinator.sol";
 
 
@@ -23,6 +24,7 @@ contract Vault is ERC1155, ReentrancyGuard{
 
     address public NFTFI_TOKEN;
     address public ORACLE_CONTRACT;
+    address public AUCTION_CONTRACT;
 
     address public VAULT_MANAGER;
     address public VAULT_CREATOR;
@@ -50,6 +52,11 @@ contract Vault is ERC1155, ReentrancyGuard{
 
     modifier checkExpired {
         require(block.timestamp < expirityDate);
+        _;
+    }
+
+    modifier onlyAuction {
+        require (msg.sender == AUCTION_CONTRACT);
         _;
     }
 
@@ -94,12 +101,13 @@ contract Vault is ERC1155, ReentrancyGuard{
     }
 
     function setContracts() public {
-        (address _WETH, address _NFTFI_CONTRACT, address _NFTFI_COORDINATOR, address _NFTFI_TOKEN, address _ORACLE_CONTRACT) = IVaultManager(VAULT_MANAGER).getContractAddresses();
+        (address _WETH, address _NFTFI_CONTRACT, address _NFTFI_COORDINATOR, address _NFTFI_TOKEN, address _ORACLE_CONTRACT, address _AUCTION_CONTRACT) = IVaultManager(VAULT_MANAGER).getContractAddresses();
         WETH = _WETH;
         NFTFI_CONTRACT = _NFTFI_CONTRACT;
         NFTFI_COORDINATOR = _NFTFI_COORDINATOR;
         NFTFI_TOKEN = _NFTFI_TOKEN;
         ORACLE_CONTRACT = _ORACLE_CONTRACT;
+        AUCTION_CONTRACT = _AUCTION_CONTRACT;
     }
 
     function getAllLoans() public view returns (uint256[] memory){
@@ -207,11 +215,24 @@ contract Vault is ERC1155, ReentrancyGuard{
         return _nextId;
     }
 
-    function repayLoan(uint32 _loanId, uint256 _loanIndex) public nonReentrant {
+    function getIndex(uint256 value) public view returns (uint256){
+
+
+        for (uint i=0; i<all_loans.length; i++) {
+            if (all_loans[i] == value){
+                return i;
+            }
+        }
+
+        require(1==0, "Value not found");
+    }
+
+    function repayLoan(uint32 _loanId) public nonReentrant {
         //make this an array so multiple loans at once?
         loanDetails storage curr_loan = _loans[_loanId];
 
-        require(all_loans[_loanIndex] == _loanId, "Data modified");
+        uint256 _loanIndex = getIndex(_loanId);
+
         require(curr_loan.expirity >= block.timestamp, "Repayment duration expired");
         
         (bool success, bytes memory data) = WETH.call(abi.encodeWithSelector(0x23b872dd, msg.sender, address(this), curr_loan.repaymentAmount));
@@ -228,18 +249,26 @@ contract Vault is ERC1155, ReentrancyGuard{
         
     }
 
-    function sellLiquidations(uint256 _loanId, uint256 _loanIndex) public nonReentrant {
+    function createAuction(uint256 _loanId) public nonReentrant {
+        uint256 _loanIndex = getIndex(_loanId);
+
+
         loanDetails storage curr_loan = _loans[_loanId];
-        require(all_loans[_loanIndex] == _loanId, "Data modified");
         require(curr_loan.expirity < block.timestamp, "Loan must expire");
         
         //selling logic here
 
-        delete _loans[_loanId];
-        delete all_loans[_loanIndex];
-        _burn(msg.sender, _loanId, 1);
 
     }
+
+    function finishedAuction(uint256 _loanId) public onlyAuction {
+        delete _loans[_loanId];
+        uint256 _loanIndex = getIndex(_loanId);        
+        delete all_loans[_loanIndex];
+        _burn(msg.sender, _loanId, 1);
+    }
+
+
 
 
 

@@ -16,8 +16,12 @@ describe('Contract tests', () => {
         or = await OracleManager.deploy(owner.address);
         await or.deployed();  
 
+        const PepeAuction = await ethers.getContractFactory("PepeAuction");
+        pe = await PepeAuction.deploy();
+        await pe.deployed();  
+
         const VaultManager = await ethers.getContractFactory("VaultManager");
-        vm = await VaultManager.deploy(WETH, NFTFI, NFTFI_COORDINATOR,  NFTFI_NOTE, or.address);
+        vm = await VaultManager.deploy(WETH, NFTFI, NFTFI_COORDINATOR,  NFTFI_NOTE, or.address, pe.address);
         await vm.deployed();  
 
         const Vault = await ethers.getContractFactory("Vault");
@@ -101,7 +105,7 @@ describe('Contract tests', () => {
 
         let loanDetails = await vault.getLoanDetails(loans[0])
 
-        expect((loanDetails.repaymentAmount/10**18).toFixed(4)).to.be.oneOf(['1.0031', '1.0032', '1.0033']);
+        expect((loanDetails.repaymentAmount/10**18).toFixed(3)).to.equal('1.003');
         expect(loanDetails.expirity).to.equal(1661438551);
         expect(loanDetails.loanType).to.equal(0);
         expect(loanDetails.loanPrincipalAmount).to.equal('1000000000000000000');
@@ -109,9 +113,9 @@ describe('Contract tests', () => {
         expect(await vault.getWETHBalance()).to.equal("2000000000000000010") //run test on this here as there is active loan on + equity
 
         await WETH_CONTRACT.approve(vault.address, ethers.constants.MaxUint256);
-        await vault.repayLoan(loans[0], 0)
+        await vault.repayLoan(loans[0])
 
-        expect((await vault.getWETHBalance()/10**18).toFixed(4)).to.be.oneOf(['2.0031', '2.0032', '2.0033']);
+        expect((await vault.getWETHBalance()/10**18).toFixed(3)).to.equal('2.003');
 
     })
 
