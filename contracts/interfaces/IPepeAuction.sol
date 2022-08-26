@@ -1,3 +1,5 @@
+pragma solidity ^0.8.9;
+
 interface IPepeAuction {
   function balanceOf ( address account, uint256 id ) external view returns ( uint256 );
   function buy (  ) external;

@@ -1,3 +1,5 @@
+pragma solidity ^0.8.9;
+
 contract PepeFiOracle {
     event OracleUpdate(address collection, uint256 value, uint256 timestamp);
     mapping (address => uint256) public prices;

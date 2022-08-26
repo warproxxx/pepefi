@@ -1,3 +1,5 @@
+pragma solidity ^0.8.9;
+
 interface IVaultManager {
   function NFTFI_CONTRACT (  ) external view returns ( address );
   function NFTFI_TOKEN (  ) external view returns ( address );
