@@ -104,10 +104,10 @@ describe('Contract tests', () => {
         await TEST_CONTRACT.approve(vault.address, NOTE)
         await vault.takePNNFILoan(loan['loanId'], '1000000000000000000', '1661438551'); //past time works as we are using old fork
 
-        let loans = await vault.getAllLoans()
+        let loans = await vault.all_loans()
         expect(loans.length).to.greaterThanOrEqual(1)
 
-        let loanDetails = await vault.getLoanDetails(loans[0])
+        let loanDetails = await vault._loans(loans[0])
 
         expect((loanDetails.repaymentAmount/10**18).toFixed(3)).to.equal('1.003');
         expect(loanDetails.expirity).to.equal(1661438551);
