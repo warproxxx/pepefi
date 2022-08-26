@@ -156,13 +156,21 @@ async function deploy(){
 
     ABI_STRING = ABI_STRING + "\n\n"
 
+    const PepeAuction = await ethers.getContractFactory("PepeAuction");
+    pe = await PepeAuction.deploy();
+    await pe.deployed();  
+
+    const VaultUtils = await ethers.getContractFactory("VaultUtils");
+    vu = await VaultUtils.deploy(contracts['NFTFI'],  contracts['NFTFI_COORDINATOR']);
+    await vu.deployed();  
+
     const OracleManager = await ethers.getContractFactory("PepeFiOracle");
     or = await OracleManager.deploy(owner.address);
     await or.deployed(); 
     console.log("Oracle Contract Deployed at " + or.address);
 
     const VaultManager = await ethers.getContractFactory("VaultManager");
-    let vm = await VaultManager.deploy(contracts['WETH'], contracts['NFTFI'],  contracts['NFTFI_COORDINATOR'], contracts['NFTFI_NOTE'], or.address );
+    let vm = await VaultManager.deploy(contracts['WETH'], contracts['NFTFI'],  contracts['NFTFI_COORDINATOR'], contracts['NFTFI_NOTE'], or.address, pe.address, vu.address );
     await vm.deployed();  
     console.log("Vault Manager Contract Deployed at " + vm.address);
 
