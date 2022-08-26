@@ -292,7 +292,7 @@ export const AddVaultPopup = (props) => {
                   value={collectionDetail.collectionLTV}
                   helperText={collectionDetailError.collectionLTV ? "Numbers only, 0 - 100" : ""}
                   onChange={handleSetCollectionDetail('collectionLTV')}
-                  customerror={collectionDetailError.collectionLTV }
+                  customerror={collectionDetailError.collectionLTV.toString() }
                 />
             </Tooltip>
             <Tooltip title={"collection APR is numbers only, between 0 - 100"} 
@@ -312,7 +312,7 @@ export const AddVaultPopup = (props) => {
                 value={collectionDetail.collectionAPR}
                 helperText={collectionDetailError.collectionAPR ? "Numbers only, 0 - 100" : ""}
                 onChange={handleSetCollectionDetail('collectionAPR')}
-                customerror={collectionDetailError.collectionAPR }
+                customerror={collectionDetailError.collectionAPR.toString() }
               />
             </Tooltip>
           <Box sx={{display:'flex',justifyContent:'center',marginTop:'10px'}}>
