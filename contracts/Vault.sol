@@ -225,7 +225,7 @@ contract Vault is ERC1155, ReentrancyGuard{
     }
 
     function takeERC721Loan() public nonReentrant checkExpired{
-
+        
     }
 
     function sellLiquidations(uint256 _loanId, uint256 _loanIndex) public nonReentrant {
