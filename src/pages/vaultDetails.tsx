@@ -439,7 +439,13 @@ function VaultDetailPage(props:any) {
 
  
 
-                        <Button sx={{mt:'70px',borderRadius: "15px",color:'white',padding:'20px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:"30px",width:'100%'}} variant="contained">
+                        <Button 
+                        sx={{mt:'70px',borderRadius: "15px",color:'white',padding:'20px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:"30px",width:'100%'}} 
+                        variant="contained"
+                        onClick={()=>{
+                            console.log(inputValue)
+                        }}
+                        >
                             Confirm
                         </Button>          
 
