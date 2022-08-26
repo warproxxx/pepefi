@@ -3,14 +3,17 @@ import {DashboardLayout} from 'src/components/Nav/dashboard-layout'
 import Head from "next/head";
 import { useState } from "react";
 import {Button,Box,Grid,Typography} from "@mui/material";
-import { AddVaultPopup } from "src/components/Vaults/AddVaultPopup";
-import { VaultCard } from "src/components/Vaults/VaultCard";
-import { VaultDetailsPopup } from "src/components/Vaults/VaultDetailsPopup";
 import {styled, experimental_sx as sx} from '@mui/system';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
-import { loans } from 'src/data/loans';
+import { lendingNFT as not_redux_lendingNFT } from 'src/data/lendingNFT';
+import { loans as not_redux_loans } from 'src/data/loans';
+
+import { useAppSelector, useAppDispatch } from 'src/app/hooks';
+import { selectLoans,setLoans } from 'src/redux/loansSlice';
+import { setLendingNFT } from 'src/redux/lendingNFTSlice';
+
 
 export const LoansBox = styled(Box)((props)  => sx({
   minHeight: "80vh",
@@ -32,6 +35,11 @@ export const LoansNFTNumberTypography = styled(Typography)((props)  => sx({
 }));
 
 function LoansPage(props:any) {
+  const loans = useAppSelector(selectLoans);
+  const dispatch = useAppDispatch();
+  
+  dispatch(setLoans(not_redux_loans))
+
   const router = useRouter();
   return (
     <>
@@ -68,7 +76,10 @@ function LoansPage(props:any) {
                           boxShadow: "3px 2px 10px 1px rgba(115, 137, 217, 0.5)",
                       }
                     }}
-                    onClick={()=>{router.push("/loanDetails")}}
+                    onClick={()=>{
+                      dispatch(setLendingNFT(not_redux_lendingNFT));
+                      router.push("/loanDetails");
+                    }}
                     >
                       <Box sx={{
                           borderRadius: "15px",

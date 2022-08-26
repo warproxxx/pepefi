@@ -65,6 +65,8 @@ const connectWallet = async () => {
                 provider,library,accounts,network,chainId,account
             }
             dispatch(setWallets(wallets))
+
+            
         }
     } 
     catch (error) {

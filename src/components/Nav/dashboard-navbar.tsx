@@ -12,10 +12,10 @@ import {useState, useEffect, useRef} from 'react';
 import {Link} from 'react-scroll';
 import { useRouter } from 'next/router';
 
-import {web3ModalHelper} from '../../utils/web3ModalFunctions'
-import {truncateAddress,toHex} from '../../utils/helpers'
-import { useAppSelector } from '../../app/hooks';
-import {selectWallets,} from '../../redux/walletsSlice';
+import {web3ModalHelper} from 'src/utils/web3ModalFunctions'
+import {truncateAddress,toHex} from 'src/utils/helpers'
+import { useAppSelector, useAppDispatch } from 'src/app/hooks';
+import {selectWallets,} from 'src/redux/walletsSlice';
 
 const pages = [ 'Loans','Vaults'];
 const links = ["/loans",'/vaults'];

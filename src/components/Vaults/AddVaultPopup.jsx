@@ -25,7 +25,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 import { styled, experimental_sx as sx } from '@mui/system';
 
-import {truncateAddress} from '../../utils/helpers'
+import {truncateAddress,camelCaseToSpace} from '../../utils/helpers'
 import { tooltipDelay } from "src/constants/tooltip";
 
 
@@ -165,12 +165,24 @@ export const AddVaultPopup = (props) => {
       }
     };
 
+    const finishAddVault = () => {
+      finalFormReturnValues['collectionsAddressArray'] = []
+      finalFormReturnValues['collectionsLTVArray'] = []
+      finalFormReturnValues['collectionsAPRArray'] = []
+      finalFormReturnValues.collections.map((collection,index)=>{
+        finalFormReturnValues['collectionsAddressArray'].push(collection.collectionAddress);
+        finalFormReturnValues['collectionsLTVArray'].push(collection.collectionLTV);
+        finalFormReturnValues['collectionsAPRArray'].push(collection.collectionAPR);
+      })
+      console.log(finalFormReturnValues);
+    }
+
     let finalFormReturnValues = {
       vaultName: values.vaultName,
       vaultManagerAddress: values.vaultManagerAddress,
       initialVaultDeposit: values.initialVaultDeposit,
       collections: collections,
-      expiredDate: datePickerVaule,
+      expiredDate: datePickerVaule.toLocaleDateString(),
       allowExternalLP: values.allowExternalLP,
     }
 
@@ -196,8 +208,8 @@ export const AddVaultPopup = (props) => {
                 label={inputs[1]}
                 variant="filled"
                 margin="normal"
-                value={values.providerAddress}
-                onChange={handleChange('providerAddress')}
+                value={values.vaultManagerAddress}
+                onChange={handleChange('vaultManagerAddress')}
                 placeholder="0x000...000"
               />
           </Tooltip>
@@ -280,7 +292,7 @@ export const AddVaultPopup = (props) => {
                   value={collectionDetail.collectionLTV}
                   helperText={collectionDetailError.collectionLTV ? "Numbers only, 0 - 100" : ""}
                   onChange={handleSetCollectionDetail('collectionLTV')}
-                  customerror={collectionDetailError.collectionLTV }
+                  customerror={collectionDetailError.collectionLTV.toString() }
                 />
             </Tooltip>
             <Tooltip title={"collection APR is numbers only, between 0 - 100"} 
@@ -300,7 +312,7 @@ export const AddVaultPopup = (props) => {
                 value={collectionDetail.collectionAPR}
                 helperText={collectionDetailError.collectionAPR ? "Numbers only, 0 - 100" : ""}
                 onChange={handleSetCollectionDetail('collectionAPR')}
-                customerror={collectionDetailError.collectionAPR }
+                customerror={collectionDetailError.collectionAPR.toString() }
               />
             </Tooltip>
           <Box sx={{display:'flex',justifyContent:'center',marginTop:'10px'}}>
@@ -380,22 +392,48 @@ export const AddVaultPopup = (props) => {
         flexDirection: 'column',
         mt:'20px'
       }}>
-      {/* {
-        Object.entries(finalFormReturnValues).map ((value,index)=>{
+      {
+        Object.keys(finalFormReturnValues).map((key,index)=>{
+          let value = finalFormReturnValues[key]
           return(
-            <Box sx={{display: 'flex', justifyContent:'space-between'}} key={index}>
+            <Box sx={{display: 'flex', justifyContent:'space-between',flexDirection:`${key=="collections" ? "column" : "row"}`}} key={index}>
               <Typography sx={{}}>
-                {value}:
+                {camelCaseToSpace(key)}:
               </Typography>
-              <Typography sx={{color: "#5dc961",fontWeight: "bold", width:`${index==1 ? '70%' : 'auto'}`, overflowX: 'auto'}}>
-                {Object.values(values)[index]}
+              <Box sx={{color: "#5dc961",fontWeight: "bold", width:`${key=="collections" ? "100%" : "30%"}`, overflowX: 'auto'}}>
+                {/* {Object.values(values)[index]}
                 {index==2  ? ' WETH' : ''}
-                {index==3 || index==4 ? '%' : ''}
-              </Typography>
+                {index==3 || index==4 ? '%' : ''} */}
+              {/* {typeof(value) == 'object' ? void(0) : <Typography>{value}</Typography>} */}
+              {key === 'vaultName' ? value : void(0)}
+              {key === 'vaultManagerAddress' ? truncateAddress(value) : void(0)}
+              {key === 'initialVaultDeposit' ? `${value} WETH` : void(0)}
+
+              {key === 'collections' ? 
+              <Box sx={{mb:'20px'}}>
+                {
+                  value.map((collection,index)=>{
+                    return(
+                      <Box sx={{"background":"#1B1B21","boxShadow":"0px 5px 2px 1px rgba(0, 0, 0, 0.25)","borderRadius":"8px",px:'10px',py:'5px',mt:'10px'}} key={index}>
+                        <Typography >
+                          {`${collection.collectionName}, ${truncateAddress(collection.collectionAddress)}`}
+                        </Typography>
+                        <Typography >
+                          {`${collection.collectionLTV}% LTV, ${collection.collectionAPR}% APR`}
+                        </Typography>
+                      </Box>
+                    )
+                  })
+                }
+              </Box> : void(0)}
+              
+              {key === 'expiredDate' ? value : void(0)}
+              {key === 'allowExternalLP' ? (value ? 'YES': 'NO') : void(0)}
+              </Box>
             </Box>
           )
-        })
-      } */}
+        }) 
+      }
 
 
       </Box>   
@@ -497,7 +535,7 @@ export const AddVaultPopup = (props) => {
         {
           activeStep == 2
           ?
-          <Button onClick={()=>{}}>
+          <Button onClick={()=>{finishAddVault()}}>
                 Finish
           </Button>
           :

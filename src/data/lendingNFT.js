@@ -11,22 +11,22 @@ export const lendingNFT = {
         avaliableVaults: [
             {
                 name: "Goblin Sax Vault",
-                apr: 10.0,
+                APR: 10.0,
                 duration: 30
             },
             {
                 name: "Vault Number 1",
-                apr: 11.0,
+                APR: 11.0,
                 duration: 30
             },
             {
                 name: "Vault Number 2",
-                apr: 12.0,
+                APR: 12.0,
                 duration: 30
             },
             {
                 name: "Vault Number 3",
-                apr: 13.0,
+                APR: 13.0,
                 duration: 30
             }
     ],
@@ -38,5 +38,5 @@ export const lendingNFT = {
 }
 
 lendingNFT.avaliableVaults.map((vault)=>{
-    lendingNFT.avaliableVaultsStrs.push(`${vault.name} (${vault.apr}% APR / ${vault.duration} days)`)
+    lendingNFT.avaliableVaultsStrs.push(`${vault.name} (${vault.APR}% APR / ${vault.duration} days)`)
 })

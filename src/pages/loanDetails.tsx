@@ -8,8 +8,10 @@ import {styled, experimental_sx as sx} from '@mui/system';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
-import { lendingNFT } from 'src/data/lendingNFT';
+import { lendingNFT as not_redux_lendingNFT } from 'src/data/lendingNFT';
 
+import { useAppSelector, useAppDispatch } from 'src/app/hooks';
+import { selectLendingNFT,setLendingNFT } from 'src/redux/lendingNFTSlice';
 
 
 export const LoanDetailBox = styled(Box)((props)  => sx({
@@ -81,15 +83,18 @@ export const LoanDetailBestVaultMenuItemDivier = styled(Divider)((props)  => sx(
 function LoanDetailPage(props:any) {
   const router = useRouter();
 
+  const lendingNFT = useAppSelector(selectLendingNFT);
+  const dispatch = useAppDispatch();
+
   const [loanAmount, setLoanAmount] = useState(0);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (event:any, newValue:any) => {
     setLoanAmount(newValue);
   };
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event) => {
+  const handleClick = (event:any) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
@@ -99,6 +104,7 @@ function LoanDetailPage(props:any) {
   const [selectedVaultIndex,setSelectedVaultIndex] = useState(0);
 
   return (
+    
     <>
       <Head>
         <title>
@@ -116,7 +122,10 @@ function LoanDetailPage(props:any) {
           justifyContent: 'center'
         }}
       >
-        <LoanDetailBox sx={{maxWidth:'1400px',display:'flex',justifyContent:'space-between',fontFamily:'DM Mono'}}>
+        {
+          lendingNFT.name == '' ? 
+          <Typography>Return to loans page to select an NFT for lending</Typography>:
+          <LoanDetailBox sx={{maxWidth:'1400px',display:'flex',justifyContent:'space-between',fontFamily:'DM Mono'}}>
           <Box sx={{
             background:"#121218",
             boxShadow: "3px 3px 11px rgba(0, 0, 0, 0.25)",
@@ -277,7 +286,7 @@ function LoanDetailPage(props:any) {
                 <Box sx={{
                   display:'flex',
                   flexDirection:'row',
-                  mt:'20px',
+                  mt:'50px',
                   justifyContent: 'space-between'
                 }}>
 
@@ -326,6 +335,8 @@ function LoanDetailPage(props:any) {
             </Box>
           </Box>
         </LoanDetailBox>
+        }
+
       </Box>
     </>
   );
