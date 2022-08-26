@@ -400,7 +400,7 @@ export const AddVaultPopup = (props) => {
               <Typography sx={{}}>
                 {camelCaseToSpace(key)}:
               </Typography>
-              <Typography sx={{color: "#5dc961",fontWeight: "bold", width:`${key=="collections" ? "100%" : "30%"}`, overflowX: 'auto'}}>
+              <Box sx={{color: "#5dc961",fontWeight: "bold", width:`${key=="collections" ? "100%" : "30%"}`, overflowX: 'auto'}}>
                 {/* {Object.values(values)[index]}
                 {index==2  ? ' WETH' : ''}
                 {index==3 || index==4 ? '%' : ''} */}
@@ -429,7 +429,7 @@ export const AddVaultPopup = (props) => {
               
               {key === 'expiredDate' ? value : void(0)}
               {key === 'allowExternalLP' ? (value ? 'YES': 'NO') : void(0)}
-              </Typography>
+              </Box>
             </Box>
           )
         }) 

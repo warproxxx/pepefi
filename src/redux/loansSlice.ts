@@ -1,22 +1,16 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk } from '../app/store';
+import { NFTType } from 'src/types';
+
 
 export interface LoansState {
-  provider: Object;
-  library: Object;
-  account: String;
-  error: Object;
-  chainId: Number;
-  network: String;
+  selectedNFTIndex: Number,
+  allNFTs:Array<NFTType>
 }
 
 const initialState: LoansState = {
-    provider: {},
-    library: {},
-    account: "",
-    error: {},
-    chainId: 0,
-    network: ""
+  selectedNFTIndex: 0,
+  allNFTs:[]
 };
 
 export const LoansSlice = createSlice({
@@ -26,38 +20,19 @@ export const LoansSlice = createSlice({
   reducers: {
     // Use the PayloadAction type to declare the contents of `action.payload`
     setLoans: (state, action: PayloadAction<LoansState>) => {
-      state.provider = action.payload.provider;
-      state.library = action.payload.library;
-      state.account = action.payload.account;
-      state.error = action.payload.error;
-      state.chainId = action.payload.chainId;
-      state.network = action.payload.network;
+      state.selectedNFTIndex = action.payload.selectedNFTIndex;
+      state.allNFTs = action.payload.allNFTs;
     },
-    setProvider: (state, action: PayloadAction<any>) => {
-      state.provider = action.payload.provider;
+    setSelectedNFTIndex: (state, action: PayloadAction<Number>) => {
+      state.selectedNFTIndex = action.payload;
     },
-    setLibrary: (state, action: PayloadAction<any>) => {
-      state.library = action.payload.library;
-    },
-    setAccount: (state, action: PayloadAction<any>) => {
-      state.account = action.payload.account;
-    },
-    setError: (state, action: PayloadAction<any>) => {
-      state.error = action.payload.error;
-    },
-    setChainId: (state, action: PayloadAction<any>) => {
-      state.chainId = action.payload.chainId;
+    setAllNFTs: (state, action: PayloadAction<Array<NFTType>>) => {
+      state.allNFTs = action.payload;
     },  
-    setNetwork: (state, action: PayloadAction<any>) => {
-      state.network = action.payload.network;
-    },     
   },
-
 });
 
-export const { setLoans,setProvider,setLibrary,setAccount,setError,setChainId,setNetwork } = LoansSlice.actions;
-
-export const selectWallets = (state: RootState) => state.wallets;
-
+export const { setLoans } = LoansSlice.actions;
+export const selectLoans = (state: RootState) => state.loans;
 
 export default LoansSlice.reducer;
