@@ -67,8 +67,10 @@ contract Vault is ERC1155, ReentrancyGuard{
         uint256 assetId; //asset ID
 
         uint256 smartNftId; //incase it is nftfi loan
+        uint32 nftfiLoanId; //incase it is nftfi loan
 
         uint256 expirity; //expirity date of loan
+        uint256 underlyingExpirity; //expirty in nftfi
         uint8 loanType; //0 for PN. 1 for nft
         uint256 loanPrincipalAmount; //principal taken
         uint256 repaymentAmount; //repayment amount
@@ -78,6 +80,17 @@ contract Vault is ERC1155, ReentrancyGuard{
         address collection;
         uint256 ltv;
         uint256 apr;
+    }
+
+    struct loanCreation {
+        address nftCollateralContract; 
+        uint256 nftCollateralId;
+        uint256 loanPrincipal; 
+        uint256 apr;
+        uint256 loanExpirty; 
+        uint256 smartNftId; 
+        uint32 nftfiLoanId; 
+        uint256 underlyingExpirity;
     }
 
     mapping(uint256 => loanDetails) public _loans;
@@ -119,8 +132,6 @@ contract Vault is ERC1155, ReentrancyGuard{
     }
 
     function getWETHBalance() public view returns (uint256) {
-        uint256 wethBalance = IERC20(WETH).balanceOf(address(this));
-
         uint256 loanBalance = 0;
 
         //this loop thru active loans and liquidated assets. 2 birds 1 stone.
@@ -137,7 +148,7 @@ contract Vault is ERC1155, ReentrancyGuard{
         }
 
 
-        return wethBalance + loanBalance;
+        return IERC20(WETH).balanceOf(address(this)) + loanBalance;
     }
 
     function addLiquidity(uint256 _amount)  public nonReentrant checkExpired {
@@ -150,7 +161,7 @@ contract Vault is ERC1155, ReentrancyGuard{
             shares = _amount;
         }
 
-        (bool success, bytes memory data) = WETH.call(abi.encodeWithSelector(0x23b872dd, msg.sender, this, _amount));
+        (bool success, ) = WETH.call(abi.encodeWithSelector(0x23b872dd, msg.sender, this, _amount));
 
         require(success, "Failed to send WETH");
 
@@ -158,18 +169,7 @@ contract Vault is ERC1155, ReentrancyGuard{
         totalSupply = totalSupply + shares;
     }
 
-    function takePNNFILoan(uint32 _loanId, uint256 _loanAmount, uint256 _repaymentDate) public nonReentrant checkExpired returns (uint256) {
-        //make this an array so multiple loans at once?
-
-        IDirectLoanCoordinator.Loan memory loan = IDirectLoanCoordinator(NFTFI_COORDINATOR).getLoanData(_loanId);
-        require(loan.status == IDirectLoanCoordinator.StatusType.NEW, "It needs to be an active loan");
-
-        IERC721(NFTFI_TOKEN).transferFrom(msg.sender, address(this), loan.smartNftId); //Transfer the NFT to our wallet. 
-
-        (uint256 loanPrincipalAmount, uint256 maximumRepaymentAmount, uint256 nftCollateralId, address loanERC20Denomination, uint32 loanDuration, uint16 loanInterestRateForDurationInBasisPoints, , , uint64 loanStartTime, address nftCollateralContract, ) = IDirectLoanBase(NFTFI_CONTRACT).loanIdToLoan(_loanId);
-        
-        require(loanERC20Denomination == 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2, "The Loan must be in WETH");
-
+    function getCollateralDetails(address nftCollateralContract) internal returns (assetDetails memory) {
         assetDetails memory details;
 
         for (uint i=0; i<collections.length; i++) {
@@ -181,38 +181,88 @@ contract Vault is ERC1155, ReentrancyGuard{
         }
 
         require(details.ltv != 0, "Collection not in whitelist");
+        return details;
+    }
 
-        uint256 loanPrincipal = Math.min(_loanAmount, details.ltv * IPepeFiOracle(ORACLE_CONTRACT).getPrice(details.collection));
-        uint256 loanExpirty = Math.min(Math.min(loanStartTime + loanDuration,  expirityDate), _repaymentDate);
-       
-        require(loanExpirty > block.timestamp, "Loans can only expire in future");
+    function _preprocessPNNFTFi(uint32 _loanId) internal returns (uint256, address, uint256, uint64) {
+        IDirectLoanCoordinator.Loan memory loan = IDirectLoanCoordinator(NFTFI_COORDINATOR).getLoanData(_loanId);
+        require(loan.status == IDirectLoanCoordinator.StatusType.NEW, "It needs to be an active loan");
 
-        require(IERC20(WETH).balanceOf(address(this)) >= loanPrincipal, "Not enough WETH balance");
+        (uint256 loanPrincipalAmount, , uint256 nftCollateralId, address loanERC20Denomination, uint32 loanDuration, , , , uint64 loanStartTime, address nftCollateralContract, ) = IDirectLoanBase(NFTFI_CONTRACT).loanIdToLoan(_loanId);
+        require(loanERC20Denomination == 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2, "The Loan must be in WETH");
 
-        (bool success, ) = WETH.call(abi.encodeWithSelector(0x23b872dd, address(this), msg.sender, loanPrincipal));
+        return (loan.smartNftId, nftCollateralContract, nftCollateralId, loanStartTime + loanDuration);
+    }
+
+    function _createLoan(loanCreation memory new_loan) private returns (uint256){
+        
+        require(new_loan.loanExpirty > block.timestamp, "Loans can only expire in future");
+        require(IERC20(WETH).balanceOf(address(this)) >= new_loan.loanPrincipal, "Not enough WETH balance");
+
+        (bool success, ) = WETH.call(abi.encodeWithSelector(0x23b872dd, address(this), msg.sender, new_loan.loanPrincipal));
         require(success, "Cannot transfer WETH");
 
+        if (new_loan.smartNftId == 0){
+            IERC721(new_loan.nftCollateralContract).transferFrom(msg.sender, address(this), new_loan.nftCollateralId); //Transfer the NFT to our wallet. 
+        }
+        else {
+            IERC721(NFTFI_TOKEN).transferFrom(msg.sender, address(this), new_loan.smartNftId); //Transfer the NFT to our wallet. 
+        }
 
-        uint256 repaymentAmount = (((loanExpirty-block.timestamp) * details.apr * loanPrincipal))/31536000000 + loanPrincipal;
+        uint256 repaymentAmount = (((new_loan.loanExpirty-block.timestamp) * new_loan.apr * new_loan.loanPrincipal))/31536000000 + new_loan.loanPrincipal;
         _loans[_nextId+1] = loanDetails({
                 timestamp: block.timestamp,
-                collateral: nftCollateralContract,
-                assetId: nftCollateralId,
-                smartNftId: loan.smartNftId,
-                expirity: loanExpirty,
+                collateral: new_loan.nftCollateralContract,
+                assetId: new_loan.nftCollateralId,
+                smartNftId: new_loan.smartNftId,
+                nftfiLoanId: new_loan.nftfiLoanId,
+                expirity: new_loan.loanExpirty,
+                underlyingExpirity: new_loan.underlyingExpirity,
                 loanType: 0,
-                loanPrincipalAmount: loanPrincipal, 
+                loanPrincipalAmount: new_loan.loanPrincipal, 
                 repaymentAmount: repaymentAmount
             });
 
 
         all_loans.push(_nextId+1);
 
-
         _mint(msg.sender, _nextId+1, 1, "");
         _nextId++;
         
         return _nextId;
+    }
+
+    function takePNNFILoan(uint32 _loanId, uint256 _loanAmount, uint256 _repaymentDate) public nonReentrant checkExpired returns (uint256) {
+
+        (uint256 smartNftId, address nftCollateralContract, uint256 nftCollateralId, uint64 underlyingExpirity) = _preprocessPNNFTFi(_loanId);
+
+        assetDetails memory details = getCollateralDetails(nftCollateralContract);
+
+        //using struct as 20 variable limit
+        return _createLoan(loanCreation({
+            nftCollateralContract: nftCollateralContract, 
+            nftCollateralId: nftCollateralId, 
+            loanPrincipal: Math.min(_loanAmount, details.ltv * IPepeFiOracle(ORACLE_CONTRACT).getPrice(details.collection)), 
+            apr: details.apr, 
+            loanExpirty: Math.min(Math.min(underlyingExpirity,  expirityDate), _repaymentDate), 
+            smartNftId: smartNftId, 
+            nftfiLoanId: _loanId, 
+            underlyingExpirity: underlyingExpirity
+        })); 
+    }
+
+    function takeERC721Loan(address nftCollateralContract, uint256 nftCollateralId, uint256 _loanAmount, uint256 _repaymentDate) public nonReentrant checkExpired{
+        // using nftfi as settlement layer later. Not using was faster for hackathon
+
+
+        assetDetails memory details = getCollateralDetails(nftCollateralContract);
+
+        uint256 loanPrincipal = Math.min(_loanAmount, details.ltv * IPepeFiOracle(ORACLE_CONTRACT).getPrice(details.collection));
+        uint256 loanExpirty = Math.min(_repaymentDate,  expirityDate);
+
+
+        // return _createLoan(nftCollateralContract, loanPrincipal, loanExpirty);
+
     }
 
     function getIndex(uint256 value) public view returns (uint256){
@@ -227,7 +277,7 @@ contract Vault is ERC1155, ReentrancyGuard{
         require(1==0, "Value not found");
     }
 
-    function repayLoan(uint32 _loanId) public nonReentrant {
+    function repayLoan(uint32 _loanId) public {
         //make this an array so multiple loans at once?
         loanDetails storage curr_loan = _loans[_loanId];
 
@@ -245,18 +295,22 @@ contract Vault is ERC1155, ReentrancyGuard{
         _burn(msg.sender, _loanId, 1);
     }
 
-    function takeERC721Loan() public nonReentrant checkExpired{
-        
-    }
+    
 
-    function createAuction(uint256 _loanId) public nonReentrant {
+    function createAuction(uint256 _loanId) public {
+
         uint256 _loanIndex = getIndex(_loanId);
 
 
         loanDetails storage curr_loan = _loans[_loanId];
+        require(curr_loan.underlyingExpirity < block.timestamp, "Loan must expire in NFTFi");
         require(curr_loan.expirity < block.timestamp, "Loan must expire");
-        
-        //selling logic here
+
+        if ((curr_loan.loanType) == 0) {
+            IDirectLoanBase(NFTFI_CONTRACT).liquidateOverdueLoan(curr_loan.nftfiLoanId);
+        }
+
+        // IPepeAuction.createAuction(_loanId, )
 
 
     }
@@ -268,14 +322,8 @@ contract Vault is ERC1155, ReentrancyGuard{
         _burn(msg.sender, _loanId, 1);
     }
 
-
-
-
-
     function withdrawLiquidity(uint256 _amount) public nonReentrant {
         require(block.timestamp > expirityDate); //require liquidations are sold too. or maybe not
     }
-
-
 
 }

@@ -1,10 +1,9 @@
-Remove loanIndex and use function
+Fix it up and make ERC721 work
 
 
 Sell liquidation --< 
 Dutch Auction. 0.5% flat to caller once sold (we will be the caller). 2% decrease every hour starting from min(max repayment, floor * 1.1)
 
 
-takeERC721Loan --< Bonus
 Frontend
 

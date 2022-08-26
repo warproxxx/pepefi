@@ -16,6 +16,12 @@ abiExporter: [
 
 module.exports = {
   solidity: "0.8.9",
+  settings: {
+    optimizer: {
+      enabled: true,
+      runs: 200,
+    }
+  },
   networks: {
     hardhat: {
       chainId: 1337,
@@ -35,10 +41,5 @@ module.exports = {
   gasReporter: {
     currency: 'USD',
     gasPrice: 21
-  },
-  allowUnlimitedContractSize: true,
-  optimizer: {
-    enabled: true,
-    runs: 1
   }
 };

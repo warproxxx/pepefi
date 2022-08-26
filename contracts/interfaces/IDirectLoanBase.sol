@@ -28,4 +28,6 @@ interface IDirectLoanBase {
     function loanRepaidOrLiquidated(uint32) external view returns (bool);
 
     function getWhetherNonceHasBeenUsedForUser(address _user, uint256 _nonce) external view returns (bool);
+
+    function liquidateOverdueLoan(uint32) external;
 }
