@@ -14,7 +14,7 @@ const SetSelectedValue = props.setSelectedCollectionAddressAndName;
 let inputRef;
 const pictureWidthAndHeight = '45px';
   return (
-    <Tooltip title={"Ethereum contract address for the collection, currently we only support 4 collections as listed"} 
+    <Tooltip title={"Ethereum contract address for the collection, currently we only support the collections listed below"} 
     arrow 
     disableFocusListener 
     disableTouchListener 

@@ -355,7 +355,7 @@ function VaultDetailPage(props:any) {
                                             borderRadius: "15px",
                                             overflow:'hidden',
                                             width:'100%',
-                                            aspectRatio:'1/0.8',
+                                            aspectRatio:'1/1',
                                         }}>
                                             <Image src={NFT.imgSrc} layout="responsive" height="100%" width="100%"></Image>
                                         </Box>
