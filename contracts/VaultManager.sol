@@ -32,7 +32,7 @@ contract VaultManager{
 
     function createVault( string calldata _VAULT_NAME, uint256 _expirityDate, address[] memory _collections, uint32[] memory _ltvs, uint32[] memory _aprs, bool _external_lp_enabled, uint256 liquidityAdded) public returns (address vault) {
         if (liquidityAdded > 0){
-            (bool success, bytes memory data) = WETH.call(abi.encodeWithSelector(0x23b872dd, msg.sender, address(this), liquidityAdded));
+            (bool success, ) = WETH.call(abi.encodeWithSelector(0x23b872dd, msg.sender, address(this), liquidityAdded));
             require(success, "Cannot transfer DAI");
         }
 
@@ -42,7 +42,7 @@ contract VaultManager{
         vaults.push(address(vault));
     }
 
-    function getContractAddresses() public returns (address, address, address, address, address, address, address){
+    function getContractAddresses() public view returns (address, address, address, address, address, address, address)  {
         return (WETH, NFTFI_CONTRACT, NFTFI_COORDINATOR, NFTFI_TOKEN, ORACLE_CONTRACT, AUCTION_CONTRACT, UTILS_CONTRACT);
     }
 

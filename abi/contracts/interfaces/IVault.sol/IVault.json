@@ -37,5 +37,53 @@
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_VAULT_MANAGER",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_VAULT_ADMIN",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_expirityDate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address[]",
+        "name": "_collections",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint32[]",
+        "name": "_ltvs",
+        "type": "uint32[]"
+      },
+      {
+        "internalType": "uint32[]",
+        "name": "_aprs",
+        "type": "uint32[]"
+      },
+      {
+        "internalType": "bool",
+        "name": "_external_lp_enabled",
+        "type": "bool"
+      }
+    ],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   }
 ]

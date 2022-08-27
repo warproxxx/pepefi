@@ -37,49 +37,5 @@
     ],
     "stateMutability": "nonpayable",
     "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address[]",
-        "name": "collections",
-        "type": "address[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "ltvs",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "aprs",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "address",
-        "name": "nftCollateralContract",
-        "type": "address"
-      }
-    ],
-    "name": "getCollateralDetails",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
   }
 ]

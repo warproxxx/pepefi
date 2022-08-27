@@ -8,6 +8,7 @@
     "build": "next build",
     "build:hardhat": "npx hardhat run scripts/deploy.js --network localhost",
     "start": "next start -p 3009",
+    "start:oracle": "npx hardhat run scripts/oracle.js --network localhost",
     "lint": "next lint",
     "test": "npx hardhat test --network localhost",
     "node": "npx hardhat node",

@@ -120,7 +120,7 @@ contract Vault is ERC1155, ReentrancyGuard{
         return IERC20(WETH).balanceOf(address(this)) + loanBalance;
     }
 
-    function getCollateralDetails(address nftCollateralContract) internal returns (address, uint256, uint256) {
+    function getCollateralDetails(address nftCollateralContract) internal view returns (address, uint256, uint256)  {
 
 
         for (uint i=0; i<collections.length; i++) {
@@ -231,7 +231,7 @@ contract Vault is ERC1155, ReentrancyGuard{
 
         if(curr_loan.expirity < block.timestamp) {revert();}
         
-        (bool success, bytes memory data) = WETH.call(abi.encodeWithSelector(0x23b872dd, msg.sender, address(this), curr_loan.repaymentAmount));
+        (bool success, ) = WETH.call(abi.encodeWithSelector(0x23b872dd, msg.sender, address(this), curr_loan.repaymentAmount));
         require(success, "F");
 
         if (curr_loan.smartNftId != 0){
@@ -274,7 +274,7 @@ contract Vault is ERC1155, ReentrancyGuard{
         uint256 amount = shares * getWETHBalance() / totalSupply;
         
         if(IERC20(WETH).balanceOf(address(this)) < amount) {revert();}
-        (bool success, bytes memory data) = WETH.call(abi.encodeWithSelector(0x23b872dd, this, msg.sender, amount));
+        (bool success, ) = WETH.call(abi.encodeWithSelector(0x23b872dd, this, msg.sender, amount));
 
         if (success){
             totalSupply = totalSupply - shares;

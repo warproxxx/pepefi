@@ -16,7 +16,7 @@ contract VaultUtils {
 
     
 
-    function _preprocessPNNFTFi(uint32 _loanId, uint256 _loanAmount) external returns (uint256, address, uint256, uint64) {
+    function _preprocessPNNFTFi(uint32 _loanId, uint256 _loanAmount) external view returns (uint256, address, uint256, uint64)  {
         IDirectLoanCoordinator.Loan memory loan = IDirectLoanCoordinator(NFTFI_COORDINATOR).getLoanData(_loanId);
         require(loan.status == IDirectLoanCoordinator.StatusType.NEW, "It needs to be an active loan");
 

@@ -1,47 +1,6 @@
 [
   {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "_VAULT_NAME",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "_VAULT_MANAGER",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_VAULT_ADMIN",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_expirityDate",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address[]",
-        "name": "_collections",
-        "type": "address[]"
-      },
-      {
-        "internalType": "uint32[]",
-        "name": "_ltvs",
-        "type": "uint32[]"
-      },
-      {
-        "internalType": "uint32[]",
-        "name": "_aprs",
-        "type": "uint32[]"
-      },
-      {
-        "internalType": "bool",
-        "name": "_external_lp_enabled",
-        "type": "bool"
-      }
-    ],
+    "inputs": [],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
@@ -165,142 +124,12 @@
   },
   {
     "inputs": [],
-    "name": "AUCTION_CONTRACT",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "LIQUIDITY",
-    "outputs": [
-      {
-        "internalType": "uint32",
-        "name": "",
-        "type": "uint32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "NFTFI_CONTRACT",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "NFTFI_COORDINATOR",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "NFTFI_TOKEN",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "ORACLE_CONTRACT",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "UTILS_CONTRACT",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "VAULT_ADMIN",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "VAULT_MANAGER",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "VAULT_NAME",
     "outputs": [
       {
         "internalType": "string",
         "name": "",
         "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "WETH",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -504,19 +333,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "external_lp_enabled",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -543,91 +359,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "value",
-        "type": "uint256"
-      }
-    ],
-    "name": "getIndex",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_loanId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getLoanDetails",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "timestamp",
-            "type": "uint256"
-          },
-          {
-            "internalType": "address",
-            "name": "collateral",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "assetId",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "smartNftId",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint32",
-            "name": "nftfiLoanId",
-            "type": "uint32"
-          },
-          {
-            "internalType": "uint256",
-            "name": "expirity",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "underlyingExpirity",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "loanPrincipalAmount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "repaymentAmount",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct VaultLib.loanDetails",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "getWETHBalance",
     "outputs": [
@@ -638,6 +369,54 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_VAULT_NAME",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_VAULT_MANAGER",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_VAULT_ADMIN",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_expirityDate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address[]",
+        "name": "_collections",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint32[]",
+        "name": "_ltvs",
+        "type": "uint32[]"
+      },
+      {
+        "internalType": "uint32[]",
+        "name": "_aprs",
+        "type": "uint32[]"
+      },
+      {
+        "internalType": "bool",
+        "name": "_external_lp_enabled",
+        "type": "bool"
+      }
+    ],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -781,13 +560,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "setContracts",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "bytes4",
@@ -867,19 +639,6 @@
       }
     ],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "totalSupply",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {

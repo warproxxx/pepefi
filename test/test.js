@@ -169,9 +169,6 @@ describe('Contract tests', () => {
 
     it("Auction and Withdraw Liquidity", async function () {
         await vault.expireVault();
-
-
-
     })
 
 })

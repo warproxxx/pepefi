@@ -77,7 +77,7 @@
         "type": "uint64"
       }
     ],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   }
 ]
