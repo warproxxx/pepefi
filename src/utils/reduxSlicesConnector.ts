@@ -3,9 +3,13 @@ import {store} from '../app/store'
 import { setWallets } from "src/redux/walletsSlice";
 import { setMyLoans,clearMyLoans } from "src/redux/myLoansSlice";
 import { setLoans,clearLoans } from "src/redux/loansSlice";
+import { setVaults } from "src/redux/vaultsSlice";
 
 import { loans as fake_data_loans } from "src/data/loans";
 import { myLoans as fake_data_myLoans } from "src/data/myLoans";
+import { vaults as fake_data_vaults } from "src/data/vaults";
+
+//import {getUserNFTs,getUserLoans,getVaults} from "src/utils/contractFunctions"
 
 const dispatch = store.dispatch;
 const wallets = store.getState().wallets;
@@ -44,4 +48,13 @@ export const disconnectAndClearData = async () =>{
     
     dispatch(clearLoans());
     dispatch(clearMyLoans());
+}
+
+export const getAndSetVaults = async () =>{
+    dispatch(setVaults(
+        {
+            selectedVault: 0,
+            allVaults: fake_data_vaults
+        }
+    ))
 }

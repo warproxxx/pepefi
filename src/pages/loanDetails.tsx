@@ -1,4 +1,3 @@
-import React from 'react';
 import {DashboardLayout} from 'src/components/Nav/dashboard-layout'
 import Head from "next/head";
 import { useState } from "react";
@@ -43,7 +42,6 @@ export const LoanDetailLabel2Typography = styled(Typography)((props)  => sx({
 
 export const LoanDetailData1Typography = styled(Typography)((props)  => sx({
     fontSize:'30px',
-    fontWeight: 'normal',
     color:'white',
     fontFamily:'inherit',
     fontWeight:'700'
@@ -51,7 +49,6 @@ export const LoanDetailData1Typography = styled(Typography)((props)  => sx({
 
 export const LoanDetailData2Typography = styled(Typography)((props)  => sx({
     fontSize:'20px',
-    fontWeight: 'normal',
     color:'white',
     fontFamily:'inherit',
     fontWeight:'700'
@@ -87,13 +84,13 @@ function LoanDetailPage(props:any) {
   const lendingNFT = useAppSelector(selectLendingNFT);
   const dispatch = useAppDispatch();
 
-  const [loanAmount, setLoanAmount] = useState(0);
+  const [loanAmount, setLoanAmount] = useState<number | number[]>(0);
 
-  const handleChange = (event:any, newValue:number) => {
-    setLoanAmount(newValue);
+  const handleChange = (event: Event, value: number | number [], activeThumb: number) => {
+    setLoanAmount(value);
   };
 
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event:any) => {
     setAnchorEl(event.currentTarget);
@@ -225,7 +222,6 @@ function LoanDetailPage(props:any) {
                   <Box onClick={handleClick} sx={{
                     display:'flex',
                     justifyContent:'flex-start',
-                    paddingX:'0px',
                     color:'white',
                     background: "#1B1B21",
                     border: "1px solid #000000",

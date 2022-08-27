@@ -1,4 +1,4 @@
-import React from 'react';
+//@ts-nocheck
 import {DashboardLayout} from 'src/components/Nav/dashboard-layout'
 import Head from "next/head";
 import { useState } from "react";
@@ -14,6 +14,8 @@ import {truncateAddress} from 'src/utils/helpers'
 
 import { useAppSelector } from 'src/app/hooks';
 import { selectWallets } from 'src/redux/walletsSlice';
+
+
 
 export const VaultDetailBox = styled(Box)((props)  => sx({
   minHeight: "80vh",
@@ -42,10 +44,8 @@ export const VaultDetailLabel3Typography = styled(Typography)((props)  => sx({
     cursor:'pointer'
 }));
 
-
 export const VaultDetailData1Typography = styled(Typography)((props)  => sx({
     fontSize:'30px',
-    fontWeight: 'normal',
     color:'white',
     fontFamily:'inherit',
     fontWeight:'700'
@@ -53,7 +53,6 @@ export const VaultDetailData1Typography = styled(Typography)((props)  => sx({
 
 export const VaultDetailData2Typography = styled(Typography)((props)  => sx({
     fontSize:'20px',
-    fontWeight: 'normal',
     color:'white',
     fontFamily:'inherit',
     fontWeight:'700'
@@ -293,13 +292,17 @@ function VaultDetailPage(props:any) {
                                             {
                                                 selectedCollection == -1 ?
                                                 <VaultDetailData2Typography>
-                                                    {typeof(vault.data[row.dataName]) == 'object' ?
+                                                    {
+                                                    typeof(vault.data[row.dataName]) == 'object' ?
                                                     `${vault.data[row.dataName]?.range[0]}/${vault.data[row.dataName]?.average}/${vault.data[row.dataName]?.range[1]} ${row.unit}` :
-                                                    `${vault.data[row.dataName]} ${row.unit}`}
+                                                    `${vault.data[row.dataName]} ${row.unit}`
+                                                    }
                                                 </VaultDetailData2Typography>
                                                 :
                                                 <VaultDetailData2Typography>
-                                                    {`${vault.collections[selectedCollection][row.dataName]} ${row.unit}`}
+                                                    {
+                                                    `${vault.collections[selectedCollection][row.dataName]} ${row.unit}`
+                                                    }
                                                 </VaultDetailData2Typography>
                                             }
 
@@ -355,7 +358,7 @@ function VaultDetailPage(props:any) {
                                             borderRadius: "15px",
                                             overflow:'hidden',
                                             width:'100%',
-                                            aspectRatio:'1/0.8',
+                                            aspectRatio:'1/1',
                                         }}>
                                             <Image src={NFT.imgSrc} layout="responsive" height="100%" width="100%"></Image>
                                         </Box>

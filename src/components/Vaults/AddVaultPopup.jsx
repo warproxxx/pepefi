@@ -111,7 +111,20 @@ export const AddVaultPopup = (props) => {
 
     const handleSetCollectionDetail = (prop) => (event) => {
       const value = event.target.value;
-      if(prop == 'collectionAPR' || prop == 'collectionLTV'){
+      if(prop == 'collectionAPR'){
+        if(Number.isNaN(Number(value)))
+          return;
+        if(Number(value) > 1000 || Number(value) < 0){
+          setCollectionDetailError({ ...collectionDetailError, [prop]: true});
+          setTimeout(()=>{
+            setCollectionDetailError({ ...collectionDetailError, [prop]: false});
+          },3000)
+          return
+        }
+        else
+          setCollectionDetailError({ ...collectionDetailError, [prop]: false});
+      }
+      else if(prop == 'collectionLTV') {
         if(Number.isNaN(Number(value)))
           return;
         if(Number(value) > 100 || Number(value) < 0){
@@ -123,7 +136,8 @@ export const AddVaultPopup = (props) => {
         }
         else
           setCollectionDetailError({ ...collectionDetailError, [prop]: false});
-      } 
+      }
+
 
       setCollectionDetail({ ...collectionDetail, [prop]: event.target.value});
     };
@@ -276,7 +290,7 @@ export const AddVaultPopup = (props) => {
               enterDelay={tooltipDelay}
               placement="top">
               <AddVaultPopupQuestionTextField
-                  label={"collection Name"}
+                  label={"Collection name"}
                   variant="filled"
                   margin="normal"
                   value={collectionDetail.collectionName}
@@ -311,7 +325,7 @@ export const AddVaultPopup = (props) => {
             enterDelay={tooltipDelay}
             placement="top">
             <AddVaultPopupQuestionTextField
-                label={"collection APR"}
+                label={"APR"}
                 variant="filled"
                 margin="normal"
                 InputProps={{

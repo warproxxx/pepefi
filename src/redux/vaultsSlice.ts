@@ -2,21 +2,81 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk } from '../app/store';
 
 export interface VaultsState {
-  provider: Object;
-  library: Object;
-  account: String;
-  error: Object;
-  chainId: Number;
-  network: String;
+  selectedVault : number;
+  allVaults :Array<
+    {
+      name: string;
+      contractAddy: string;
+      etherScanSrc: string;
+      data: {
+          totalWETH: number;
+          LTV: {
+              range: Array<number>;
+              average: number;
+              min: number;
+              max: number;
+              marks: {
+                value: number;
+                label: string;
+              }
+          },
+          APR: {
+            range: Array<number>;
+            average: number;
+            min: number;
+            max: number;
+            marks: {
+              value: number;
+              label: string;
+            }
+          },
+          duration: {
+            range: Array<number>;
+            average: number;
+            min: number;
+            max: number;
+            marks: {
+              value: number;
+              label: string;
+            }
+          },
+          openseaPrice: number;
+          oraclePrice: number;
+          imgSrc: Array<string>;
+      },
+      collections:[
+          {
+              name: string;
+              imgSrc: string;
+              openseaSrc: string;
+              etherScanSrc: string;
+              price: string;
+              openseaPrice: number;
+              oraclePrice: number;
+              totalWETH: number;
+              LTV: number;
+              APR: number;
+              duration: number;
+              NFTs: [
+                  {
+                      imgSrc: number;
+                      openseaSrc: number;
+                      etherScanSrc: number;
+                      value: number;
+                      duration: number;
+                      APR: number;
+                      loanAmount: number;
+                  }
+              ]
+          }
+      ]
+    }
+  >
 }
 
 const initialState: VaultsState = {
-    provider: {},
-    library: {},
-    account: "",
-    error: {},
-    chainId: 0,
-    network: ""
+  selectedVault: -1,
+  allVaults: []
 };
 
 export const VaultsSlice = createSlice({
@@ -34,17 +94,26 @@ export const VaultsSlice = createSlice({
       }
       return state;
     },
-    setProvider: (state, action: PayloadAction<any>) => {
-      state.provider = action.payload.provider;
+    setAllVaults: (state, action: PayloadAction<object>) => {
+      for (const [key,value] of Object.entries(action.payload)){
+        state.allVaults = {
+          ...state.allVaults,
+          [key]:value
+        }
+      }
       return state;
-    },   
+    },
+    setSelectedVault: (state, action: PayloadAction<number>) => {
+      state.selectedVault = action.payload;
+      return state;
+    }
   },
 
 });
 
-export const { setVaults,setProvider,setLibrary,setAccount,setError,setChainId,setNetwork } = VaultsSlice.actions;
+export const { setVaults, setAllVaults, setSelectedVault } = VaultsSlice.actions;
 
-export const selectWallets = (state: RootState) => state.wallets;
+export const selectVaults = (state: RootState) => state.vaults;
 
 
 export default VaultsSlice.reducer;

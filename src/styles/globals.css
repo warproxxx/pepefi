@@ -13,21 +13,6 @@
   --main-section-interval: 50px;
 }
 
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: 'DM Mono'
-}
-
-.MuiAutocomplete-listbox{
-  padding:0px !important;
-}
-
-/* .MuiAutocomplete-popper .MuiPaper-root{
-  background-color:#101115 !important;
-} */
-
 @font-face {
   font-family: "DM Mono";
   src: url("/static/fonts/DMMono-Regular.ttf");
@@ -38,7 +23,24 @@ body {
   src: url("/static/fonts/LibreBaskerville-Bold.ttf");
 }
 
-#vaultDetailNFTBox::-webkit-scrollbar {
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'DM Mono'
+}
+
+/* .MuiAutocomplete-listbox{
+  padding:0px !important;
+} */
+
+/* .MuiAutocomplete-popper .MuiPaper-root{
+  background-color:#101115 !important;
+} */
+
+
+
+/* #vaultDetailNFTBox::-webkit-scrollbar {
     width: 0.5em;
     height: 0.5em;
 }
@@ -54,6 +56,6 @@ body {
 
 .MuiTableCell-root .MuiButton-root div>div:{
   color: white !important;
-}
+} */
 
 

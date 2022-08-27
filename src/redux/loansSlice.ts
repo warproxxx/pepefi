@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk } from '../app/store';
 
 export interface LoansState {
-  selectedNFTIndex: Number,
+  selectedNFTIndex: number,
   allNFTs:Array<{
     openseaSrc: string;
     collection: string;
@@ -31,7 +31,7 @@ export const LoansSlice = createSlice({
       }
       return state;
   },
-    setSelectedNFTIndex: (state, action: PayloadAction<Number>) => {
+    setSelectedNFTIndex: (state, action: PayloadAction<number>) => {
       state.selectedNFTIndex = action.payload;
       return state;
     },
