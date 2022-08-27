@@ -261,6 +261,11 @@ const getMuiTheme = () => createTheme({
           root: { backgroundColor:'transparent !important',color:'white !important' }
         }
       },
+      MuiToolbar:{
+        styleOverrides:{
+          root: {display: "none"}
+        }
+      }
       
   },
 
