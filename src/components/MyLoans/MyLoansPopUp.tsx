@@ -205,8 +205,9 @@ const dataRows2 = [
             variant="contained"
             sx={{
                 backgroundColor:'#5dc961 !important',
-                paddingX:'10px',
-                paddingY:'5px'
+                paddingX:'8px',
+                paddingY:'5px',
+                whiteSpace: 'nowrap'
             }}>
               Pay Loan
           </Button>

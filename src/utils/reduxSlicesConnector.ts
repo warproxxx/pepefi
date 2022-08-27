@@ -25,11 +25,11 @@ export const connectWalletAndGetData = async () => {
     //  For example:
 
     //  import getUserNFTs from contractFunctions
-    //  userNFTs = await getUserNfTs;
+    //  userNFTs = await getUserNfTs();
     //  dispatch(setLoans(userNFTs));
 
     //  import getUserLoans from contractFunctions
-    //  userLoans = await getUserLoans;
+    //  userLoans = await getUserLoans();
     //  dispatch(setMyLoans(userLoans));
 
     dispatch(setLoans(fake_data_loans));
