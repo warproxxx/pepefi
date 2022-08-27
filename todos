@@ -1,10 +1,10 @@
-Test ERC721 loan
-
-
 Create Auction.
-Withdraw Liquidtiy.
 Sell liquidation --< 
 Dutch Auction. 0.5% flat to caller once sold (we will be the caller). 2% decrease every hour starting from min(max repayment, floor * 1.1)
+
+
+Withdraw Liquidtiy.
+
 
 
 

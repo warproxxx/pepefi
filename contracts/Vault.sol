@@ -116,7 +116,6 @@ contract Vault is ERC1155, ReentrancyGuard{
             }
         }
 
-
         return IERC20(WETH).balanceOf(address(this)) + loanBalance;
     }
 
@@ -129,7 +128,7 @@ contract Vault is ERC1155, ReentrancyGuard{
             }
         }
 
-        require(1<0, "Collection not in whitelist");
+        revert();
     }
 
 
@@ -146,7 +145,7 @@ contract Vault is ERC1155, ReentrancyGuard{
         }
 
         (bool success, ) = WETH.call(abi.encodeWithSelector(0x23b872dd, msg.sender, this, _amount));
-        require(success, "Failed to send WETH");
+        require(success, "F");
 
         _mint(msg.sender, LIQUIDITY, shares, ""); //0 is liquidity token
         totalSupply = totalSupply + shares;
@@ -154,11 +153,11 @@ contract Vault is ERC1155, ReentrancyGuard{
 
     function _createLoan(VaultLib.loanCreation memory new_loan) private returns (uint256){
         
-        require(new_loan.loanExpirty > block.timestamp, "Loans can only expire in future");
-        require(IERC20(WETH).balanceOf(address(this)) >= new_loan.loanPrincipal, "Not enough WETH balance");
+        require(new_loan.loanExpirty >= block.timestamp, "fut");
+        require(IERC20(WETH).balanceOf(address(this)) >= new_loan.loanPrincipal, "blc");
 
         (bool success, ) = WETH.call(abi.encodeWithSelector(0x23b872dd, address(this), msg.sender, new_loan.loanPrincipal));
-        require(success, "Cannot transfer WETH");
+        require(success, "F");
 
         if (new_loan.smartNftId == 0){
             IERC721(new_loan.nftCollateralContract).transferFrom(msg.sender, address(this), new_loan.nftCollateralId); //Transfer the NFT to our wallet. 
@@ -232,7 +231,7 @@ contract Vault is ERC1155, ReentrancyGuard{
             }
         }
 
-        require(1==0, "Value not found");
+        revert();
     }
 
     function repayLoan(uint32 _loanId) public {
@@ -241,10 +240,10 @@ contract Vault is ERC1155, ReentrancyGuard{
 
         uint256 _loanIndex = getIndex(_loanId);
 
-        require(curr_loan.expirity >= block.timestamp, "Repayment duration expired");
+        require(curr_loan.expirity >= block.timestamp, "Exp");
         
         (bool success, bytes memory data) = WETH.call(abi.encodeWithSelector(0x23b872dd, msg.sender, address(this), curr_loan.repaymentAmount));
-        require(success, "Cannot transfer WETH");
+        require(success, "F");
 
         if (curr_loan.smartNftId != 0){
             IERC721(NFTFI_TOKEN).transferFrom(address(this), msg.sender,  curr_loan.smartNftId); //Transfer the NFT from our wallet to user
@@ -268,8 +267,7 @@ contract Vault is ERC1155, ReentrancyGuard{
             IDirectLoanBase(NFTFI_CONTRACT).liquidateOverdueLoan(curr_loan.nftfiLoanId);
         }
 
-        // IPepeAuction.createAuction(_loanId, )
-
+        IPepeAuction(AUCTION_CONTRACT).createAuction(_loanId, Math.min(curr_loan.repaymentAmount, IPepeFiOracle(ORACLE_CONTRACT).getPrice(curr_loan.collateral)), 980, curr_loan.collateral, curr_loan.assetId, 172800, msg.sender, address(this), 5 );
 
     }
 
@@ -288,7 +286,7 @@ contract Vault is ERC1155, ReentrancyGuard{
 
         uint256 amount = shares * getWETHBalance() / totalSupply;
         
-        require(IERC20(WETH).balanceOf(address(this)) >= amount, "Not Avail");
+        require(IERC20(WETH).balanceOf(address(this)) >= amount, "F");
         (bool success, bytes memory data) = WETH.call(abi.encodeWithSelector(0x23b872dd, this, msg.sender, amount));
 
         if (success){
