@@ -1,15 +1,14 @@
-import React, { useEffect } from 'react';
 import {DashboardLayout} from 'src/components/Nav/dashboard-layout'
 import Head from "next/head";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import {Button,Box,Grid,} from "@mui/material";
 import { AddVaultPopup } from "src/components/Vaults/AddVaultPopup";
 import { VaultCard } from "src/components/Vaults/VaultCard";
 import {styled, experimental_sx as sx} from '@mui/system';
 import Image from 'next/image';
 
-import { vaults } from 'src/data/vaults';
 import { selectWallets } from 'src/redux/walletsSlice';
+import { selectVaults, setSelectedVault } from 'src/redux/vaultsSlice';
 import { useAppSelector } from 'src/app/hooks';
 
 export const VaultsBox = styled(Box)((props)  => sx({
@@ -20,6 +19,9 @@ export const VaultsBox = styled(Box)((props)  => sx({
 
 function VaultsPage(props:any) {
   const wallets = useAppSelector(selectWallets);
+  const vaults = useAppSelector(selectVaults);
+  const selectedVault = vaults.selectedVault;
+  const allVaults = vaults.allVaults;
 
   const [addVaultPopupOpen, setAddVaultPopupOpen] = useState(false);
 
@@ -52,10 +54,10 @@ function VaultsPage(props:any) {
         <VaultsBox sx={{maxWidth:'1400px',position:'relative'}}>
           <Grid container spacing={8}>
             {
-              vaults.map((vault,index)=>{
+              allVaults.map((vault,index)=>{
                 return(
                   <Grid item xl={4} lg={4} md={4} sm={6} xs={12} key={index}>
-                    <VaultCard vault={vault}/>
+                    <VaultCard vault={vault} setSelectedVault={setSelectedVault}/>
                   </Grid>
                 )
               })

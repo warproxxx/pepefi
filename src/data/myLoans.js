@@ -2,7 +2,7 @@ import { Button } from "@mui/material"
 
 export const myLoans = [
     {
-        imgSrc:"/static/images/vaults/collection3.png",
+        imgSrc:"/static/images/vaults/doodles-official.png",
         name:'Doodle #2799',
         collection:'Doodle',
         lendedVault:'Goblin Sax Vault',
@@ -14,7 +14,7 @@ export const myLoans = [
         action:'Doodle #2799'
     },
     {
-        imgSrc:"/static/images/vaults/collection3.png",
+        imgSrc:"/static/images/vaults/doodles-official.png",
         name:'Doodle #2799',
         collection:'Doodle',
         lendedVault:'Goblin Sax Vault',

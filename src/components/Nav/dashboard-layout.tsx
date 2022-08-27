@@ -1,10 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 import { Box } from '@mui/material';
 import { DashboardNavbar } from './dashboard-navbar'
-import { DashboardSidebar } from './dashboard-sidebar'
 import {styled, experimental_sx as sx} from '@mui/system';
 
+import {
+  setAccount,
+  setChainId,
+} from 'src/redux/walletsSlice';
+import {web3ModalSetup} from 'src/utils/web3ModalFunctions'
+import { connectWalletAndGetData, disconnectAndClearData, getAndSetVaults } from 'src/utils/reduxSlicesConnector';
+
 import { MyLoansPopUp } from 'src/components/MyLoans/MyLoansPopUp';
+import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import { selectWallets } from 'src/redux/walletsSlice';
+
+import { useTraceUpdate } from 'src/hooks/useTraceUpdate';
 
 const DashboardLayoutRoot = styled('div')((props) => sx({
   display: 'flex',
@@ -14,6 +24,7 @@ const DashboardLayoutRoot = styled('div')((props) => sx({
 }));
 
 export const DashboardLayout = (props:any) => {
+  useTraceUpdate(props);
   const { children } = props;
 
   const [myLoansPopUpOpen, setMyLoansPopUpOpen] = useState(false);
@@ -25,6 +36,47 @@ export const DashboardLayout = (props:any) => {
   const handleMyLoansPopUpClose = () => {
     setMyLoansPopUpOpen(false);
   };
+
+  const wallets = useAppSelector(selectWallets);
+  const dispatch = useAppDispatch(); 
+
+  useEffect(() => {
+    let web3Modal = web3ModalSetup();
+    if (web3Modal.cachedProvider) {
+      connectWalletAndGetData();
+    }
+    getAndSetVaults();
+  }, []);
+
+  useEffect(() => {
+  if (wallets.provider?.on) {
+      const handleAccountsChanged:Function = (accounts:Array<string>) => {
+      console.log("accountsChanged", accounts);
+      if (accounts) dispatch(setAccount(accounts[0]));
+      };
+
+      const handleChainChanged:Function = (_hexChainId:number) => {
+          dispatch(setChainId(_hexChainId));
+      };
+
+      const handleDisconnect:Function = () => {
+      console.log("disconnect", wallets.error);
+      disconnectAndClearData();
+      };
+
+      wallets.provider.on("accountsChanged", handleAccountsChanged);
+      wallets.provider.on("chainChanged", handleChainChanged);
+      wallets.provider.on("disconnect", handleDisconnect);
+
+      return () => {
+      if (wallets.provider.removeListener) {
+          wallets.provider.removeListener("accountsChanged", handleAccountsChanged);
+          wallets.provider.removeListener("chainChanged", handleChainChanged);
+          wallets.provider.removeListener("disconnect", handleDisconnect);
+      }
+      };
+  }
+  }, [wallets.provider]);
 
   return (
     <>
@@ -41,6 +93,7 @@ export const DashboardLayout = (props:any) => {
           {children}
         </Box>
       </DashboardLayoutRoot>
+      {/* @ts-ignore*/}
       <DashboardNavbar handleMyLoansPopUpOpen={handleMyLoansPopUpOpen}/>
       {/* <DashboardSidebar onClose={() => setSidebarOpen(false)} open={isSidebarOpen}/> */}
       <MyLoansPopUp open={myLoansPopUpOpen} handleClose={handleMyLoansPopUpClose}/>

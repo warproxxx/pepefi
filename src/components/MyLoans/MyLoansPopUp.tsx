@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { useState,forwardRef, useEffect } from "react";
 import {
   Button,

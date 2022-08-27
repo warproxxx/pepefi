@@ -26,7 +26,7 @@ export const DashboardNavbar = (props:any) => {
   const router = useRouter();
 
   const [anchorElNav, setAnchorElNav] = useState(null);
-  const [anchorElUser, setAnchorElUser] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState<HTMLElement | null>(null);
   const [navClassList, setNavClassList] = useState([]);
 
   const open = Boolean(anchorElUser);
