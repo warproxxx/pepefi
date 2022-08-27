@@ -71,7 +71,7 @@ contract Vault is ERC1155, ReentrancyGuard{
     function initialize(string memory _VAULT_NAME, address _VAULT_MANAGER, address _VAULT_ADMIN, uint256 _expirityDate, address[] memory _collections, uint32[] memory _ltvs, uint32[] memory _aprs, bool _external_lp_enabled) external{
         if (VAULT_ADMIN != address(0)) {revert();}
 
-        if((_collections.length != _ltvs.length) ||  _collections.length == _aprs.length) {revert();}
+        if((_collections.length != _ltvs.length) ||  _collections.length != _aprs.length) {revert();}
 
         VAULT_NAME = _VAULT_NAME;
         VAULT_MANAGER = _VAULT_MANAGER;
