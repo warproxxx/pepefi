@@ -20,7 +20,7 @@ import {
   setAccount,
   setChainId,
 } from '../redux/walletsSlice';
-import {web3ModalHelper,web3ModalSetup} from '../utils/web3ModalFunctions'
+import {web3ModalHelper,web3ModalSetup,disconnect} from '../utils/web3ModalFunctions'
 
 import 'src/styles/globals.css';
 
@@ -43,12 +43,12 @@ function MyApp(props: any) {
 
   useEffect(() => {
   if (wallets.provider?.on) {
-      const handleAccountsChanged = (accounts) => {
+      const handleAccountsChanged = (accounts:Array<string>) => {
       console.log("accountsChanged", accounts);
       if (accounts) store.dispatch(setAccount(accounts[0]));
       };
 
-      const handleChainChanged = (_hexChainId) => {
+      const handleChainChanged = (_hexChainId:number) => {
           store.dispatch(setChainId(_hexChainId));
       };
 

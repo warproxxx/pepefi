@@ -14,6 +14,7 @@ import { useAppSelector, useAppDispatch } from 'src/app/hooks';
 import { selectLendingNFT,setLendingNFT } from 'src/redux/lendingNFTSlice';
 
 
+
 export const LoanDetailBox = styled(Box)((props)  => sx({
   minHeight: "80vh",
   width: '100%'
@@ -88,11 +89,11 @@ function LoanDetailPage(props:any) {
 
   const [loanAmount, setLoanAmount] = useState(0);
 
-  const handleChange = (event:any, newValue:any) => {
+  const handleChange = (event:any, newValue:number) => {
     setLoanAmount(newValue);
   };
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event:any) => {
     setAnchorEl(event.currentTarget);
@@ -241,7 +242,7 @@ function LoanDetailPage(props:any) {
                   }}>
                     {lendingNFT.avaliableVaultsStrs[selectedVaultIndex]}
                     <Box sx={{justifySelf:'flex-end',marginLeft:'auto',height:'30px',width:'30px',marginRight:'20px'}}>
-                      <Image src="/static/images/icons/triangle-down.svg" layout="responsive" height="30px" width="30px"/>
+                      <Image src="/static/images/icons/triangle-down.svg" layout="responsive" height="30px" width="30px" alt=""/>
                     </Box>
                   </Box>
                   <Menu

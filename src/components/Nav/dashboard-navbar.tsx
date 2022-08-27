@@ -165,7 +165,7 @@ export const DashboardNavbar = (props:any) => {
               }
             }}
           >
-            <MenuItem onClick={()=>{handleCloseUserMenu()}} sx={{color:'black'}}>My Loans</MenuItem>
+            <MenuItem onClick={()=>{props.handleMyLoansPopUpOpen();handleCloseUserMenu();}} sx={{color:'black'}}>My Loans</MenuItem>
             <MenuItem onClick={()=>{disconnect();handleCloseUserMenu();}} sx={{color:'black'}}>Disconnect</MenuItem>
           </Menu>  
             </Box>

@@ -5,7 +5,6 @@ import { useState } from "react";
 import {Button,Box,Grid,} from "@mui/material";
 import { AddVaultPopup } from "src/components/Vaults/AddVaultPopup";
 import { VaultCard } from "src/components/Vaults/VaultCard";
-import { VaultDetailsPopup } from "src/components/Vaults/VaultDetailsPopup";
 import {styled, experimental_sx as sx} from '@mui/system';
 import Image from 'next/image';
 
@@ -76,7 +75,7 @@ function VaultsPage(props:any) {
         onClick={()=>{handleAddVaultPopupClickOpen()}}
 
       >
-        <Image src="/static/images/pepes/pepe2.png" height="150px" width="160px" layout="intrinsic"/>
+        <Image src="/static/images/pepes/pepe2.png" height="150px" width="160px" layout="intrinsic" alt=""/>
       </Box>
     </>
 

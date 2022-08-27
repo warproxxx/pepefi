@@ -12,6 +12,9 @@ import { vaults } from 'src/data/vaults';
 
 import {truncateAddress} from 'src/utils/helpers'
 
+import { useAppSelector } from 'src/app/hooks';
+import { selectWallets } from 'src/redux/walletsSlice';
+
 export const VaultDetailBox = styled(Box)((props)  => sx({
   minHeight: "80vh",
   width: '100%'
@@ -22,7 +25,6 @@ export const VaultDetailLabelTypography = styled(Typography)((props)  => sx({
     fontWeight: 'normal',
     color:'rgba(255, 255, 255, 0.4)',
     fontFamily:'inherit',
-    cursor:'pointer'
 }));
 
 export const VaultDetailLabel2Typography = styled(Typography)((props)  => sx({
@@ -31,6 +33,15 @@ export const VaultDetailLabel2Typography = styled(Typography)((props)  => sx({
     color:'rgba(255, 255, 255, 0.4)',
     fontFamily:'inherit',
 }));
+
+export const VaultDetailLabel3Typography = styled(Typography)((props)  => sx({
+    fontSize:'20px',
+    fontWeight: 'normal',
+    color:'rgba(255, 255, 255, 0.4)',
+    fontFamily:'inherit',
+    cursor:'pointer'
+}));
+
 
 export const VaultDetailData1Typography = styled(Typography)((props)  => sx({
     fontSize:'30px',
@@ -109,6 +120,8 @@ function VaultDetailPage(props:any) {
 
     const vault = vaults[0];
     const router = useRouter();
+    const wallets = useAppSelector(selectWallets);
+
   return (
     <>
       <Head>
@@ -173,12 +186,24 @@ function VaultDetailPage(props:any) {
                                 <VaultDetailLabelTypography>
                                     My Supply
                                 </VaultDetailLabelTypography>
-                                <VaultDetailData2Typography>
-                                    30 WETH
-                                </VaultDetailData2Typography>     
-                                <VaultDetailData2Typography>
-                                    $32,596.20
-                                </VaultDetailData2Typography>                
+                                { wallets.account == "" ? 
+                                <Box>
+                                    <VaultDetailData2Typography>
+                                        Login to see personal financial info.
+                                    </VaultDetailData2Typography>   
+                                </Box>
+                                :
+                                <Box>
+                                    <VaultDetailData2Typography>
+                                        30 WETH / $32,596.20
+                                    </VaultDetailData2Typography>     
+                                    <VaultDetailData2Typography>
+                                        2500 shares / 0.08 %
+                                    </VaultDetailData2Typography>     
+                                </Box>
+                                }
+
+           
                             </Box>
 
                             <Box>
@@ -260,9 +285,9 @@ function VaultDetailPage(props:any) {
                                             gap: '15%'
                                         }}>
                                             <Tooltip title={row.nameDescription} placement="top">
-                                                <VaultDetailLabelTypography>
+                                                <VaultDetailLabel3Typography>
                                                 {row.name}
-                                                </VaultDetailLabelTypography>
+                                                </VaultDetailLabel3Typography>
                                             </Tooltip>
 
                                             {
