@@ -104,74 +104,66 @@ describe('Contract tests', () => {
         await TEST_CONTRACT.approve(vault.address, NOTE)
         await vault.takePNNFILoan(loan['loanId'], '1000000000000000000', '1661438551'); //past time works as we are using old fork
 
-        let loans = await vault.all_loans()
+        let loans = await vault.getAllLoans()
         expect(loans.length).to.greaterThanOrEqual(1)
 
-        let loanDetails = await vault._loans(loans[0])
+        let curr_loan = loans[loans.length - 1]
+
+        let loanDetails = await vault.getLoanDetails(curr_loan)
 
         expect((loanDetails.repaymentAmount/10**18).toFixed(3)).to.equal('1.003');
         expect(loanDetails.expirity).to.equal(1661438551);
-        expect(loanDetails.loanType).to.equal(0);
         expect(loanDetails.loanPrincipalAmount).to.equal('1000000000000000000');
 
         expect(await vault.getWETHBalance()).to.equal("2000000000000000010") //run test on this here as there is active loan on + equity
 
         await WETH_CONTRACT.approve(vault.address, ethers.constants.MaxUint256);
-        await vault.repayLoan(loans[0])
+        await vault.repayLoan(curr_loan)
 
         expect((await vault.getWETHBalance()/10**18).toFixed(3)).to.equal('2.003');
 
     })
 
     it("Take and Repay ERC721 Loan", async function () {
-        //first add ETH to liquidity pool
-        // await vault.addLiquidity((2*10**18).toString());
 
-        // let IMPERSO = '0xC6a6f43d5D52C855EBE1f825C717937A7b901732'
+        let IMPERSO = '0x1b523dc90a79cf5ee5d095825e586e33780f7188'
 
-        // await hre.network.provider.request({
-        //     method: "hardhat_impersonateAccount",
-        //     params: [IMPERSO],
-        // });
+        await hre.network.provider.request({
+            method: "hardhat_impersonateAccount",
+            params: [IMPERSO],
+        });
 
-        // const nft_signer = await ethers.provider.getSigner(IMPERSO);
-        // let NFT_CONTRACT = await ethers.getContractAt(ERC721_ABI, NFTFI_NOTE, nft_signer);
+        const nft_signer = await ethers.provider.getSigner(IMPERSO);
+        let NFT_CONTRACT = await ethers.getContractAt(ERC721_ABI, '0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', nft_signer);
         
-        // let NOTE = "14358716824499463741"
-        // if ((await NFT_CONTRACT.ownerOf(NOTE)).toLowerCase() == IMPERSO.toLowerCase())
-        // { 
+        let NOTE = "9036"
 
-        //     //convert loanId to 14358716824499463741
-        //     console.log("Transferring CloneX")
-        //     await NFT_CONTRACT.transferFrom(IMPERSO, owner.address, NOTE, {
-        //         from: IMPERSO,
-        //     })
-        // }
+        if ((await NFT_CONTRACT.ownerOf(NOTE)).toLowerCase() == IMPERSO.toLowerCase())
+        { 
 
-        // //converting ID
-        // let loan = await NFT_CONTRACT.loans(NOTE)
-        // let TEST_CONTRACT = await ethers.getContractAt(ERC721_ABI, NFTFI_NOTE, owner);
+            console.log("Transferring BAYC")
+            await NFT_CONTRACT.transferFrom(IMPERSO, owner.address, NOTE, {
+                from: IMPERSO,
+            })
+        }
 
-        // //approve contract to spend this nft
-        // await TEST_CONTRACT.approve(vault.address, NOTE)
-        // await vault.takePNNFILoan(loan['loanId'], '1000000000000000000', '1661438551'); //past time works as we are using old fork
 
-        // let loans = await vault.getAllLoans()
-        // expect(loans.length).to.greaterThanOrEqual(1)
+        let TEST_CONTRACT = await ethers.getContractAt(ERC721_ABI, '0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', owner);
 
-        // let loanDetails = await vault.getLoanDetails(loans[0])
+        await TEST_CONTRACT.approve(vault.address, NOTE)
+        await vault.takeERC721Loan('0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', NOTE, '1000000000000000000', '1661438551'); //past time works as we are using old fork
 
-        // expect((loanDetails.repaymentAmount/10**18).toFixed(3)).to.equal('1.003');
-        // expect(loanDetails.expirity).to.equal(1661438551);
-        // expect(loanDetails.loanType).to.equal(0);
-        // expect(loanDetails.loanPrincipalAmount).to.equal('1000000000000000000');
+        let loans = await vault.getAllLoans()
+        let curr_loan = loans[loans.length - 1]
 
-        // expect(await vault.getWETHBalance()).to.equal("2000000000000000010") //run test on this here as there is active loan on + equity
+        let loanDetails = await vault.getLoanDetails(curr_loan)
 
-        // await WETH_CONTRACT.approve(vault.address, ethers.constants.MaxUint256);
-        // await vault.repayLoan(loans[0])
+        expect((loanDetails.repaymentAmount/10**18).toFixed(3)).to.equal('1.003');
+        expect(loanDetails.expirity).to.equal(1661438551);
+        expect(loanDetails.loanPrincipalAmount).to.equal('1000000000000000000');
 
-        // expect((await vault.getWETHBalance()/10**18).toFixed(3)).to.equal('2.003');
+        await WETH_CONTRACT.approve(vault.address, ethers.constants.MaxUint256);
+        await vault.repayLoan(curr_loan)
 
     })
 

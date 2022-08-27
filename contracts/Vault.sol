@@ -14,7 +14,6 @@ import "./interfaces/IVaultUtils.sol";
 
 import {VaultLib} from './VaultLib.sol';
 
-import "hardhat/console.sol";
 
 contract Vault is ERC1155, ReentrancyGuard{
     string public VAULT_NAME;
@@ -35,8 +34,8 @@ contract Vault is ERC1155, ReentrancyGuard{
     uint256[] public all_loans; //all loans taken from our vault
 
     address[] public collections;
-    uint256[] public ltvs;
-    uint256[] public aprs;
+    uint32[] public ltvs;
+    uint32[] public aprs;
 
     uint256 expirityDate;
 
@@ -65,7 +64,7 @@ contract Vault is ERC1155, ReentrancyGuard{
 
     mapping(uint256 => VaultLib.loanDetails) public _loans;
 
-    constructor(string memory _VAULT_NAME, address _VAULT_MANAGER,  uint256 _expirityDate, address[] memory _collections, uint256[] memory _ltvs, uint256[] memory _aprs, bool _external_lp_enabled) ERC1155("https://example.com"){
+    constructor(string memory _VAULT_NAME, address _VAULT_MANAGER,  uint256 _expirityDate, address[] memory _collections, uint32[] memory _ltvs, uint32[] memory _aprs, bool _external_lp_enabled) ERC1155("https://example.com"){
 
         require(_collections.length == _ltvs.length );
         require(_collections.length == _aprs.length );
@@ -122,20 +121,15 @@ contract Vault is ERC1155, ReentrancyGuard{
     }
 
     function getCollateralDetails(address nftCollateralContract) internal returns (address, uint256, uint256) {
-        address collection;
-        uint256 ltv;
-        uint256 apr;
+
 
         for (uint i=0; i<collections.length; i++) {
             if (collections[i] == nftCollateralContract){
-                collection = collections[i];
-                ltv = ltvs[i];
-                apr = aprs[i];
+                return (collections[i], ltvs[i], aprs[i]);
             }
         }
 
-        require(ltv != 0, "Collection not in whitelist");
-        return (collection, ltv, apr);
+        require(1<0, "Collection not in whitelist");
     }
 
 
@@ -145,17 +139,13 @@ contract Vault is ERC1155, ReentrancyGuard{
             require (msg.sender == VAULT_MANAGER);
         }
 
-        uint256 shares = 0;
+        uint256 shares = _amount;
 
         if (totalSupply > 0) {
             shares =  _amount * (totalSupply / getWETHBalance());
         }
-        else {
-            shares = _amount;
-        }
 
         (bool success, ) = WETH.call(abi.encodeWithSelector(0x23b872dd, msg.sender, this, _amount));
-
         require(success, "Failed to send WETH");
 
         _mint(msg.sender, LIQUIDITY, shares, ""); //0 is liquidity token
@@ -177,8 +167,6 @@ contract Vault is ERC1155, ReentrancyGuard{
             IERC721(NFTFI_TOKEN).transferFrom(msg.sender, address(this), new_loan.smartNftId); //Transfer the NFT to our wallet. 
         }
 
-        uint256 repaymentAmount = (((new_loan.loanExpirty-block.timestamp) * new_loan.apr * new_loan.loanPrincipal))/31536000000 + new_loan.loanPrincipal;
-
         _loans[_nextId+1] = VaultLib.loanDetails({
                 timestamp: block.timestamp,
                 collateral: new_loan.nftCollateralContract,
@@ -187,11 +175,9 @@ contract Vault is ERC1155, ReentrancyGuard{
                 nftfiLoanId: new_loan.nftfiLoanId,
                 expirity: new_loan.loanExpirty,
                 underlyingExpirity: new_loan.underlyingExpirity,
-                loanType: 0,
                 loanPrincipalAmount: new_loan.loanPrincipal, 
-                repaymentAmount: repaymentAmount
+                repaymentAmount: (((new_loan.loanExpirty-block.timestamp) * new_loan.apr * new_loan.loanPrincipal))/31536000000 + new_loan.loanPrincipal
             });
-
 
         all_loans.push(_nextId+1);
 
@@ -221,7 +207,7 @@ contract Vault is ERC1155, ReentrancyGuard{
     }
 
     function takeERC721Loan(address nftCollateralContract, uint256 nftCollateralId, uint256 _loanAmount, uint256 _repaymentDate) public nonReentrant checkExpired returns (uint256){
-        // using nftfi as settlement layer later. Not using was faster for hackathon
+        // using nftfi as settlement layer later. Not doing that is better choice for hackathon
 
         (address collection, uint256 ltv, uint256 apr) = getCollateralDetails(nftCollateralContract);
 
@@ -260,10 +246,16 @@ contract Vault is ERC1155, ReentrancyGuard{
         (bool success, bytes memory data) = WETH.call(abi.encodeWithSelector(0x23b872dd, msg.sender, address(this), curr_loan.repaymentAmount));
         require(success, "Cannot transfer WETH");
 
-        IERC721(NFTFI_TOKEN).transferFrom(address(this), msg.sender,  curr_loan.smartNftId); //Transfer the NFT from our wallet to user
+        if (curr_loan.smartNftId != 0){
+            IERC721(NFTFI_TOKEN).transferFrom(address(this), msg.sender,  curr_loan.smartNftId); //Transfer the NFT from our wallet to user
+        }else {
+            IERC721(curr_loan.collateral).transferFrom(address(this), msg.sender,  curr_loan.assetId); //Transfer the NFT from our wallet to user
+        }
 
         delete _loans[_loanId];
         delete all_loans[_loanIndex];
+
+
         _burn(msg.sender, _loanId, 1);
     }
 
@@ -272,7 +264,7 @@ contract Vault is ERC1155, ReentrancyGuard{
         require(curr_loan.underlyingExpirity < block.timestamp, "Exp");
         require(curr_loan.expirity < block.timestamp, "Exp");
 
-        if ((curr_loan.loanType) == 0) {
+        if ((curr_loan.smartNftId) != 0) {
             IDirectLoanBase(NFTFI_CONTRACT).liquidateOverdueLoan(curr_loan.nftfiLoanId);
         }
 
@@ -288,7 +280,7 @@ contract Vault is ERC1155, ReentrancyGuard{
         _burn(msg.sender, _loanId, 1);
     }
 
-    function withdrawLiquidity(uint256 shares) public {
+    function withdrawLiquidity(uint256 shares) public nonReentrant {
         require(block.timestamp > expirityDate); 
 
         uint256 balance = this.balanceOf(msg.sender, LIQUIDITY);

@@ -10,7 +10,6 @@ library VaultLib{
 
         uint256 expirity; //expirity date of loan
         uint256 underlyingExpirity; //expirty in nftfi
-        uint8 loanType; //0 for PN. 1 for nft
         uint256 loanPrincipalAmount; //principal taken
         uint256 repaymentAmount; //repayment amount
     }

@@ -2,6 +2,7 @@ pragma solidity ^0.8.9;
 
 import "./interfaces/IDirectLoanCoordinator.sol";
 import "./interfaces/IDirectLoanBase.sol";
+import {VaultLib} from './VaultLib.sol';
 
 contract VaultUtils {
 
