@@ -22,12 +22,18 @@ export const LoansSlice = createSlice({
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     // Use the PayloadAction type to declare the contents of `action.payload`
-    setLoans: (state, action: PayloadAction<LoansState>) => {
-      state.selectedNFTIndex = action.payload.selectedNFTIndex;
-      state.allNFTs = action.payload.allNFTs;
-    },
+    setLoans: (state, action: PayloadAction<object>) => {
+      for (const [key,value] of Object.entries(action.payload)){
+          state = {
+              ...state,
+              [key]:value
+          }
+      }
+      return state;
+  },
     setSelectedNFTIndex: (state, action: PayloadAction<Number>) => {
       state.selectedNFTIndex = action.payload;
+      return state;
     },
     setAllNFTs: (state, action: PayloadAction<Array<{
       openseaSrc: string;

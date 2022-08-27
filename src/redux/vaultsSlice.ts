@@ -25,32 +25,19 @@ export const VaultsSlice = createSlice({
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     // Use the PayloadAction type to declare the contents of `action.payload`
-    setVaults: (state, action: PayloadAction<VaultsState>) => {
-      state.provider = action.payload.provider;
-      state.library = action.payload.library;
-      state.account = action.payload.account;
-      state.error = action.payload.error;
-      state.chainId = action.payload.chainId;
-      state.network = action.payload.network;
+    setVaults: (state, action: PayloadAction<object>) => {
+      for (const [key,value] of Object.entries(action.payload)){
+          state = {
+              ...state,
+              [key]:value
+          }
+      }
+      return state;
     },
     setProvider: (state, action: PayloadAction<any>) => {
       state.provider = action.payload.provider;
-    },
-    setLibrary: (state, action: PayloadAction<any>) => {
-      state.library = action.payload.library;
-    },
-    setAccount: (state, action: PayloadAction<any>) => {
-      state.account = action.payload.account;
-    },
-    setError: (state, action: PayloadAction<any>) => {
-      state.error = action.payload.error;
-    },
-    setChainId: (state, action: PayloadAction<any>) => {
-      state.chainId = action.payload.chainId;
-    },  
-    setNetwork: (state, action: PayloadAction<any>) => {
-      state.network = action.payload.network;
-    },     
+      return state;
+    },   
   },
 
 });

@@ -49,7 +49,7 @@ export const LendingNFTSlice = createSlice({
   // The `reducers` field lets us define reducers and generate associated actions
     reducers: {
         // Use the PayloadAction type to declare the contents of `action.payload`
-        setLendingNFT: (state, action: PayloadAction<LendingNFTState>) => {
+        setLendingNFT: (state, action: PayloadAction<object>) => {
             for (const [key,value] of Object.entries(action.payload)){
                 state = {
                     ...state,

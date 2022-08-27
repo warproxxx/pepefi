@@ -29,32 +29,38 @@ export const walletsSlice = createSlice({
   name: 'wallets',
   initialState,
   reducers: {
-    setWallets: (state, action: PayloadAction<WalletsState>) => {
-            for (const [key,value] of Object.entries(action.payload)){
-                state = {
-                    ...state,
-                    [key]:value
-                }
-            }
-            return state;
-        },
+    setWallets: (state, action: PayloadAction<object>) => {
+      for (const [key,value] of Object.entries(action.payload)){
+          state = {
+              ...state,
+              [key]:value
+          }
+      }
+      return state;
+    },
     setProvider: (state, action: PayloadAction<object>) => {
-      state.library = action.payload
+      state.library = action.payload;
+      return state;
     },
     setLibrary: (state, action: PayloadAction<object>) => {
       state.library = action.payload;
+      return state;
     },
     setAccount: (state, action: PayloadAction<string>) => {
       state.account = action.payload;
+      return state;
     },
     setError: (state, action: PayloadAction<object>) => {
       state.error = action.payload;
+      return state;
     },
     setChainId: (state, action: PayloadAction<number>) => {
       state.chainId = action.payload;
+      return state;
     },  
     setNetwork: (state, action: PayloadAction<string>) => {
       state.network = action.payload;
+      return state;
     },     
   },
 });
