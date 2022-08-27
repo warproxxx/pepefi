@@ -9,6 +9,8 @@ import {styled, experimental_sx as sx} from '@mui/system';
 import Image from 'next/image';
 
 import { vaults } from 'src/data/vaults';
+import { selectWallets } from 'src/redux/walletsSlice';
+import { useAppSelector } from 'src/app/hooks';
 
 export const VaultsBox = styled(Box)((props)  => sx({
   minHeight: "80vh",
@@ -17,6 +19,8 @@ export const VaultsBox = styled(Box)((props)  => sx({
 
 
 function VaultsPage(props:any) {
+  const wallets = useAppSelector(selectWallets);
+
   const [addVaultPopupOpen, setAddVaultPopupOpen] = useState(false);
 
   const handleAddVaultPopupClickOpen = () => {
@@ -67,6 +71,7 @@ function VaultsPage(props:any) {
         right:"5%",
         bottom: "5%",
         cursor:'pointer',
+        display: `${wallets.account == '' ? 'none' : 'block'}`,
         transitionDuration:'0.5s',
         "&:hover":{
           transform:'translateY(-10px)',

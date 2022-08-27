@@ -230,7 +230,7 @@ const getMuiTheme = () => createTheme({
       MuiPaper:{
         styleOverrides:{
           root: { backgroundColor:'transparent',color:'white !important',fontFamily:'DM Mono !important',
-          "boxShadow":"0px 2px 5px 1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 20%), 0px 1px 5px 0px rgb(0 0 0 / 20%)",
+          "boxShadow":"none",
           padding:'20px'
           }
         }
