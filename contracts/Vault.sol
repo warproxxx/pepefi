@@ -93,6 +93,10 @@ contract Vault is ERC1155, ReentrancyGuard{
         UTILS_CONTRACT = _UTILS_CONTRACT;
     }
 
+    function getAllLoans() public view returns (uint256[] memory){
+        return all_loans;
+    }
+
     function expireVault() onlyVaultAdmin external {
         expirityDate = block.timestamp - 1;
     }

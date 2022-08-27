@@ -34,11 +34,17 @@ describe('Contract tests', () => {
         await vm.deployed();  
 
         let res = await vm.createVault('Test Vault', 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], [450, 450, 450, 450], true, 0)
-        console.log(res)
         await or.updatePrices(['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], ['76000000000000000000', '6000000000000000000', '3000000000000000000', '74000000000000000000'])
+        
 
+        let vaults = await vm.getAllVaults()
+
+        const Vault = await ethers.getContractFactory("Vault");
+        vault = await Vault.attach(vaults[0]);
+          
     })
 
+    
 
     it("Enough Balance to perform tests", async function () {
         let eth_balance = await owner.provider.getBalance(owner.address);
@@ -48,24 +54,22 @@ describe('Contract tests', () => {
         expect(weth_balance / 10**18 ).to.greaterThan(0.1)
     })
 
-    // it("Verify Oracle Price", async function () {
-    //     //also this
+    it("Verify Oracle Price", async function () {
+        expect((await or.getPrice('0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d'))/10**18).to.equal(76)
+        expect((await or.getPrice('0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b'))/10**18).to.equal(6)
+        expect((await or.getPrice('0x42069abfe407c60cf4ae4112bedead391dba1cdb'))/10**18).to.equal(3)
+        expect((await or.getPrice('0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'))/10**18).to.equal(74)
 
-    //     expect((await or.getPrice('0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d'))/10**18).to.equal(76)
-    //     expect((await or.getPrice('0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b'))/10**18).to.equal(6)
-    //     expect((await or.getPrice('0x42069abfe407c60cf4ae4112bedead391dba1cdb'))/10**18).to.equal(3)
-    //     expect((await or.getPrice('0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'))/10**18).to.equal(74)
+    })
 
-    // })
-
-    // it("Add Liquidity", async function () {
-    //     amt = 10
-    //     await WETH_CONTRACT.approve(vault.address, ethers.constants.MaxUint256);
-    //     await vault.addLiquidity(amt);
+    it("Add Liquidity", async function () {
+        amt = 10
+        await WETH_CONTRACT.approve(vault.address, ethers.constants.MaxUint256);
+        await vault.addLiquidity(amt);
         
-    //     expect(await vault.balanceOf(owner.address, 0)).to.equal(amt);
-    //     expect(parseInt(await WETH_CONTRACT.balanceOf(vault.address))).to.greaterThanOrEqual(parseInt(amt));
-    // })
+        expect(await vault.balanceOf(owner.address, 0)).to.equal(amt);
+        expect(parseInt(await WETH_CONTRACT.balanceOf(vault.address))).to.greaterThanOrEqual(parseInt(amt));
+    })
     
     // it("Take and Repay PNNFT Loan and verify liquidity addition", async function () {
     //     //first add ETH to liquidity pool

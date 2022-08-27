@@ -46,8 +46,7 @@ contract VaultManager{
         return (WETH, NFTFI_CONTRACT, NFTFI_COORDINATOR, NFTFI_TOKEN, ORACLE_CONTRACT, AUCTION_CONTRACT, UTILS_CONTRACT);
     }
 
-
-
-
-
+    function getAllVaults() public view returns (address[] memory) {
+        return vaults;
+    }
 }
