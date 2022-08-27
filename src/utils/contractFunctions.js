@@ -4,8 +4,7 @@ import {PEPEAUCTION_ABI, PEPEFIORACLE_ABI, VAULT_ABI, VAULTMANAGER_ABI, VAULTUTI
 
 let wallets = store.getState().wallets;
 let signer = store.getState().wallets.signer;
-let provider = store.getState().wallets.provider;
-
+let provider = signer.provider;
 export const showWallets = () => {
     console.log(wallets);
 }
