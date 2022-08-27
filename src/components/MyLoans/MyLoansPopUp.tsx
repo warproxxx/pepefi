@@ -93,109 +93,20 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const dataRows = [
-  {
-    name: 'name',
-    dataName: 'name',
-    unit: '',
-    label: 'NFT Name',
-    options: {
-      filter: true,
-      sort: true,
-    }
-  },
-  {
-    name: 'collection',
-    dataName: 'collection',
-    unit: '',
-    label: 'collection',
-    options: {
-      filter: true,
-      sort: true,
-     }
-  },
-  {
-    name: 'lendedVault',
-    dataName: 'lendedVault',
-    unit: '',
-    label: 'Lended Vault',
-    options: {
-      filter: true,
-      sort: true,
-     }
-  },
-
-  {
-    name: 'APR',
-    dataName: 'APR',
-    unit: '%',
-    label: 'APR',
-    options: {
-      filter: true,
-      sort: true,
-     }
-  },
-  {
-    name: 'loanAmount',
-    dataName: 'loanAmount',
-    unit: 'WETH',
-    label: 'Loan Amount',
-    options: {
-      filter: true,
-      sort: true,
-     }
-  },
-  {
-    name: 'loanDate',
-    dataName: 'loanDate',
-    unit: '',
-    label: 'Loan Date',
-    options: {
-      filter: true,
-      sort: true,
-     }
-  },
-  {
-    name: 'remainingDays',
-    dataName: 'remainingDays',
-    unit: 'days',
-    label: 'Remaining Days',
-    options: {
-      filter: true,
-      sort: true,
-     }
-  },
-  {
-    name: 'repaymentAmount',
-    dataName: 'repaymentAmount',
-    unit: 'WETH',
-    label: 'Repayment Amount',
-    options: {
-      filter: true,
-      sort: true,
-     }
-  },
-  {
-    name: 'action',
-    dataName: '',
-    unit: '',
-    label: 'Action',
-    options: {
-      filter: false,
-      sort: false,
-     }
-  }
-]
-
 const dataRows2 = [
   {
-    name: 'nftPicture',
-    dataName: 'nftPicture',
+    name: 'imgSrc',
+    dataName: 'imgSrc',
     unit: '',
     label: 'NFT Picture',
     options: {
       filter: false,
       sort: false,
+      customBodyRender: (value:string, tableMeta:any, updateValue:string) => {
+        return (
+          <img src={value} height="50px" style={{borderRadius:'10px'}}></img>
+        );
+      }
     }
   },
   {
@@ -287,6 +198,20 @@ const dataRows2 = [
     options: {
       filter: false,
       sort: false,
+      customBodyRender: (value:string, tableMeta:any, updateValue:string) => {
+        return (
+          <Button 
+            onClick={()=>console.log(value)}
+            variant="contained"
+            sx={{
+                backgroundColor:'#5dc961 !important',
+                paddingX:'10px',
+                paddingY:'5px'
+            }}>
+              Pay Loan
+          </Button>
+          );
+      }
      }
   }
 ]
@@ -363,58 +288,7 @@ export const MyLoansPopUp = (props:any) => {
         >
         <DialogTitle sx={{color:'white',alignSelf: 'flex-start'}} variant="h2">{"My Loans"}</DialogTitle>
         <DialogContent sx={{width:'100%',padding:'20px'}}>
-        {/* {
-          myLoans.map((loan,index)=>{
-            return(
-              <Box 
-              sx={{display:'flex',flexDirection:'column',width:'100%',height:'270px',"background":"#1B1B21","border":"1px solid #000000","boxShadow":"0px 4px 4px rgba(0, 0, 0, 0.25)","borderRadius":"15px",padding:'20px'}}
-              key={index}
-              >
-              <Box sx={{display:'flex',height:'100%'}}>
-                <Box sx={{display:'flex',position:'relative',height:'100%',aspectRatio:'1/1',borderRadius:'15px',overflow:'hidden'}}>
-                    <Image src={loan.imgSrc} layout="fill" objectFit="contain" alt=""/>
-                </Box>
-                <Box sx={{width:'min-content',ml:'40px',flexGrow:'1'}}>
-                  <Grid container spacing={2} sx={{width:'100%',height:'100%',margin:'0px',padding:'0px'}}>
-                    {
-                    dataRows.map((row,index)=>{
-                      return(
-                        <Grid item xl={4} lg={4} md={4} sm={6} xs={12} sx={{margin:'0px',padding:'0px !important'}} key={index}>
-                        <Box sx={{width:'100%',height:'100%',display:'flex',justifyContent:'flex-start',alignItems:'center'}}>
-                          {
-                            row.label == "Action" ?
-                              <Button variant="contained" sx={{
-                                width:'50%',
-                                fontSize:'20px',
-                                "background":"#54AE58",
-                                "boxShadow":"0px 5px 4px rgba(0, 0, 0, 0.25)",
-                                "borderRadius":"5px"
-                              }}>
-                                Pay Back
-                              </Button>
-                            :
-                            <Box>
-                              <MyLoansPopUpLabel2Typography>
-                                {row.label}
-                              </MyLoansPopUpLabel2Typography>
-                              <MyLoansPopUpData2Typography>
-                                {`${loan[row.dataName]} ${row.unit}`}
-                              </MyLoansPopUpData2Typography>                  
-                            </Box>
-                          }
-                        </Box>
-                      </Grid>
-                      )
-                    })
-                    } 
-                  </Grid>
-                </Box>
-              </Box>
-            </Box>
-            )
-          })
-        }
-        <Box sx={{my:'40px'}}/> */}
+
           <ThemeProvider theme={getMuiTheme()}>
             <MUIDataTable
               data={myLoans}

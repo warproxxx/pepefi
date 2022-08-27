@@ -20,9 +20,10 @@ import {
   setAccount,
   setChainId,
 } from '../redux/walletsSlice';
-import {web3ModalHelper,web3ModalSetup,disconnect} from '../utils/web3ModalFunctions'
+import {web3ModalHelper,web3ModalSetup} from '../utils/web3ModalFunctions'
 
 import 'src/styles/globals.css';
+import { connectWalletAndGetData, disconnectAndClearData } from 'src/utils/reduxSlicesConnector';
 
 
 const clientSideEmotionCache = createEmotionCache();
@@ -37,7 +38,7 @@ function MyApp(props: any) {
     let web3Modal = web3ModalSetup();
     let connectWallet = web3ModalHelper.connectWallet;
     if (web3Modal.cachedProvider) {
-        connectWallet();
+      connectWalletAndGetData();
     }
   }, []);
 
@@ -54,7 +55,7 @@ function MyApp(props: any) {
 
       const handleDisconnect = () => {
       console.log("disconnect", wallets.error);
-      disconnect();
+      disconnectAndClearData();
       };
 
       wallets.provider.on("accountsChanged", handleAccountsChanged);

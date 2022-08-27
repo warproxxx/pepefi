@@ -65,12 +65,15 @@ const connectWallet = async () => {
                 provider,library,accounts,network,chainId,account
             }
             dispatch(setWallets(wallets))
+            return true;
 
             
         }
     } 
     catch (error) {
         dispatch(setError(error));
+        console.error(error)
+        return false;
     }
 };
 
@@ -94,6 +97,7 @@ const switchNetwork = async () => {
             });
         } catch (error) {
             setError(error);
+            console.error(error)
         }
         }
     }
@@ -106,8 +110,16 @@ const refreshState = () => {
 };
 
 export const disconnect = async () => {
-    await web3Modal.clearCachedProvider();
-    refreshState();
+    try{
+        await web3Modal.clearCachedProvider();
+        refreshState();
+        return true;
+    }
+    catch(error){
+        console.error(error)
+        return false;
+    }
+
 };
 
 

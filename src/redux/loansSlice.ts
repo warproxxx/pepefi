@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk } from '../app/store';
-import { NFTType } from 'src/types';
-
 
 export interface LoansState {
   selectedNFTIndex: Number,
@@ -39,10 +37,14 @@ export const LoansSlice = createSlice({
     }>>) => {
       state.allNFTs = action.payload;
     },  
+    clearLoans: (state) => {
+      state = {...initialState};
+      return state;
+    },
   },
 });
 
-export const { setLoans,setSelectedNFTIndex,setAllNFTs } = LoansSlice.actions;
+export const { setLoans,setSelectedNFTIndex,setAllNFTs,clearLoans } = LoansSlice.actions;
 export const selectLoans = (state: RootState) => state.loans;
 
 export default LoansSlice.reducer;

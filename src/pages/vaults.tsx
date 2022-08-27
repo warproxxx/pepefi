@@ -75,7 +75,7 @@ function VaultsPage(props:any) {
         onClick={()=>{handleAddVaultPopupClickOpen()}}
 
       >
-        <Image src="/static/images/pepes/pepe2.png" height="150px" width="160px" layout="intrinsic" alt=""/>
+        <Image src="/static/images/pepes/pepe2.png" height="100px" width="110px" layout="intrinsic" alt=""/>
       </Box>
     </>
 

@@ -17,6 +17,8 @@ import {truncateAddress,toHex} from 'src/utils/helpers'
 import { useAppSelector, useAppDispatch } from 'src/app/hooks';
 import {selectWallets,} from 'src/redux/walletsSlice';
 
+import { connectWalletAndGetData, disconnectAndClearData } from 'src/utils/reduxSlicesConnector';
+
 const pages = [ 'Loans','Vaults'];
 const links = ["/loans",'/vaults'];
 const keywords = ['loan','vault'];
@@ -56,8 +58,7 @@ export const DashboardNavbar = (props:any) => {
     setAnchorElUser(null);
   };
 
-  let connectWallet = web3ModalHelper.connectWallet;
-  let disconnect = web3ModalHelper.disconnect;
+  // let connectWallet = web3ModalHelper.connectWallet;
   const wallets = useAppSelector(selectWallets);
 
 
@@ -166,13 +167,13 @@ export const DashboardNavbar = (props:any) => {
             }}
           >
             <MenuItem onClick={()=>{props.handleMyLoansPopUpOpen();handleCloseUserMenu();}} sx={{color:'black'}}>My Loans</MenuItem>
-            <MenuItem onClick={()=>{disconnect();handleCloseUserMenu();}} sx={{color:'black'}}>Disconnect</MenuItem>
+            <MenuItem onClick={()=>{disconnectAndClearData();handleCloseUserMenu();}} sx={{color:'black'}}>Disconnect</MenuItem>
           </Menu>  
             </Box>
        
           </>
           :
-          <Box onClick={()=>{connectWallet()}} sx={{
+          <Box onClick={()=>{connectWalletAndGetData()}} sx={{
             cursor:'pointer',
             transitionDuration:'0.5s',
             "&:hover":{
