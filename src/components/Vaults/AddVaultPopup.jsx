@@ -1,4 +1,4 @@
-import { useState,forwardRef } from "react";
+import { useState,forwardRef, useEffect } from "react";
 import {
   Button,
   Box,
@@ -28,6 +28,8 @@ import { styled, experimental_sx as sx } from '@mui/system';
 import {truncateAddress,camelCaseToSpace} from '../../utils/helpers'
 import { tooltipDelay } from "src/constants/tooltip";
 
+import { selectWallets } from "src/redux/walletsSlice";
+import { useAppSelector } from 'src/app/hooks';
 
   const steps = [
     'Gerneral Info',
@@ -98,7 +100,6 @@ const defaultCollectionDetailsError = {
 }
 
 export const AddVaultPopup = (props) => {
-    
     const [activeStep, setActiveStep] = useState(0);
   
     const [showAddCollection, setShowAddcollection] = useState(false);
@@ -106,9 +107,6 @@ export const AddVaultPopup = (props) => {
     const [collectionDetailError, setCollectionDetailError] = useState(defaultCollectionDetailsError)
     const [collections,setCollections] = useState([]);
 
-
-
-  
     const handleSetCollectionDetail = (prop) => (event) => {
       const value = event.target.value;
       if(prop == 'collectionAPR' || prop == 'collectionLTV'){
@@ -132,7 +130,6 @@ export const AddVaultPopup = (props) => {
       setCollectionDetail({ ...collectionDetail, collectionAddress: address, collectionName:name});
     }
 
-
     const handleAddCollection = () =>{
       setCollections([...collections,collectionDetail])
     }
@@ -154,6 +151,7 @@ export const AddVaultPopup = (props) => {
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
+    const wallets = useAppSelector(selectWallets);
     const [values, setValues] = useState(defaultValues);
   
     const handleChange = (prop) => (event) => {
@@ -164,6 +162,11 @@ export const AddVaultPopup = (props) => {
         setValues({ ...values, [prop]: event.target.value });
       }
     };
+
+    useEffect(()=>{
+      setValues({ ...values, ['vaultManagerAddress']: wallets.account});
+    },[wallets.account])
+
 
     const finishAddVault = () => {
       finalFormReturnValues['collectionsAddressArray'] = []

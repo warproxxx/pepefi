@@ -4,6 +4,8 @@ import { DashboardNavbar } from './dashboard-navbar'
 import { DashboardSidebar } from './dashboard-sidebar'
 import {styled, experimental_sx as sx} from '@mui/system';
 
+import { MyLoansPopUp } from 'src/components/MyLoans/MyLoansPopUp';
+
 const DashboardLayoutRoot = styled('div')((props) => sx({
   display: 'flex',
   flex: '1 1 auto',
@@ -13,7 +15,16 @@ const DashboardLayoutRoot = styled('div')((props) => sx({
 
 export const DashboardLayout = (props:any) => {
   const { children } = props;
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
+
+  const [myLoansPopUpOpen, setMyLoansPopUpOpen] = useState(false);
+
+  const handleMyLoansPopUpOpen = () => {
+    setMyLoansPopUpOpen(true);
+  };
+
+  const handleMyLoansPopUpClose = () => {
+    setMyLoansPopUpOpen(false);
+  };
 
   return (
     <>
@@ -30,8 +41,9 @@ export const DashboardLayout = (props:any) => {
           {children}
         </Box>
       </DashboardLayoutRoot>
-      <DashboardNavbar onSidebarOpen={() => setSidebarOpen(true)} />
+      <DashboardNavbar handleMyLoansPopUpOpen={handleMyLoansPopUpOpen}/>
       {/* <DashboardSidebar onClose={() => setSidebarOpen(false)} open={isSidebarOpen}/> */}
+      <MyLoansPopUp open={myLoansPopUpOpen} handleClose={handleMyLoansPopUpClose}/>
     </>
   );
 };

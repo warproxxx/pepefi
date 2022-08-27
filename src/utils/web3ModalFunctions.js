@@ -105,7 +105,7 @@ const refreshState = () => {
     dispatch(setNetwork(""));
 };
 
-const disconnect = async () => {
+export const disconnect = async () => {
     await web3Modal.clearCachedProvider();
     refreshState();
 };

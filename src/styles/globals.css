@@ -52,13 +52,8 @@ body {
     background: rgba(255,255,255,.2);
 }
 
-.MuiSlider-colorPrimary :nth-child(3){
-  
+.MuiTableCell-root .MuiButton-root div>div:{
+  color: white !important;
 }
-
-.MuiSlider-colorPrimary :nth-child(7){
-  
-}
-
 
 
