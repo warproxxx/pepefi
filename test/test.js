@@ -71,107 +71,107 @@ describe('Contract tests', () => {
         expect(parseInt(await WETH_CONTRACT.balanceOf(vault.address))).to.greaterThanOrEqual(parseInt(amt));
     })
     
-    // it("Take and Repay PNNFT Loan and verify liquidity addition", async function () {
-    //     //first add ETH to liquidity pool
-    //     await vault.addLiquidity((2*10**18).toString());
+    it("Take and Repay PNNFT Loan and verify liquidity addition", async function () {
+        //first add ETH to liquidity pool
+        await vault.addLiquidity((2*10**18).toString());
 
-    //     let IMPERSO = '0xC6a6f43d5D52C855EBE1f825C717937A7b901732'
+        let IMPERSO = '0xC6a6f43d5D52C855EBE1f825C717937A7b901732'
 
-    //     await hre.network.provider.request({
-    //         method: "hardhat_impersonateAccount",
-    //         params: [IMPERSO],
-    //     });
+        await hre.network.provider.request({
+            method: "hardhat_impersonateAccount",
+            params: [IMPERSO],
+        });
 
-    //     const nft_signer = await ethers.provider.getSigner(IMPERSO);
-    //     let NFT_CONTRACT = await ethers.getContractAt(ERC721_ABI, NFTFI_NOTE, nft_signer);
+        const nft_signer = await ethers.provider.getSigner(IMPERSO);
+        let NFT_CONTRACT = await ethers.getContractAt(ERC721_ABI, NFTFI_NOTE, nft_signer);
         
-    //     let NOTE = "14358716824499463741"
-    //     if ((await NFT_CONTRACT.ownerOf(NOTE)).toLowerCase() == IMPERSO.toLowerCase())
-    //     { 
+        let NOTE = "14358716824499463741"
+        if ((await NFT_CONTRACT.ownerOf(NOTE)).toLowerCase() == IMPERSO.toLowerCase())
+        { 
 
-    //         //convert loanId to 14358716824499463741
-    //         console.log("Transferring CloneX")
-    //         await NFT_CONTRACT.transferFrom(IMPERSO, owner.address, NOTE, {
-    //             from: IMPERSO,
-    //         })
-    //     }
+            //convert loanId to 14358716824499463741
+            console.log("Transferring CloneX")
+            await NFT_CONTRACT.transferFrom(IMPERSO, owner.address, NOTE, {
+                from: IMPERSO,
+            })
+        }
 
-    //     //converting ID
-    //     let loan = await NFT_CONTRACT.loans(NOTE)
-    //     let TEST_CONTRACT = await ethers.getContractAt(ERC721_ABI, NFTFI_NOTE, owner);
+        //converting ID
+        let loan = await NFT_CONTRACT.loans(NOTE)
+        let TEST_CONTRACT = await ethers.getContractAt(ERC721_ABI, NFTFI_NOTE, owner);
 
-    //     //approve contract to spend this nft
-    //     await TEST_CONTRACT.approve(vault.address, NOTE)
-    //     await vault.takePNNFILoan(loan['loanId'], '1000000000000000000', '1661438551'); //past time works as we are using old fork
+        //approve contract to spend this nft
+        await TEST_CONTRACT.approve(vault.address, NOTE)
+        await vault.takePNNFILoan(loan['loanId'], '1000000000000000000', '1661438551'); //past time works as we are using old fork
 
-    //     let loans = await vault.getAllLoans()
-    //     expect(loans.length).to.greaterThanOrEqual(1)
+        let loans = await vault.getAllLoans()
+        expect(loans.length).to.greaterThanOrEqual(1)
 
-    //     let curr_loan = loans[loans.length - 1]
+        let curr_loan = loans[loans.length - 1]
 
-    //     let loanDetails = await vault.getLoanDetails(curr_loan)
+        let loanDetails = await vault._loans(curr_loan)
 
-    //     expect((loanDetails.repaymentAmount/10**18).toFixed(3)).to.equal('1.003');
-    //     expect(loanDetails.expirity).to.equal(1661438551);
-    //     expect(loanDetails.loanPrincipalAmount).to.equal('1000000000000000000');
+        expect((loanDetails.repaymentAmount/10**18).toFixed(3)).to.equal('1.003');
+        expect(loanDetails.expirity).to.equal(1661438551);
+        expect(loanDetails.loanPrincipalAmount).to.equal('1000000000000000000');
 
-    //     expect(await vault.getWETHBalance()).to.equal("2000000000000000010") //run test on this here as there is active loan on + equity
+        expect(await vault.getWETHBalance()).to.equal("2000000000000000010") //run test on this here as there is active loan on + equity
 
-    //     await WETH_CONTRACT.approve(vault.address, ethers.constants.MaxUint256);
-    //     await vault.repayLoan(curr_loan)
+        await WETH_CONTRACT.approve(vault.address, ethers.constants.MaxUint256);
+        await vault.repayLoan(curr_loan)
 
-    //     expect((await vault.getWETHBalance()/10**18).toFixed(3)).to.equal('2.003');
+        expect((await vault.getWETHBalance()/10**18).toFixed(3)).to.equal('2.003');
 
-    // })
+    })
 
-    // it("Take and Repay ERC721 Loan", async function () {
+    it("Take and Repay ERC721 Loan", async function () {
 
-    //     let IMPERSO = '0x1b523dc90a79cf5ee5d095825e586e33780f7188'
+        let IMPERSO = '0x1b523dc90a79cf5ee5d095825e586e33780f7188'
 
-    //     await hre.network.provider.request({
-    //         method: "hardhat_impersonateAccount",
-    //         params: [IMPERSO],
-    //     });
+        await hre.network.provider.request({
+            method: "hardhat_impersonateAccount",
+            params: [IMPERSO],
+        });
 
-    //     const nft_signer = await ethers.provider.getSigner(IMPERSO);
-    //     let NFT_CONTRACT = await ethers.getContractAt(ERC721_ABI, '0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', nft_signer);
+        const nft_signer = await ethers.provider.getSigner(IMPERSO);
+        let NFT_CONTRACT = await ethers.getContractAt(ERC721_ABI, '0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', nft_signer);
         
-    //     let NOTE = "9036"
+        let NOTE = "9036"
 
-    //     if ((await NFT_CONTRACT.ownerOf(NOTE)).toLowerCase() == IMPERSO.toLowerCase())
-    //     { 
+        if ((await NFT_CONTRACT.ownerOf(NOTE)).toLowerCase() == IMPERSO.toLowerCase())
+        { 
 
-    //         console.log("Transferring BAYC")
-    //         await NFT_CONTRACT.transferFrom(IMPERSO, owner.address, NOTE, {
-    //             from: IMPERSO,
-    //         })
-    //     }
-
-
-    //     let TEST_CONTRACT = await ethers.getContractAt(ERC721_ABI, '0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', owner);
-
-    //     await TEST_CONTRACT.approve(vault.address, NOTE)
-    //     await vault.takeERC721Loan('0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', NOTE, '1000000000000000000', '1661438551'); //past time works as we are using old fork
-
-    //     let loans = await vault.getAllLoans()
-    //     let curr_loan = loans[loans.length - 1]
-
-    //     let loanDetails = await vault.getLoanDetails(curr_loan)
-
-    //     expect((loanDetails.repaymentAmount/10**18).toFixed(3)).to.equal('1.003');
-    //     expect(loanDetails.expirity).to.equal(1661438551);
-    //     expect(loanDetails.loanPrincipalAmount).to.equal('1000000000000000000');
-
-    //     await WETH_CONTRACT.approve(vault.address, ethers.constants.MaxUint256);
-    //     await vault.repayLoan(curr_loan)
-
-    // })
-
-    // it("Auction and Withdraw Liquidity", async function () {
-    //     await vault.expireVault();
+            console.log("Transferring BAYC")
+            await NFT_CONTRACT.transferFrom(IMPERSO, owner.address, NOTE, {
+                from: IMPERSO,
+            })
+        }
 
 
+        let TEST_CONTRACT = await ethers.getContractAt(ERC721_ABI, '0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', owner);
 
-    // })
+        await TEST_CONTRACT.approve(vault.address, NOTE)
+        await vault.takeERC721Loan('0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', NOTE, '1000000000000000000', '1661438551'); //past time works as we are using old fork
+
+        let loans = await vault.getAllLoans()
+        let curr_loan = loans[loans.length - 1]
+
+        let loanDetails = await vault._loans(curr_loan)
+
+        expect((loanDetails.repaymentAmount/10**18).toFixed(3)).to.equal('1.003');
+        expect(loanDetails.expirity).to.equal(1661438551);
+        expect(loanDetails.loanPrincipalAmount).to.equal('1000000000000000000');
+
+        await WETH_CONTRACT.approve(vault.address, ethers.constants.MaxUint256);
+        await vault.repayLoan(curr_loan)
+
+    })
+
+    it("Auction and Withdraw Liquidity", async function () {
+        await vault.expireVault();
+
+
+
+    })
 
 })
