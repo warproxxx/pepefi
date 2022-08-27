@@ -51,7 +51,6 @@ export const disconnectAndClearData = async () =>{
 }
 
 export const getAndSetVaults = async () =>{
-    console.log('calld once')
     dispatch(setVaults(
         {
             selectedVault: 0,

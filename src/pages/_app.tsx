@@ -38,29 +38,25 @@ function MyApp(props: any) {
 
     </Box>
     : 
-      <StrictMode>
       <CacheProvider value={emotionCache}>
         <Head>
           <title>My Template</title>
           <meta name="viewport" content="initial-scale=1, width=device-width" />
         </Head>
-      <ThemeProvider theme={theme}>
-        <Provider store={store}>
-          <CssBaseline />
-          <NextNProgress
-            color="#5dc961"
-            startPosition={0.3}
-            stopDelayMs={200}
-            height={3}
-            showOnShallow={true}
-          />
-          {getLayout(<Component {...pageProps} />)}
-        </Provider>
-      </ThemeProvider>
-  
-  
+        <ThemeProvider theme={theme}>
+          <Provider store={store}>
+            <CssBaseline />
+            <NextNProgress
+              color="#5dc961"
+              startPosition={0.3}
+              stopDelayMs={200}
+              height={3}
+              showOnShallow={true}
+            />
+            {getLayout(<Component {...pageProps} />)}
+          </Provider>
+        </ThemeProvider>
       </CacheProvider>
-    </StrictMode> 
     }
   </>
   
