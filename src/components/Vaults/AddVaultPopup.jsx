@@ -112,7 +112,7 @@ export const AddVaultPopup = (props) => {
       if(prop == 'collectionAPR' || prop == 'collectionLTV'){
         if(Number.isNaN(Number(value)))
           return;
-        if(Number(value) > 100 || Number(value) < 0){
+        if(Number(value) > 1000 || Number(value) < 0){
           setCollectionDetailError({ ...collectionDetailError, [prop]: true});
           setTimeout(()=>{
             setCollectionDetailError({ ...collectionDetailError, [prop]: false});
