@@ -9,6 +9,7 @@ let vault;
 describe('Contract tests', () => {
 
     before('Deploy Contract and Transfer Tokens', async () => {
+        
         owner = await perform_whale_transfer();
         WETH_CONTRACT = await ethers.getContractAt(ERC20_ABI, WETH,  owner);
 
@@ -17,7 +18,7 @@ describe('Contract tests', () => {
         await or.deployed();  
 
         const PepeAuction = await ethers.getContractFactory("PepeAuction");
-        pe = await PepeAuction.deploy(WETH_CONTRACT);
+        pe = await PepeAuction.deploy(WETH);
         await pe.deployed();  
 
         const VaultUtils = await ethers.getContractFactory("VaultUtils");
@@ -29,7 +30,7 @@ describe('Contract tests', () => {
         await vm.deployed();  
 
         const Vault = await ethers.getContractFactory("Vault");
-        vault = await Vault.deploy('Test Vault', vm.address, 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], [450, 450, 450, 450], true)
+        vault = await Vault.deploy('Test Vault', vm.address, owner.address, 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], [450, 450, 450, 450], true)
         await vault.deployed();  
 
         //now set prices for testing

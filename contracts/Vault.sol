@@ -28,6 +28,7 @@ contract Vault is ERC1155, ReentrancyGuard{
     address public UTILS_CONTRACT;
 
     address public VAULT_MANAGER;
+    address public VAULT_ADMIN;
 
     bool public external_lp_enabled;
 
@@ -45,8 +46,8 @@ contract Vault is ERC1155, ReentrancyGuard{
 
     uint256 public totalSupply = 0;
 
-    modifier onlyVaultManager {
-        require (msg.sender == VAULT_MANAGER);
+    modifier onlyVaultAdmin {
+        require (msg.sender == VAULT_ADMIN);
         _;
     }
 
@@ -64,13 +65,14 @@ contract Vault is ERC1155, ReentrancyGuard{
 
     mapping(uint256 => VaultLib.loanDetails) public _loans;
 
-    constructor(string memory _VAULT_NAME, address _VAULT_MANAGER,  uint256 _expirityDate, address[] memory _collections, uint32[] memory _ltvs, uint32[] memory _aprs, bool _external_lp_enabled) ERC1155("https://example.com"){
+    constructor(string memory _VAULT_NAME, address _VAULT_MANAGER, address _VAULT_ADMIN, uint256 _expirityDate, address[] memory _collections, uint32[] memory _ltvs, uint32[] memory _aprs, bool _external_lp_enabled) ERC1155("https://example.com"){
 
         require(_collections.length == _ltvs.length );
         require(_collections.length == _aprs.length );
 
         VAULT_NAME = _VAULT_NAME;
         VAULT_MANAGER = _VAULT_MANAGER;
+        VAULT_ADMIN = _VAULT_ADMIN;
         expirityDate = _expirityDate;
         external_lp_enabled = _external_lp_enabled;
         collections = _collections;
@@ -81,7 +83,7 @@ contract Vault is ERC1155, ReentrancyGuard{
         setContracts();
     }
 
-    function expireVault() onlyVaultManager public {
+    function expireVault() onlyVaultAdmin public {
         expirityDate = block.timestamp - 1;
     }
 
