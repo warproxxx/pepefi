@@ -56,13 +56,15 @@ const connectWallet = async () => {
         const library = new ethers.providers.Web3Provider(provider);
         const accounts = await library.listAccounts();
         const network = await library.getNetwork();
+        const signer = await library?.getSigner();
+        console.log(library);
         let chainId = 0;
         let account = ""
         if (accounts) {
             account = accounts[0]
             chainId = network.chainId;
             let wallets = {
-                provider,library,accounts,network,chainId,account
+                provider,library,accounts,network,chainId,account,signer
             }
             dispatch(setWallets(wallets))
             return true;

@@ -11,6 +11,7 @@ export interface WalletsState {
   error: object;
   chainId: number;
   network: string;
+  signer: object;
 }
 
 const initialState: WalletsState = {
@@ -22,7 +23,8 @@ const initialState: WalletsState = {
     account: "",
     error: {},
     chainId: 0,
-    network: ""
+    network: "",
+    signer: {}
 };
 
 export const walletsSlice = createSlice({
@@ -60,6 +62,10 @@ export const walletsSlice = createSlice({
     },  
     setNetwork: (state, action: PayloadAction<string>) => {
       state.network = action.payload;
+      return state;
+    },     
+    setSigner: (state, action: PayloadAction<object>) => {
+      state.signer = action.payload;
       return state;
     },     
   },
