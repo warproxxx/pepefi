@@ -6,6 +6,7 @@ import "./interfaces/IVault.sol";
 contract PepeAuction {
     uint256 private _nextId = 1;
     uint256[] public auctions;
+    address public WETH;
 
     struct auctionDetails {
         uint256 timestamp; //unix timestamp of when the auction started
@@ -27,15 +28,15 @@ contract PepeAuction {
 
     mapping(uint256 => auctionDetails) public _auctions;
 
-    constructor(){
-        
+    constructor(address _WETH){
+        WETH = _WETH;
     }
 
     function getAllAuctions() public view returns (uint256[] memory){
         return auctions;
     }
 
-    function createAuction(uint256 _loanId, uint256 _startingPrice, uint256 _discountRate, address _nft, uint256 _nftId, uint256 _duration, address _liquidator, address _owner, uint32 liquidatorFee) public returns (uint256){
+    function createAuction(uint256 _loanId, address _nft, uint256 _nftId, uint256 _startingPrice, uint256 _duration, uint256 _discountRate,   address _owner, address _liquidator, uint32 liquidatorFee) public returns (uint256){
         IERC721(_nft).transferFrom(msg.sender, address(this), _nftId); //Transfer the NFT to our wallet. 
 
         _auctions[_nextId+1] = auctionDetails({
@@ -57,16 +58,41 @@ contract PepeAuction {
         return _nextId;
     }
 
-    function buy() external payable {
-        // uint price = getPrice();
-        // require(msg.value >= price, "ETH < price");
+    function getPrice(uint256 _auctionId) public view returns (uint256) {
+        auctionDetails memory auction = _auctions[_auctionId];
+        uint timeElapsed = ((block.timestamp - auction.timestamp) / auction.duration) + 1;
 
-        // nft.transferFrom(seller, msg.sender, nftId);
-        // uint refund = msg.value - price;
-        // if (refund > 0) {
-        //     payable(msg.sender).transfer(refund);
-        // }
-        // selfdestruct(seller);
+        uint256 price = auction.startingPrice - ((auction.decreasePercentage * auction.startingPrice * timeElapsed)/1000);
+
+        //for sanity 
+        if (price < 10){
+            price = 10;
+        }
+
+        return price;
+    }
+
+    function buy(uint256 _auctionId) external payable {
+        auctionDetails memory auction = _auctions[_auctionId];
+
+
+        uint price = getPrice(_auctionId);
+
+        uint liquidator = (auction.decreasePercentage * price)/1000;
+        uint owner = price - liquidator;
+
+        // send the liquidator and to self
+
+        (bool success, ) = WETH.call(abi.encodeWithSelector(0x23b872dd, msg.sender, auction.liquidator, liquidator));
+        (bool success2, ) = WETH.call(abi.encodeWithSelector(0x23b872dd, msg.sender, auction.withdraw, owner));
+
+        if ((success) && (success2)){
+            IVault(auction.withdraw).finishedAuction(auction.loanId);
+        }
+        else{
+            revert();
+        }
+
     }
 
 }

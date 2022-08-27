@@ -17,7 +17,7 @@ describe('Contract tests', () => {
         await or.deployed();  
 
         const PepeAuction = await ethers.getContractFactory("PepeAuction");
-        pe = await PepeAuction.deploy();
+        pe = await PepeAuction.deploy(WETH_CONTRACT);
         await pe.deployed();  
 
         const VaultUtils = await ethers.getContractFactory("VaultUtils");
@@ -164,6 +164,13 @@ describe('Contract tests', () => {
 
         await WETH_CONTRACT.approve(vault.address, ethers.constants.MaxUint256);
         await vault.repayLoan(curr_loan)
+
+    })
+
+    it("Auction and Withdraw Liquidity", async function () {
+        await vault.expireVault();
+
+
 
     })
 

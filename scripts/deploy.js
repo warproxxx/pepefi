@@ -115,7 +115,7 @@ async function deploy(){
     if (process.env.HARDHAT_NETWORK == 'localhost'){
         await perform_whale_transfer()
     }
-
+    
 
     let ABI_STRING = ""
     let export_string = "module.exports = {"
@@ -157,7 +157,7 @@ async function deploy(){
     ABI_STRING = ABI_STRING + "\n\n"
 
     const PepeAuction = await ethers.getContractFactory("PepeAuction");
-    pe = await PepeAuction.deploy();
+    pe = await PepeAuction.deploy(WETH_CONTRACT);
     await pe.deployed();  
 
     const VaultUtils = await ethers.getContractFactory("VaultUtils");

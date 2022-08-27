@@ -81,6 +81,10 @@ contract Vault is ERC1155, ReentrancyGuard{
         setContracts();
     }
 
+    function expireVault() onlyVaultManager public {
+        expirityDate = block.timestamp - 1;
+    }
+
     function setContracts() public {
         (address _WETH, address _NFTFI_CONTRACT, address _NFTFI_COORDINATOR, address _NFTFI_TOKEN, address _ORACLE_CONTRACT, address _AUCTION_CONTRACT, address _UTILS_CONTRACT) = IVaultManager(VAULT_MANAGER).getContractAddresses();
         WETH = _WETH;
@@ -267,7 +271,7 @@ contract Vault is ERC1155, ReentrancyGuard{
             IDirectLoanBase(NFTFI_CONTRACT).liquidateOverdueLoan(curr_loan.nftfiLoanId);
         }
 
-        IPepeAuction(AUCTION_CONTRACT).createAuction(_loanId, Math.min(curr_loan.repaymentAmount, IPepeFiOracle(ORACLE_CONTRACT).getPrice(curr_loan.collateral)), 980, curr_loan.collateral, curr_loan.assetId, 172800, msg.sender, address(this), 5 );
+        IPepeAuction(AUCTION_CONTRACT).createAuction(_loanId, curr_loan.collateral, curr_loan.assetId, Math.min(curr_loan.repaymentAmount, IPepeFiOracle(ORACLE_CONTRACT).getPrice(curr_loan.collateral)), 7200,  20, address(this), msg.sender,  5);
 
     }
 
