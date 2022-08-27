@@ -1,7 +1,7 @@
 pragma solidity ^0.8.9;
 
-import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/Math.sol";
 
@@ -16,21 +16,20 @@ import {VaultLib} from './VaultLib.sol';
 
 
 contract Vault is ERC1155, ReentrancyGuard{
+    address private WETH;
+    address private NFTFI_CONTRACT;
+    address private NFTFI_COORDINATOR;
+
+    address private NFTFI_TOKEN;
+    address private ORACLE_CONTRACT;
+    address private AUCTION_CONTRACT;
+    address private UTILS_CONTRACT;
+
     string public VAULT_NAME;
+    address private VAULT_MANAGER;
+    address private VAULT_ADMIN;
 
-    address public WETH;
-    address public NFTFI_CONTRACT;
-    address public NFTFI_COORDINATOR;
-
-    address public NFTFI_TOKEN;
-    address public ORACLE_CONTRACT;
-    address public AUCTION_CONTRACT;
-    address public UTILS_CONTRACT;
-
-    address public VAULT_MANAGER;
-    address public VAULT_ADMIN;
-
-    bool public external_lp_enabled;
+    bool private external_lp_enabled;
 
     uint256[] public all_loans; //all loans taken from our vault
 
@@ -40,11 +39,11 @@ contract Vault is ERC1155, ReentrancyGuard{
 
     uint256 expirityDate;
 
-    uint32 public constant LIQUIDITY = 0;
+    uint32 private constant LIQUIDITY = 0;
     /// The ID of the next token that will be minted. Skips 0
     uint256 private _nextId = 1;
 
-    uint256 public totalSupply = 0;
+    uint256 private totalSupply = 0;
 
     modifier onlyVaultAdmin {
         require (msg.sender == VAULT_ADMIN);
@@ -65,10 +64,14 @@ contract Vault is ERC1155, ReentrancyGuard{
 
     mapping(uint256 => VaultLib.loanDetails) public _loans;
 
-    constructor(string memory _VAULT_NAME, address _VAULT_MANAGER, address _VAULT_ADMIN, uint256 _expirityDate, address[] memory _collections, uint32[] memory _ltvs, uint32[] memory _aprs, bool _external_lp_enabled) ERC1155("https://example.com"){
+    constructor() ERC1155("https://example.com"){
 
-        require(_collections.length == _ltvs.length );
-        require(_collections.length == _aprs.length );
+    }
+
+    function initialize(string memory _VAULT_NAME, address _VAULT_MANAGER, address _VAULT_ADMIN, uint256 _expirityDate, address[] memory _collections, uint32[] memory _ltvs, uint32[] memory _aprs, bool _external_lp_enabled) external{
+        if (VAULT_ADMIN != address(0)) {revert();}
+
+        if((_collections.length != _ltvs.length) ||  _collections.length == _aprs.length) {revert();}
 
         VAULT_NAME = _VAULT_NAME;
         VAULT_MANAGER = _VAULT_MANAGER;
@@ -80,14 +83,6 @@ contract Vault is ERC1155, ReentrancyGuard{
         aprs = _aprs;
         
 
-        setContracts();
-    }
-
-    function expireVault() onlyVaultAdmin public {
-        expirityDate = block.timestamp - 1;
-    }
-
-    function setContracts() public {
         (address _WETH, address _NFTFI_CONTRACT, address _NFTFI_COORDINATOR, address _NFTFI_TOKEN, address _ORACLE_CONTRACT, address _AUCTION_CONTRACT, address _UTILS_CONTRACT) = IVaultManager(VAULT_MANAGER).getContractAddresses();
         WETH = _WETH;
         NFTFI_CONTRACT = _NFTFI_CONTRACT;
@@ -98,12 +93,8 @@ contract Vault is ERC1155, ReentrancyGuard{
         UTILS_CONTRACT = _UTILS_CONTRACT;
     }
 
-    function getAllLoans() public view returns (uint256[] memory){
-        return all_loans;
-    }
-
-    function getLoanDetails(uint256 _loanId) public view returns (VaultLib.loanDetails memory){
-        return _loans[_loanId];
+    function expireVault() onlyVaultAdmin external {
+        expirityDate = block.timestamp - 1;
     }
 
     function getWETHBalance() public view returns (uint256) {
@@ -138,10 +129,10 @@ contract Vault is ERC1155, ReentrancyGuard{
     }
 
 
-    function addLiquidity(uint256 _amount)  public checkExpired {
+    function addLiquidity(uint256 _amount)  external checkExpired {
 
         if (external_lp_enabled == false){
-            require (msg.sender == VAULT_MANAGER);
+            if (msg.sender != VAULT_MANAGER) {revert();}
         }
 
         uint256 shares = _amount;
@@ -151,7 +142,8 @@ contract Vault is ERC1155, ReentrancyGuard{
         }
 
         (bool success, ) = WETH.call(abi.encodeWithSelector(0x23b872dd, msg.sender, this, _amount));
-        require(success, "F");
+        
+        if (success == false) {revert();}
 
         _mint(msg.sender, LIQUIDITY, shares, ""); //0 is liquidity token
         totalSupply = totalSupply + shares;
@@ -159,11 +151,11 @@ contract Vault is ERC1155, ReentrancyGuard{
 
     function _createLoan(VaultLib.loanCreation memory new_loan) private returns (uint256){
         
-        require(new_loan.loanExpirty >= block.timestamp, "fut");
-        require(IERC20(WETH).balanceOf(address(this)) >= new_loan.loanPrincipal, "blc");
+        if(new_loan.loanExpirty < block.timestamp) {revert();}
+        if(IERC20(WETH).balanceOf(address(this)) < new_loan.loanPrincipal) {revert();}
 
         (bool success, ) = WETH.call(abi.encodeWithSelector(0x23b872dd, address(this), msg.sender, new_loan.loanPrincipal));
-        require(success, "F");
+        if (success == false) {revert();}
 
         if (new_loan.smartNftId == 0){
             IERC721(new_loan.nftCollateralContract).transferFrom(msg.sender, address(this), new_loan.nftCollateralId); //Transfer the NFT to our wallet. 
@@ -192,7 +184,7 @@ contract Vault is ERC1155, ReentrancyGuard{
         return _nextId;
     }
 
-    function takePNNFILoan(uint32 _loanId, uint256 _loanAmount, uint256 _repaymentDate) public nonReentrant checkExpired returns (uint256) {
+    function takePNNFILoan(uint32 _loanId, uint256 _loanAmount, uint256 _repaymentDate) external nonReentrant checkExpired returns (uint256) {
 
         (uint256 smartNftId, address nftCollateralContract, uint256 nftCollateralId, uint64 underlyingExpirity) = IVaultUtils(UTILS_CONTRACT)._preprocessPNNFTFi(_loanId, _loanAmount);
 
@@ -211,7 +203,7 @@ contract Vault is ERC1155, ReentrancyGuard{
         })); 
     }
 
-    function takeERC721Loan(address nftCollateralContract, uint256 nftCollateralId, uint256 _loanAmount, uint256 _repaymentDate) public nonReentrant checkExpired returns (uint256){
+    function takeERC721Loan(address nftCollateralContract, uint256 nftCollateralId, uint256 _loanAmount, uint256 _repaymentDate) external nonReentrant checkExpired returns (uint256){
         // using nftfi as settlement layer later. Not doing that is better choice for hackathon
 
         (address collection, uint256 ltv, uint256 apr) = getCollateralDetails(nftCollateralContract);
@@ -229,24 +221,11 @@ contract Vault is ERC1155, ReentrancyGuard{
 
     }
 
-    function getIndex(uint256 value) public view returns (uint256){
-
-        for (uint i=0; i<all_loans.length; i++) {
-            if (all_loans[i] == value){
-                return i;
-            }
-        }
-
-        revert();
-    }
-
-    function repayLoan(uint32 _loanId) public {
+    function repayLoan(uint32 _loanId) external {
         //make this an array so multiple loans at once?
         VaultLib.loanDetails storage curr_loan = _loans[_loanId];
 
-        uint256 _loanIndex = getIndex(_loanId);
-
-        require(curr_loan.expirity >= block.timestamp, "Exp");
+        if(curr_loan.expirity < block.timestamp) {revert();}
         
         (bool success, bytes memory data) = WETH.call(abi.encodeWithSelector(0x23b872dd, msg.sender, address(this), curr_loan.repaymentAmount));
         require(success, "F");
@@ -258,16 +237,15 @@ contract Vault is ERC1155, ReentrancyGuard{
         }
 
         delete _loans[_loanId];
-        delete all_loans[_loanIndex];
 
 
         _burn(msg.sender, _loanId, 1);
     }
 
-    function createAuction(uint256 _loanId) public {
+    function createAuction(uint256 _loanId) external {
         VaultLib.loanDetails storage curr_loan = _loans[_loanId];
-        require(curr_loan.underlyingExpirity < block.timestamp, "Exp");
-        require(curr_loan.expirity < block.timestamp, "Exp");
+
+        if ((curr_loan.underlyingExpirity >= block.timestamp) || (curr_loan.expirity >= block.timestamp)) {revert();}
 
         if ((curr_loan.smartNftId) != 0) {
             IDirectLoanBase(NFTFI_CONTRACT).liquidateOverdueLoan(curr_loan.nftfiLoanId);
@@ -277,22 +255,21 @@ contract Vault is ERC1155, ReentrancyGuard{
 
     }
 
-    function finishedAuction(uint256 _loanId) public onlyAuction {
+    function finishedAuction(uint256 _loanId) external onlyAuction {
         delete _loans[_loanId];
-        uint256 _loanIndex = getIndex(_loanId);        
-        delete all_loans[_loanIndex];
         _burn(msg.sender, _loanId, 1);
     }
 
-    function withdrawLiquidity(uint256 shares) public nonReentrant {
-        require(block.timestamp > expirityDate); 
+    function withdrawLiquidity(uint256 shares) external nonReentrant {
+        if(block.timestamp <= expirityDate) {revert();}
 
         uint256 balance = this.balanceOf(msg.sender, LIQUIDITY);
-        require(balance >= shares, "G");
+
+        if (balance <= shares) {revert();}
 
         uint256 amount = shares * getWETHBalance() / totalSupply;
         
-        require(IERC20(WETH).balanceOf(address(this)) >= amount, "F");
+        if(IERC20(WETH).balanceOf(address(this)) < amount) {revert();}
         (bool success, bytes memory data) = WETH.call(abi.encodeWithSelector(0x23b872dd, this, msg.sender, amount));
 
         if (success){
