@@ -31,6 +31,8 @@ import { tooltipDelay } from "src/constants/tooltip";
 import { selectWallets } from "src/redux/walletsSlice";
 import { useAppSelector } from 'src/app/hooks';
 
+import {addVault} from 'src/utils/contractFunctions.js'
+
   const steps = [
     'Gerneral Info',
     'Vault Details',
@@ -134,7 +136,9 @@ export const AddVaultPopup = (props) => {
       setCollections([...collections,collectionDetail])
     }
 
-    const [datePickerVaule, setDatePickerValue] = useState(new Date());
+    const [datePickerVaule, setDatePickerValue] = useState(new Date(new Date().getFullYear(),
+                                                            new Date().getMonth() + 2, 
+                                                            new Date().getDate()));
     const handleDatePickerValueChange = (value) => {
       setDatePickerValue(value);
     }
@@ -168,16 +172,17 @@ export const AddVaultPopup = (props) => {
     },[wallets.account])
 
 
-    const finishAddVault = () => {
+    const finishAddVault = async () => {
       finalFormReturnValues['collectionsAddressArray'] = []
       finalFormReturnValues['collectionsLTVArray'] = []
       finalFormReturnValues['collectionsAPRArray'] = []
       finalFormReturnValues.collections.map((collection,index)=>{
         finalFormReturnValues['collectionsAddressArray'].push(collection.collectionAddress);
-        finalFormReturnValues['collectionsLTVArray'].push(collection.collectionLTV);
-        finalFormReturnValues['collectionsAPRArray'].push(collection.collectionAPR);
+        finalFormReturnValues['collectionsLTVArray'].push(collection.collectionLTV * 10); //doing this as solidity expects in this format
+        finalFormReturnValues['collectionsAPRArray'].push(collection.collectionAPR * 10); //doing this as solidity expects in this format
       })
-      console.log(finalFormReturnValues);
+
+      await addVault(finalFormReturnValues)
     }
 
     let finalFormReturnValues = {
