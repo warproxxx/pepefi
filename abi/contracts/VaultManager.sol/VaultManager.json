@@ -23,12 +23,35 @@
       },
       {
         "internalType": "address",
-        "name": "_SUDOSWAP_CONTRACT",
+        "name": "_ORACLE_CONTRACT",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_AUCTION_CONTRACT",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_UTILS_CONTRACT",
         "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "AUCTION_CONTRACT",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
     "inputs": [],
@@ -71,7 +94,20 @@
   },
   {
     "inputs": [],
-    "name": "SUDOSWAP_CONTRACT",
+    "name": "ORACLE_CONTRACT",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "UTILS_CONTRACT",
     "outputs": [
       {
         "internalType": "address",
@@ -161,6 +197,16 @@
     "inputs": [],
     "name": "getContractAddresses",
     "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
       {
         "internalType": "address",
         "name": "",

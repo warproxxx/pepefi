@@ -4,7 +4,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import {AddVaultPopupQuestionTextField} from './AddVaultPopup'
 import { Typography, Box, Tooltip } from '@mui/material';
 import Image from 'next/image';
-import {acceptedCollections} from 'src/data/acceptedCollections'
+import {ACCEPTED_COLLECTIONS} from 'src/config'
 
 import { tooltipDelay } from 'src/constants/tooltip';
 
@@ -22,7 +22,7 @@ const pictureWidthAndHeight = '45px';
     placement="top">
         <Autocomplete
         id="combo-box-demo"
-        options={acceptedCollections}
+        options={ACCEPTED_COLLECTIONS}
         freeSolo
         disableClearable
         openOnFocus

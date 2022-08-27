@@ -83,8 +83,8 @@ import { useAppSelector } from 'src/app/hooks';
 const defaultCollectionDetails = {
   collectionName: '',
   collectionAddress: '',
-  collectionLTV: '5',
-  collectionAPR: '3'
+  collectionLTV: '50',
+  collectionAPR: '30'
 }
 
 const defaultValues = {
@@ -286,7 +286,7 @@ export const AddVaultPopup = (props) => {
               enterDelay={tooltipDelay}
               placement="top">
               <AddVaultPopupQuestionTextField
-                  label={"collection LTV"}
+                  label={"LTV"}
                   variant="filled"
                   margin="normal"
                   InputProps={{
@@ -298,7 +298,7 @@ export const AddVaultPopup = (props) => {
                   customerror={collectionDetailError.collectionLTV.toString() }
                 />
             </Tooltip>
-            <Tooltip title={"collection APR is numbers only, between 0 - 100"} 
+            <Tooltip title={"APR is percentage only, between 0 - 1000"} 
             arrow 
             disableFocusListener 
             fullWidth
@@ -313,7 +313,7 @@ export const AddVaultPopup = (props) => {
                   endAdornment: <InputAdornment position="end">%</InputAdornment>,
                 }}
                 value={collectionDetail.collectionAPR}
-                helperText={collectionDetailError.collectionAPR ? "Numbers only, 0 - 100" : ""}
+                helperText={collectionDetailError.collectionAPR ? "Numbers only, 0 - 1000" : ""}
                 onChange={handleSetCollectionDetail('collectionAPR')}
                 customerror={collectionDetailError.collectionAPR.toString() }
               />

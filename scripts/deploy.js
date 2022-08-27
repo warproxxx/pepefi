@@ -4,6 +4,7 @@ const hre = require("hardhat");
 const { promises: { readdir } } = require('fs')
 const fs = require("fs");
 const { ethers } = require("hardhat");
+const { updateOracleOnce } = require("./oracle");
 
 let contracts = {};
 
@@ -24,6 +25,15 @@ else
     contracts['NFTFI_NOTE'] = "0x5660e206496808f7b5cdb8c56a696a96ae5e9b23"
     contracts['SUDOSWAP_ROUTER'] = "0x2b2e8cda09bba9660dca5cb6233787738ad68329" //https://docs.sudoswap.xyz/contracts/
 }
+
+let acceptedCollections = [
+                            { name: 'Bored Ape Yacht Club', address: '0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d',imgSrc:'/static/images/vaults/boredapeyachtclub.png', slug: 'boredapeyachtclub'},
+                            { name: 'Doodle', address: '0x8a90cab2b38dba80c64b7734e58ee1db38b8992e',imgSrc:'/static/images/vaults/doodles-official.png', slug: 'doodles-official'},
+                            { name: 'Moonbirds', address: '0x23581767a106ae21c074b2276d25e5c3e136a68b',imgSrc:'/static/images/vaults/proof-moonbirds.png', slug: 'proof-moonbirds'},
+                            { name: 'CloneX', address: '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b',imgSrc:'/static/images/vaults/clonex.png', slug: 'clonex'},
+                            { name: 'CryptoDickbutts', address: '0x42069abfe407c60cf4ae4112bedead391dba1cdb', imgSrc: '/static/images/vaults/cryptodickbutts-s3.png', slug: 'cryptodickbutts-s3'},
+                            { name: 'Wrapped Cryptopunks', address: '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb', imgSrc: '/static/images/vaults/wrapped-cryptopunks.png', slug: 'wrapped-cryptopunks'}
+                        ]
 
 
 let abis = {}
@@ -120,6 +130,9 @@ async function deploy(){
     let ABI_STRING = ""
     let export_string = "module.exports = {"
 
+    ABI_STRING = ABI_STRING + "let ACCEPTED_COLLECTIONS=" + JSON.stringify(acceptedCollections) + "\n";
+    export_string = export_string + "ACCEPTED_COLLECTIONS,"
+
     for (const [key, value] of Object.entries(contracts)) {
         ABI_STRING = ABI_STRING + `let ${key} = '${value}'\n`        
         export_string = export_string + key + ","
@@ -157,7 +170,7 @@ async function deploy(){
     ABI_STRING = ABI_STRING + "\n\n"
 
     const PepeAuction = await ethers.getContractFactory("PepeAuction");
-    pe = await PepeAuction.deploy(WETH_CONTRACT);
+    pe = await PepeAuction.deploy(contracts['WETH']);
     await pe.deployed();  
 
     const VaultUtils = await ethers.getContractFactory("VaultUtils");
@@ -181,6 +194,8 @@ async function deploy(){
     ABI_STRING = ABI_STRING + export_string
 
     fs.writeFileSync('src/config.js', ABI_STRING);   
+
+    await updateOracleOnce()
 }
 
 if (require.main === module) {

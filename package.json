@@ -6,9 +6,11 @@
     "deploy:localhost": "npx hardhat run scripts/deploy.js --network localhost",
     "dev": "next dev -p 3009",
     "build": "next build",
+    "build:hardhat": "npx hardhat run scripts/deploy.js --network localhost",
     "start": "next start -p 3009",
     "lint": "next lint",
     "test": "npx hardhat test --network localhost",
+    "node": "npx hardhat node",
     "compile": "npx hardhat compile"
   },
   "dependencies": {

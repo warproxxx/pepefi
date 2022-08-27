@@ -1,16 +1,10 @@
 const axios = require('axios')
 const { ethers } = require("hardhat");
-const { ORACLE_CONTRACT, PEPEFIORACLE_ABI } =  require("../src/config.js")
-
-async function deployOracle(admin){
-    
-}
+const { ORACLE_CONTRACT, ACCEPTED_COLLECTIONS } =  require("../src/config.js")
 
 
-//calling 0xb7f7f6c52f2e2fdb1963eab30438024864c313f6 cryptpunks and not wrapped-cryptopunks is a feature not a bug. Also this should be updated for more collection. Opensea has an endpoint which provides slug in response to collection X id
-let slug_dict = {'0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d': 'boredapeyachtclub', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b': 'clonex', '0x42069abfe407c60cf4ae4112bedead391dba1cdb': 'cryptodickbutts-s3', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6': 'cryptopunks'}
 
-async function updateOracleOnce(contracts = ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6']){
+async function updateOracleOnce(){
 
     const ORACLE = await ethers.getContractAt("PepeFiOracle", ORACLE_CONTRACT);
 
@@ -18,30 +12,29 @@ async function updateOracleOnce(contracts = ['0xbc4ca0eda7647a8ab7c2061c2e118a18
     let addys = []
     let newPrice = []
 
-    for (contract of contracts){
+    for (collection of ACCEPTED_COLLECTIONS){
         try {
-            let res = await axios.get(`https://api.reservoir.tools/oracle/collections/${contract}/floor-ask/v1`);
+            let res = await axios.get(`https://api.reservoir.tools/oracle/collections/${collection['address']}/floor-ask/v1`);
             prices['reservoir'] = res['data']['price'] * 10**18
         } catch (error) {
-            console.error(error);
+            
         }
           
         
         try {
-            let rare = await axios.get(`https://api.looksrare.org/api/v1/collections/stats?address=${contract}`)
+            let rare = await axios.get(`https://api.looksrare.org/api/v1/collections/stats?address=${collection['address']}`)
             prices['looksrare'] = parseInt(rare['data']['data']['floorPrice'])
         } catch (error) {
-            console.error(error);
+            
         }
 
         try {
             //most important because collection is not unique
-            let open = await axios.get(`https://api.opensea.io/api/v1/collection/${slug_dict[contract]}/stats`)
+            let open = await axios.get(`https://api.opensea.io/api/v1/collection/${collection['slug']}/stats`)
             prices['opensea'] = open['data']['stats']['floor_price'] * 10**18
         } catch (error) {
-            console.error(error);
+           
         }
-
 
         //now loop thru to find the minimum which is not nan or 0
         
@@ -58,12 +51,12 @@ async function updateOracleOnce(contracts = ['0xbc4ca0eda7647a8ab7c2061c2e118a18
         }
 
         if (minimum != 0){
-            let oraclePrice = await ORACLE.getPrice(contract)
+            let oraclePrice = await ORACLE.getPrice(collection['address'])
 
             if (oraclePrice <= minimum * 0.95 || oraclePrice >= minimum * 1.05){
-                console.log(`Updating ${contract} price to ${minimum} from ${oraclePrice}`)
+                console.log(`Updating ${collection['address']} price to ${minimum} from ${oraclePrice}`)
 
-                addys.push(contract)
+                addys.push(collection['address'])
                 newPrice.push(minimum.toString())
             }
         }
