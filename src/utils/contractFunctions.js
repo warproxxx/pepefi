@@ -259,6 +259,10 @@ export const getAllLoans = async () => {
 
 }
 
+export const getRepayment = (loan_amount, duration, apr) => {
+    return (loan_amount + (loan_amount * (((apr/100) * loan_amount)/365 * duration)))
+}
+
 export const getNFTDetails = async(collection, id) => {
     console.log('detailsss')
     let [ACCEPTED_COLLECTIONS, ORACLE_CONTRACT, VAULT_MANAGER, WETH] = await get_addys()
