@@ -8,7 +8,7 @@ import {
   setChainId,
 } from 'src/redux/walletsSlice';
 import {web3ModalSetup} from 'src/utils/web3ModalFunctions'
-import { connectWalletAndGetData, disconnectAndClearData, getAndSetVaults } from 'src/utils/reduxSlicesConnector';
+import { connectWalletAndGetData, disconnectAndClearData, getAndSetVaults, getAndSetAssets } from 'src/utils/reduxSlicesConnector';
 
 import { MyLoansPopUp } from 'src/components/MyLoans/MyLoansPopUp';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
@@ -50,6 +50,7 @@ export const DashboardLayout = (props:any) => {
       }
       if(connectSuccess)
         getAndSetVaults();
+        getAndSetAssets();
     }
     LoginAndGetVaultts();
   }, []); 

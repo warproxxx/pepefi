@@ -9,7 +9,7 @@ import { loans as fake_data_loans } from "src/data/loans";
 import { myLoans as fake_data_myLoans } from "src/data/myLoans";
 import { vaults as fake_data_vaults } from "src/data/vaults";
 
-import {/*getUserNFTs,getUserLoans,*/getAllVaults} from "src/utils/contractFunctions"
+import {/*getUserNFTs,getUserLoans,*/getAllVaults, getAssets} from "src/utils/contractFunctions"
 
 const dispatch = store.dispatch;
 const wallets = store.getState().wallets;
@@ -36,7 +36,6 @@ export const connectWalletAndGetData = async () => {
     //  userLoans = await getUserLoans();
     //  dispatch(setMyLoans(userLoans));
 
-    dispatch(setLoans(fake_data_loans));
     dispatch(setMyLoans(fake_data_myLoans));
     return true;
 }
@@ -116,6 +115,17 @@ const getCollectionsMinAndMaxAndAverage = (collections,duration) =>{
     return({min,max,average,collectionImgSrcs,openseaPrice,oraclePrice})
 }
 
+export const getAndSetAssets = async () => {
+    const assets = await getAssets();
+    let full_data = []
+    full_data['selectedNFTIndex'] = 0
+    full_data['allNFTs'] = assets
+
+    console.log(full_data)
+
+    dispatch(setLoans(full_data));
+
+}
 
 export const getAndSetVaults = async () =>{
     const allVaults = await getAllVaults();

@@ -10,7 +10,6 @@ import Image from 'next/image';
 import { selectWallets } from 'src/redux/walletsSlice';
 import { selectVaults, setSelectedVault } from 'src/redux/vaultsSlice';
 import { useAppSelector } from 'src/app/hooks';
-import { getAllVaults, getAssets } from 'src/utils/contractFunctions';
 
 export const VaultsBox = styled(Box)((props)  => sx({
   minHeight: "80vh",
@@ -30,7 +29,6 @@ function VaultsPage(props:any) {
 
   const handleAddVaultPopupClickOpen = async () => {
     setAddVaultPopupOpen(true);
-    console.log(await getAssets());
   };
 
   const handleAddVaultPopupClose = () => {
