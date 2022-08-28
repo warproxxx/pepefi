@@ -97,7 +97,8 @@ function LoanDetailPage(props:any) {
     let vaults = lendingNFT.vaults;
     let APR = vaults[selectedVaultIndex].APR;
     let duration = vaults[selectedVaultIndex].durationInDays;
-    let repayment = Number(getRepayment(loanAmount,duration,APR)).toFixed(3);
+    console.log(APR/10,duration,loanAmount)
+    let repayment = Number(getRepayment(loanAmount,duration,APR/10)).toFixed(3);
     dispatch(setLendingNFT({
       repayment: repayment,
     }))
