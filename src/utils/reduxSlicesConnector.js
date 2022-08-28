@@ -9,7 +9,7 @@ import { loans as fake_data_loans } from "src/data/loans";
 import { myLoans as fake_data_myLoans } from "src/data/myLoans";
 import { vaults as fake_data_vaults } from "src/data/vaults";
 
-import {/*getUserNFTs,getUserLoans,*/getAllVaults, getAssets} from "src/utils/contractFunctions"
+import {/*getUserNFTs,getUserLoans,*/getAllVaults, getAssets, getAllLoans} from "src/utils/contractFunctions"
 
 const dispatch = store.dispatch;
 const wallets = store.getState().wallets;
@@ -18,7 +18,6 @@ const loans = store.getState().loans;
 
 const connectWallet = web3ModalHelper.connectWallet;
 const disconnect = web3ModalHelper.disconnect
-
 export const connectWalletAndGetData = async () => {
     let connectSuccess = await connectWallet();
     
@@ -115,7 +114,9 @@ const getCollectionsMinAndMaxAndAverage = (collections,duration) =>{
 }
 
 export const getAndSetMyLoans = async () => {
-    dispatch(setMyLoans(fake_data_myLoans));
+    let all_loans = await getAllLoans();
+    console.log("xx")
+    dispatch(setMyLoans(all_loans));
 
 }
 

@@ -2,7 +2,7 @@ import { store } from "../app/store";
 import { ethers } from "ethers";
 import {ACCEPTED_COLLECTIONS, PEPEAUCTION_ABI, PEPEFIORACLE_ABI, VAULT_ABI, VAULTMANAGER_ABI, VAULTUTILS_ABI, ORACLE_CONTRACT, VAULT_MANAGER, WETH, ERC20_ABI, ERC721_ABI} from "../config"
 const axios = require('axios')
-
+import { FetchWrapper } from "use-nft"
 
 async function approve_and_spend(addy, abi, signer){
     let provider = signer.provider;
@@ -136,17 +136,50 @@ export const getAllLoans = async () => {
     let vm = new ethers.Contract( VAULT_MANAGER , VAULTMANAGER_ABI , signer)
     let vaults = await vm.getAllVaults()
 
+    const fetcher = ["ethers", { provider: wallets.library }]
+    const fetchWrapper = new FetchWrapper(fetcher)
     let all_loans = []
 
     for (let vault of vaults){
-        let vault = new ethers.Contract( vault , VAULT_ABI , signer)
-        let loans = await vault.getAllLoans()
+        let vault_contract = new ethers.Contract( vault , VAULT_ABI , signer)
+        let loans = await vault_contract.getAllLoans()
 
         for (let loan of loans){
-            let loanDetails = await vault._loans(loan)
-            loanDetails['vault'] = vault;
-            loanDetails['id'] = loan
-            all_loans.push(loanDetails)
+            
+            let loanDetails = await vault_contract._loans(loan)
+
+            let details = await getCollectionDetails(loanDetails['collateral'])
+            let curr_details = {}
+
+            if (loanDetails.smartNftId == 0){
+                let result = await fetchWrapper.fetchNft(
+                    loanDetails.collateral,
+                    loanDetails.assetId
+                  )
+    
+                
+                curr_details['imgSrc'] = result.image;
+            }
+            else{
+                curr_details['imgSrc'] = `https://api.nftfi.com/loans/v2/promissory/image/1/${loanDetails.smartNftId}`;
+            }
+
+        
+            
+            curr_details['name'] = details['name']
+            curr_details['collection'] = details['id']
+            curr_details['lendedVault'] = vault
+            
+            loan_duration = (loanDetails.expirity - loanDetails.timestamp)/86400
+
+            curr_details['APR'] = (((loanDetails.repaymentAmount - loanDetails.loanPrincipalAmount)/loanDetails.loanPrincipalAmount)/loan_duration) * 365 * 100
+            curr_details['loanAmount'] = loanDetails['loanPrincipalAmount'] / 10**18
+            curr_details['loanDate'] = new Date(loanDetails.timestamp * 1000); 
+            curr_details['remainingDays'] = loan_duration
+            curr_details['repaymentAmount'] = loanDetails['repaymentAmount'] / 10**18
+            curr_details['action'] = loanDetails['name']
+
+            all_loans.push(curr_details)
         }
     }
 
