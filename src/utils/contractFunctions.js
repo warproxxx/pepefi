@@ -83,22 +83,18 @@ export const getAssets = async () => {
 
     }
     else if (chainId == 4){
+        
         baseURL = `https://eth-rinkeby.alchemyapi.io`;
+        
+        for (let coll of ['0xf5de760f2e916647fd766B4AD9E85ff943cE3A2b', '0x191b74d99327777660892b46a7c94ca25c896dc7']) 
+        
         let url = `${baseURL}/nft/v2/${apiKey}/getNFTs/?owner=${wallets.account}&contractAddresses[]=0xf5de760f2e916647fd766B4AD9E85ff943cE3A2b`;
         let response = await axios.get(url);
 
         let collections = response.data['ownedNfts']
 
-        let curr
 
-        while ('pageKey' in response.data){
-            url = `${baseURL}/nft/v2/${apiKey}/getNFTs/?owner=${wallets.account}&contractAddresses[]=0xf5de760f2e916647fd766B4AD9E85ff943cE3A2b`;
-            curr = await axios.get(url);
-            collections.push(curr.data)
-        }
-
-        
-
+    
         for (let collection of collections){
             let id = collection['title'].split(" ")[2].replace("#", "")
 

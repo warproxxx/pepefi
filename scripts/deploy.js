@@ -13,9 +13,9 @@ let acceptedCollections;
 if (process.env.HARDHAT_NETWORK == 'rinkeby')
 {
     contracts['WETH'] = "0xc778417e063141139fce010982780140aa0cd5ab"
-    contracts['NFTFI'] = "0x33e75763F3705252775C5AEEd92E5B4987622f44"
-    contracts['NFTFI_COORDINATOR'] = "0x33e75763F3705252775C5AEEd92E5B4987622f44"
-    contracts['NFTFI_NOTE'] = "0x33e75763F3705252775C5AEEd92E5B4987622f44"
+    contracts['NFTFI'] = "0x33e75763f3705252775c5aeed92e5b4987622f44"
+    contracts['NFTFI_COORDINATOR'] = "0x889d2b579d356cAe709422F3DDC7D2e61902917e"
+    contracts['NFTFI_NOTE'] = "0x191b74d99327777660892b46a7c94ca25c896dc7"
 
     acceptedCollections = [
         { name: 'Multifaucet NFT', address: '0xf5de760f2e916647fd766B4AD9E85ff943cE3A2b', imgSrc:'https://ipfs.io/ipfs/bafybeifvwitulq6elvka2hoqhwixfhgb42l4aiukmtrw335osetikviuuu', slug: 'boredapeyachtclub'},
