@@ -8,7 +8,7 @@ const fs = require("fs");
 const { ethers } = require("hardhat");
 
 let contracts = {};
-
+let acceptedCollections;
 
 if (process.env.HARDHAT_NETWORK == 'rinkeby')
 {
@@ -16,7 +16,10 @@ if (process.env.HARDHAT_NETWORK == 'rinkeby')
     contracts['NFTFI'] = "0x33e75763F3705252775C5AEEd92E5B4987622f44"
     contracts['NFTFI_COORDINATOR'] = "0x33e75763F3705252775C5AEEd92E5B4987622f44"
     contracts['NFTFI_NOTE'] = "0x33e75763F3705252775C5AEEd92E5B4987622f44"
-    contracts['SUDOSWAP_ROUTER'] = "0x9ABDe410D7BA62fA11EF37984c0Faf2782FE39B5"
+
+    acceptedCollections = [
+        { name: 'Multifaucet NFT', address: '0xf5de760f2e916647fd766B4AD9E85ff943cE3A2b', imgSrc:'https://ipfs.io/ipfs/bafybeifvwitulq6elvka2hoqhwixfhgb42l4aiukmtrw335osetikviuuu', slug: 'boredapeyachtclub'},
+    ]
 }
 else
 {
@@ -24,17 +27,18 @@ else
     contracts['NFTFI'] = "0xf896527c49b44aAb3Cf22aE356Fa3AF8E331F280"
     contracts['NFTFI_COORDINATOR'] = "0x0C90C8B4aa8549656851964d5fB787F0e4F54082"
     contracts['NFTFI_NOTE'] = "0x5660e206496808f7b5cdb8c56a696a96ae5e9b23"
-    contracts['SUDOSWAP_ROUTER'] = "0x2b2e8cda09bba9660dca5cb6233787738ad68329" //https://docs.sudoswap.xyz/contracts/
+
+    acceptedCollections = [
+        { name: 'Bored Ape Yacht Club', address: '0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d',imgSrc:'/static/images/vaults/boredapeyachtclub.png', slug: 'boredapeyachtclub', },
+        { name: 'Doodle', address: '0x8a90cab2b38dba80c64b7734e58ee1db38b8992e',imgSrc:'/static/images/vaults/doodles-official.png', slug: 'doodles-official'},
+        { name: 'Moonbirds', address: '0x23581767a106ae21c074b2276d25e5c3e136a68b',imgSrc:'/static/images/vaults/proof-moonbirds.png', slug: 'proof-moonbirds'},
+        { name: 'CloneX', address: '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b',imgSrc:'/static/images/vaults/clonex.png', slug: 'clonex'},
+        { name: 'CryptoDickbutts', address: '0x42069abfe407c60cf4ae4112bedead391dba1cdb', imgSrc: '/static/images/vaults/cryptodickbutts-s3.png', slug: 'cryptodickbutts-s3'},
+        { name: 'Wrapped Cryptopunks', address: '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb', imgSrc: '/static/images/vaults/wrapped-cryptopunks.png', slug: 'wrapped-cryptopunks'}
+    ]
 }
 
-let acceptedCollections = [
-                            { name: 'Bored Ape Yacht Club', address: '0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d',imgSrc:'/static/images/vaults/boredapeyachtclub.png', slug: 'boredapeyachtclub'},
-                            { name: 'Doodle', address: '0x8a90cab2b38dba80c64b7734e58ee1db38b8992e',imgSrc:'/static/images/vaults/doodles-official.png', slug: 'doodles-official'},
-                            { name: 'Moonbirds', address: '0x23581767a106ae21c074b2276d25e5c3e136a68b',imgSrc:'/static/images/vaults/proof-moonbirds.png', slug: 'proof-moonbirds'},
-                            { name: 'CloneX', address: '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b',imgSrc:'/static/images/vaults/clonex.png', slug: 'clonex'},
-                            { name: 'CryptoDickbutts', address: '0x42069abfe407c60cf4ae4112bedead391dba1cdb', imgSrc: '/static/images/vaults/cryptodickbutts-s3.png', slug: 'cryptodickbutts-s3'},
-                            { name: 'Wrapped Cryptopunks', address: '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb', imgSrc: '/static/images/vaults/wrapped-cryptopunks.png', slug: 'wrapped-cryptopunks'}
-                        ]
+
 
 
 let abis = {}
@@ -117,6 +121,26 @@ async function perform_whale_transfer() {
     }
 
     //also transfer apes here
+    let IMPERSO = '0x1b523dc90a79cf5ee5d095825e586e33780f7188'
+
+    await hre.network.provider.request({
+        method: "hardhat_impersonateAccount",
+        params: [IMPERSO],
+    });
+
+    const nft_signer2 = await ethers.provider.getSigner(IMPERSO);
+    let NFT_CONTRACT2 = await ethers.getContractAt(JSON.parse(abis['ERC721_ABI']), '0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', nft_signer2);
+    
+    let NOTE = "9547"
+
+    if ((await NFT_CONTRACT2.ownerOf(NOTE)).toLowerCase() == IMPERSO.toLowerCase())
+    { 
+        console.log("Transferring BAYC")
+        await NFT_CONTRACT2.transferFrom(IMPERSO, "0x5664198BDb6AB7337b70742ff4BDD935f81e4Dcd", NOTE, {
+            from: IMPERSO,
+        })
+    }
+
 
     return owner;
 }
