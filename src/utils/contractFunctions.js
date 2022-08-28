@@ -310,7 +310,7 @@ export const getAllVaults = async () => {
 
             coll_details['etherScanSrc'] = 'etherscan.io/address/' + collection
 
-            // coll_details['oraclePrice'] = await oracle.getPrice(collection)
+            coll_details['oraclePrice'] = await oracle.getPrice(collection)
 
             let open = await axios.get(`https://api.opensea.io/api/v1/collection/${details['slug']}/stats`)
             coll_details['openseaPrice'] = open['data']['stats']['floor_price']
