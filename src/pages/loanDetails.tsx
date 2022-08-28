@@ -11,6 +11,7 @@ import { lendingNFT as not_redux_lendingNFT } from 'src/data/lendingNFT';
 
 import { useAppSelector, useAppDispatch } from 'src/app/hooks';
 import { selectLendingNFT,setLendingNFT } from 'src/redux/lendingNFTSlice';
+import {getNFTDetails} from 'src/utils/contractFunctions';
 
 
 
@@ -322,7 +323,11 @@ function LoanDetailPage(props:any) {
                   flexDirection:'column',
                   marginTop:'auto'
                 }}>
-                  <Button variant="contained" onClick={()=>{console.log('getting loan')}} sx={{width:'140px'}}>
+
+                  
+                  <Button variant="contained" onClick={async ()=>{console.log(await getNFTDetails('0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', 20))
+                  //this should be collection address and current id
+                }} sx={{width:'140px'}}>
                       Get Loan
                   </Button>
 
