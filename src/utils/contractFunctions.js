@@ -3,13 +3,6 @@ import { ethers } from "ethers";
 import {ACCEPTED_COLLECTIONS, PEPEAUCTION_ABI, PEPEFIORACLE_ABI, VAULT_ABI, VAULTMANAGER_ABI, VAULTUTILS_ABI, ORACLE_CONTRACT, VAULT_MANAGER, WETH, ERC20_ABI, ERC721_ABI} from "../config"
 const axios = require('axios')
 
-export const showWallets = () => {
-    console.log(wallets);
-}
-
-export const contractStuff = () => {
-
-}
 
 async function approve_and_spend(addy, abi, signer){
     let provider = signer.provider;
@@ -27,14 +20,6 @@ async function getCollectionDetails(coll) {
             return row;
         }
     }
-}
-
-export const getLoans = async () => {
-    console.log(store.getState().wallets)
-    let wallets = store.getState().wallets;
-    let signer = wallets.library.getSigner()
-
-
 }
 
 export const getAssets = async () => {
@@ -132,6 +117,40 @@ export const getAssets = async () => {
 
 }
 
+export const repayLoan = async (details) => {
+    let wallets = store.getState().wallets;
+    let signer = wallets.library.getSigner()
+
+    await approve_and_spend(details.vault, ERC20_ABI, signer)
+
+    let vault = new ethers.Contract( details.vault , VAULT_ABI , signer)
+    await vault.repayLoan(details.id)
+}
+
+export const getAllLoans = async () => {
+    let wallets = store.getState().wallets;
+    let signer = wallets.library.getSigner()
+
+    let vm = new ethers.Contract( VAULT_MANAGER , VAULTMANAGER_ABI , signer)
+    let vaults = await vm.getAllVaults()
+
+    let all_loans = []
+
+    for (let vault of vaults){
+        let vault = new ethers.Contract( vault , VAULT_ABI , signer)
+        let loans = await vault.getAllLoans()
+
+        for (let loan of loans){
+            let loanDetails = await vault._loans(loan)
+            loanDetails['vault'] = vault;
+            loanDetails['id'] = loan
+            all_loans.push(loanDetails)
+        }
+    }
+
+    return all_loans
+
+}
 export const getAllVaults = async () => {
     let wallets = store.getState().wallets;
     let signer = wallets.library.getSigner()
@@ -207,6 +226,19 @@ export const addVault = async (details) => {
     return addy
 }
 
-export const asyncContractStuff = async() => {
-    //await ...
+export const takeLoan = async (details) => {
+    let wallets = store.getState().wallets;
+    let signer = wallets.library.getSigner()
+
+    let NFT_CONTRACT = new ethers.Contract(details.collection, ERC721_ABI,  signer);
+    await NFT_CONTRACT.approve(details.vault, details.id)
+
+    let contracts = ['0x5660e206496808f7b5cdb8c56a696a96ae5e9b23', '0x33e75763F3705252775C5AEEd92E5B4987622f44']
+
+    if(contracts.includes(details.collection)){
+        await vault.takePNNFILoan(details.loanId, details.loanPrincipal, details.repaymentDay);
+    } else {
+        await vault.takeERC721Loan(details.collection, details.id, details.loanPrincipal, details.repaymentDay); //past time works as we are using old fork
+    }
+
 }
