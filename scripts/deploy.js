@@ -256,6 +256,9 @@ async function deploy(){
     await vm.deployed();  
     console.log("Vault Manager Contract Deployed at " + vm.address);
 
+    let res = await vm.createVault('Test Vault', 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], [450, 450, 450, 450], true, 0)
+
+
     ABI_STRING = ABI_STRING + "let ORACLE_CONTRACT='" + or.address + "'\n"
     ABI_STRING = ABI_STRING + "let VAULT_MANAGER='" + vm.address + "'\n\n"
     export_string = export_string + "ORACLE_CONTRACT,VAULT_MANAGER}"
