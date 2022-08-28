@@ -38,8 +38,6 @@ async function get_addys(){
 }
 
 async function get_nftfi_addys(){
-    console.log(console.log(store.getState().wallets))
-
     let wallets = store.getState().wallets;
     const { chainId } = await wallets.library.getNetwork()
 
@@ -168,7 +166,18 @@ export const getAssets = async () => {
         
     }
 
-    return all_loans
+    let new_loans = []
+
+    for (let loan of all_loans){
+        let details = await getNFTDetails(loan['address'], loan['id'])
+        loan['oraclePrice'] = details['oraclePrice']
+        loan['vaults'] = details['vaults']
+
+        new_loans.push(loan)
+    }
+    
+
+    return new_loans
 
 }
 
@@ -280,7 +289,6 @@ export const getRepayment = (loan_amount, duration, apr) => {
 }
 
 export const getNFTFiUnderlying = async(collection, id) => {
-    
 
     let wallets = store.getState().wallets;
     let signer = wallets.library.getSigner()
@@ -288,19 +296,21 @@ export const getNFTFiUnderlying = async(collection, id) => {
 
     let [NFTFI, NFTFI_COORDINATOR, NFTFI_NOTE] = await get_nftfi_addys();
 
+    let nftfi_connection = new ethers.Contract( NFTFI , NFTFI_ABI , signer)
     let note_contract = new ethers.Contract(NFTFI_NOTE, ERC721_ABI, signer)
-    let loan_id = await note_contract.loans(id)
 
+    let loan_det = await note_contract.loans(id)
 
-    let nftfi = new ethers.Contract( NFTFI , NFTFI_ABI , signer)
-    [loanPrincipalAmount, maximumRepaymentAmount, nftCollateralId, loanERC20Denomination, loanDuration, int, bas, wrapper, loanStartTime, nftCollateralContract, borrower ] = await nftfi.loanIdToLoan(loan_id)
+    let [loanPrincipalAmount, maximumRepaymentAmount, nftCollateralId, loanERC20Denomination, loanDuration, int, bas, wrapper, loanStartTime, nftCollateralContract, borrower ] = await nftfi_connection.loanIdToLoan(loan_det[1])
 
     return [nftCollateralContract, nftCollateralId]
+
+    // return [collection, id]
 }
 
 export const getNFTDetails = async(collection, id) => {
 
-
+    
     let [ACCEPTED_COLLECTIONS, ORACLE_CONTRACT, VAULT_MANAGER, WETH] = await get_addys()
 
     let wallets = store.getState().wallets;
