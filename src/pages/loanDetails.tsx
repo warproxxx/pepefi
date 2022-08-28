@@ -95,10 +95,10 @@ function LoanDetailPage(props:any) {
   };
   const changeLoanAmount = (event: Event, value: number | number [], activeThumb: number) => {
     let vaults = lendingNFT.vaults;
-    let APR = vaults[selectedVaultIndex].APR;
+    let APR = vaults[selectedVaultIndex].APR/1000;
     let duration = vaults[selectedVaultIndex].durationInDays;
-    console.log(APR/10,duration,loanAmount)
-    let repayment = Number(getRepayment(loanAmount,duration,APR/10)).toFixed(3);
+    console.log(APR,duration,loanAmount)
+    let repayment = Number(getRepayment(loanAmount,duration,APR)).toFixed(3);
     dispatch(setLendingNFT({
       repayment: repayment,
     }))
@@ -119,7 +119,7 @@ function LoanDetailPage(props:any) {
     if(selectedVaultIndex == index)
       return
     let vaults = lendingNFT.vaults;
-    let APR = vaults[index].APR;
+    let APR = vaults[index].APR/1000;
     let duration = vaults[index].durationInDays;
     let repayment = Number(getRepayment(loanAmount,duration,APR)).toFixed(3);
     dispatch(setLendingNFT({
