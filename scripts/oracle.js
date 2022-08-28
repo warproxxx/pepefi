@@ -7,7 +7,7 @@ async function runOracle(){
 
 if (require.main === module) {
     if (process.env.HARDHAT_NETWORK == 'rinkeby'){
-        await updateOracleOnce()
+        updateOracleOnce()
     }
     else {
         runOracle()

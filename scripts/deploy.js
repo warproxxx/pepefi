@@ -156,7 +156,7 @@ async function updateOracleOnce(){
         let { ORACLE_CONTRACT, ACCEPTED_COLLECTIONS } =  require("../src/config_rinkeby.js")
         let ORACLE = await ethers.getContractAt("PepeFiOracle", ORACLE_CONTRACT);
         await ORACLE.updatePrices(["0xf5de760f2e916647fd766B4AD9E85ff943cE3A2b"], [(0.1 * 10**18).toString()])
-
+        console.log("Rinkeby Oracle updated")
     }else {
         let { ORACLE_CONTRACT, ACCEPTED_COLLECTIONS } =  require("../src/config.js")
 
