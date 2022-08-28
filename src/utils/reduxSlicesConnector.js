@@ -36,7 +36,6 @@ export const connectWalletAndGetData = async () => {
     //  userLoans = await getUserLoans();
     //  dispatch(setMyLoans(userLoans));
 
-    dispatch(setMyLoans(fake_data_myLoans));
     return true;
 }
 
@@ -114,6 +113,12 @@ const getCollectionsMinAndMaxAndAverage = (collections,duration) =>{
 
     return({min,max,average,collectionImgSrcs,openseaPrice,oraclePrice})
 }
+
+export const getAndSetMyLoans = async () => {
+    dispatch(setMyLoans(fake_data_myLoans));
+
+}
+
 
 export const getAndSetAssets = async () => {
     const assets = await getAssets();
