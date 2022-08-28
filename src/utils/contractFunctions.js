@@ -21,7 +21,7 @@ async function approve_and_spend(addy, abi, signer){
     }
 }
 
-function getCollectionDetails(coll) {
+async function getCollectionDetails(coll) {
     for (let row of ACCEPTED_COLLECTIONS){
         if (row['address'].toLowerCase() == coll.toLowerCase()){
             return row;
@@ -160,8 +160,8 @@ export const getAllVaults = async () => {
         let i = 0
 
         for (let collection of collections){
-            let details = getCollectionDetails(collection)
-
+            console.log(collection)
+            let details = await getCollectionDetails(collection)
 
             let coll_details = {}
             coll_details['name'] = details['name']

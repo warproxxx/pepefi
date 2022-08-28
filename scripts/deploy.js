@@ -34,7 +34,7 @@ else
         { name: 'Moonbirds', address: '0x23581767a106ae21c074b2276d25e5c3e136a68b',imgSrc:'/static/images/vaults/proof-moonbirds.png', slug: 'proof-moonbirds'},
         { name: 'CloneX', address: '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b',imgSrc:'/static/images/vaults/clonex.png', slug: 'clonex'},
         { name: 'CryptoDickbutts', address: '0x42069abfe407c60cf4ae4112bedead391dba1cdb', imgSrc: '/static/images/vaults/cryptodickbutts-s3.png', slug: 'cryptodickbutts-s3'},
-        { name: 'Wrapped Cryptopunks', address: '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb', imgSrc: '/static/images/vaults/wrapped-cryptopunks.png', slug: 'wrapped-cryptopunks'}
+        { name: 'Wrapped Cryptopunks', address: '0xb7F7F6C52F2e2fdb1963Eab30438024864c313F6', imgSrc: '/static/images/vaults/wrapped-cryptopunks.png', slug: 'wrapped-cryptopunks'}
     ]
 }
 
