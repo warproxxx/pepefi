@@ -15,7 +15,7 @@ import {truncateAddress} from 'src/utils/helpers'
 import { useAppSelector } from 'src/app/hooks';
 import { selectWallets } from 'src/redux/walletsSlice';
 import { selectVaults } from 'src/redux/vaultsSlice';
-import {addLiquidity} from 'src/utils/contractFunctions';
+import {addLiquidity, removeLiquidity} from 'src/utils/contractFunctions';
 
 
 export const VaultDetailBox = styled(Box)((props)  => sx({
@@ -195,10 +195,10 @@ function VaultDetailPage(props:any) {
                                 :
                                 <Box>
                                     <VaultDetailData2Typography>
-                                        30 WETH / $32,596.20
+                                        {vault.weth_value} WETH
                                     </VaultDetailData2Typography>     
                                     <VaultDetailData2Typography>
-                                        2500 shares / 0.08 %
+                                        {vault.supplied_shares} shares
                                     </VaultDetailData2Typography>     
                                 </Box>
                                 }
@@ -472,7 +472,17 @@ function VaultDetailPage(props:any) {
                         sx={{mt:'70px',borderRadius: "15px",color:'white',padding:'20px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:"30px",width:'100%'}} 
                         variant="contained"
                         onClick={async ()=>{
-                            await addLiquidity(inputValue, vault.contractAddy)
+
+                            if (mode == "deposit"){
+                                await addLiquidity(inputValue, vault.contractAddy)
+                            } else {
+                                let res = await removeLiquidity(inputValue, vault.contractAddy)
+
+                                if (res == false){
+                                    alert("The vault must expire to withdraw liquidity")
+                                }
+                            }
+                            
                         }}
                         >
                             Confirm

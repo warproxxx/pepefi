@@ -147,7 +147,7 @@ export const getAndSetVaults = async () =>{
         let openseaPrice = collectionStats.openseaPrice;
         let oraclePrice = collectionStats.oraclePrice;
         vault['data'] = {
-            totalWETH: vault.totalWETH.toNumber(),
+            totalWETH: vault.totalWETH,
             supplied_shares: vault.supplied_shares,
             weth_value: vault.weth_value,
             duration: diffDays,

@@ -145,6 +145,24 @@ export const addLiquidity = async (amount, vault) => {
     await vault_contract.addLiquidity(exactAmt)
 }
 
+export const removeLiquidity = async (amount, vault) => {
+
+    let wallets = store.getState().wallets;
+    let signer = wallets.library.getSigner()
+
+    let vault_contract = new ethers.Contract( vault , VAULT_ABI , signer)
+    let exp = await vault_contract.expirityDate()
+    let curr = (new Date().getTime()/1000)
+
+    console.log(exp, curr)
+
+    if (exp > curr) {
+        return false;
+    }
+    
+    return true;
+}
+
 export const getAllLoans = async () => {
     let wallets = store.getState().wallets;
     let signer = wallets.library.getSigner()
@@ -220,10 +238,13 @@ export const getAllVaults = async () => {
         let curr = {}
         curr['name'] = await contract.VAULT_NAME()
         curr['contractAddy'] = vault
-        curr['totalWETH'] = await weth_contract.balanceOf(vault)
+        curr['totalWETH'] = ethers.utils.formatEther(await weth_contract.balanceOf(vault))
         curr['duration'] = await contract.expirityDate()
         curr['supplied_shares'] = await contract.balanceOf(signer.getAddress(), 0)
-        curr['weth_value'] = (curr['supplied_shares'] * (await contract.getWETHBalance()) / (await contract.totalSupply))
+        curr['weth_value'] = (curr['supplied_shares'] * (await contract.getWETHBalance()) / (await contract.totalSupply()))
+
+        curr['supplied_shares'] = ethers.utils.formatEther(curr['supplied_shares']);
+        curr['weth_value'] = curr['weth_value'] / 10**18;
         
         await contract.expirityDate()
 
