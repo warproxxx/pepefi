@@ -31,6 +31,14 @@ function getCollectionDetails(coll) {
 
 export const getLoans = async () => {
     console.log(store.getState().wallets)
+    let wallets = store.getState().wallets;
+    let signer = wallets.library.getSigner()
+
+    
+}
+
+export const getAssets = async () => {
+    console.log(store.getState().wallets)
 
     //hardcoding as there is no easy way to get this data locally. In rinkeby alchemy API is used
     let wallets = store.getState().wallets;
@@ -78,6 +86,8 @@ export const getLoans = async () => {
 
         for (let curr of toCheck){
             let NFT_CONTRACT = new ethers.Contract(curr['collection'], ERC721_ABI,  signer);
+
+            conso
 
             if ((await NFT_CONTRACT.ownerOf(curr['id'])).toLowerCase() == wallets.account.toLowerCase()){
                 all_loans.push(curr)
