@@ -91,6 +91,9 @@ function LoanDetailPage(props:any) {
   const [loanAmount, setLoanAmount] = useState<number | number[]>(0);
 
   const handleChange = (event: Event, value: number | number [], activeThumb: number) => {
+    setLoanAmount(value);
+  };
+  const changeLoanAmount = (event: Event, value: number | number [], activeThumb: number) => {
     let vaults = lendingNFT.vaults;
     let APR = vaults[selectedVaultIndex].APR;
     let duration = vaults[selectedVaultIndex].durationInDays;
@@ -98,7 +101,6 @@ function LoanDetailPage(props:any) {
     dispatch(setLendingNFT({
       repayment: repayment,
     }))
-    setLoanAmount(value);
   };
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -233,7 +235,15 @@ function LoanDetailPage(props:any) {
                     Loan Amount
                   </LoanDetailLabelTypography>
                   <Box sx={{mt:'40px'}}>
-                  <Slider min={lendingNFT.loanAmountMin} max={lendingNFT.loanAmountMax} valueLabelFormat={value=><div>{`${value} WETH`}</div>} step={lendingNFT.loanAmountSliderStep} valueLabelDisplay="on" value={loanAmount} onChange={handleChange} />
+                  <Slider 
+                  min={lendingNFT.loanAmountMin} 
+                  max={lendingNFT.loanAmountMax} 
+                  valueLabelFormat={value=><div>{`${value} WETH`}</div>} 
+                  step={lendingNFT.loanAmountSliderStep} 
+                  valueLabelDisplay="on" 
+                  value={loanAmount} 
+                  onChange={handleChange} 
+                  onChangeCommitted={changeLoanAmount}/>
                   </Box>
                 </Box>
 
