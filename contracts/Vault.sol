@@ -33,11 +33,11 @@ contract Vault is ERC1155, ReentrancyGuard{
 
     uint256[] public all_loans; //all loans taken from our vault
 
-    address[] public collections;
-    uint32[] public ltvs;
-    uint32[] public aprs;
+    address[] private collections;
+    uint32[] private ltvs;
+    uint32[] private aprs;
 
-    uint256 expirityDate;
+    uint256 public expirityDate;
 
     uint32 private constant LIQUIDITY = 0;
     /// The ID of the next token that will be minted. Skips 0
@@ -81,7 +81,6 @@ contract Vault is ERC1155, ReentrancyGuard{
         collections = _collections;
         ltvs = _ltvs;
         aprs = _aprs;
-        
 
         (address _WETH, address _NFTFI_CONTRACT, address _NFTFI_COORDINATOR, address _NFTFI_TOKEN, address _ORACLE_CONTRACT, address _AUCTION_CONTRACT, address _UTILS_CONTRACT) = IVaultManager(VAULT_MANAGER).getContractAddresses();
         WETH = _WETH;
@@ -99,6 +98,10 @@ contract Vault is ERC1155, ReentrancyGuard{
 
     function expireVault() onlyVaultAdmin external {
         expirityDate = block.timestamp - 1;
+    }
+
+    function getVaultDetails() public view returns (address[] memory, uint32[] memory, uint32[] memory){
+        return (collections, ltvs, aprs);
     }
 
     function getWETHBalance() public view returns (uint256) {

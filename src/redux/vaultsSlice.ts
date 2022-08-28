@@ -108,6 +108,7 @@ export const VaultsSlice = createSlice({
       return state;
     }
   },
+  
 
 });
 
