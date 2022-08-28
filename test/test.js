@@ -168,6 +168,7 @@ describe('Contract tests', () => {
     })
 
     it("Expire Vault, and Withdraw Liquidity", async function () {
+        //This function is purely for testing purpose and should be removed from mainnet deployment
         await vault.expireVault();
         await vault.withdrawLiquidity(10)
 

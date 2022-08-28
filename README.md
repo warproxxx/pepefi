@@ -2,7 +2,7 @@
 Data from NFTFi shows that:
 
 1) Lenders are happy to hold a negative equity loan. Despite such defaults, lenders yield a higher return than anything else in the Market.
-2) >50% of borrowers repay their loans even on negative equity. 
+2) More than 50% of borrowers repay their loans even on negative equity. 
 3) Most lenders in NFTFi provide a consistent LTV for a given set of collections for a set time. 
 
 PepeFi integrates these concepts in its Vaults. Pepefi allows NFTFi lenders to take a loan on an NFT or on an NFTFi loan whose creators determine APR, LTV, and supported collections. To integrate the changing dynamics of the Market, vaults have an expiry date (Later, to make the life of beginner LPs easy, a protocol can be built on top of PepeFi). Different Vaults will exist at a given time, and anyone can create a vault. Depending on the risk profile of LPs, various Vaults can provide loans on different LTVs and APRs. This creates competition among Vault Creators and LPs, making the Market more efficient for borrowers.
