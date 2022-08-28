@@ -1,10 +1,16 @@
 import { store } from "../app/store";
 import { ethers } from "ethers";
-import {ACCEPTED_COLLECTIONS, PEPEAUCTION_ABI, PEPEFIORACLE_ABI, VAULT_ABI, VAULTMANAGER_ABI, VAULTUTILS_ABI, ORACLE_CONTRACT, VAULT_MANAGER, WETH, ERC20_ABI, ERC721_ABI} from "../config"
+import {PEPEFIORACLE_ABI, VAULT_ABI, VAULTMANAGER_ABI, ERC20_ABI, ERC721_ABI} from "../config"
+
+import {ACCEPTED_COLLECTIONS as L_ACCEPTED_COLLECTIONS, ORACLE_CONTRACT as L_ORACLE_CONTRACT, VAULT_MANAGER as L_VAULT_MANAGER, WETH as L_WETH } from "../config"
+import {ACCEPTED_COLLECTIONS as R_ACCEPTED_COLLECTIONS, ORACLE_CONTRACT as R_ORACLE_CONTRACT, VAULT_MANAGER as R_VAULT_MANAGER, WETH as R_WETH } from "../config_rinkeby"
+
 const axios = require('axios')
 import { FetchWrapper } from "use-nft"
 
 async function approve_and_spend(target_address, abi, signer){
+    let [ACCEPTED_COLLECTIONS, ORACLE_CONTRACT, VAULT_MANAGER, WETH] = await get_addys()
+
     let user_address = await signer.getAddress( )
 
     let contract = new ethers.Contract( WETH, abi, signer )
@@ -15,13 +21,31 @@ async function approve_and_spend(target_address, abi, signer){
     }
 }
 
+async function get_addys(){
+    console.log(console.log(store.getState().wallets))
+
+    let wallets = store.getState().wallets;
+    const { chainId } = await wallets.library.getNetwork()
+
+    if (chainId == 1337){
+        return (L_ACCEPTED_COLLECTIONS, L_ORACLE_CONTRACT, L_VAULT_MANAGER, L_WETH)
+    }
+    else if (chainId == 4){
+        return (R_ACCEPTED_COLLECTIONS, R_ORACLE_CONTRACT, R_VAULT_MANAGER, R_WETH)
+    }
+}
+
 async function getCollectionDetails(coll) {
+    let [ACCEPTED_COLLECTIONS, ORACLE_CONTRACT, VAULT_MANAGER, WETH] = await get_addys()
+
     for (let row of ACCEPTED_COLLECTIONS){
         if (row['address'].toLowerCase() == coll.toLowerCase()){
             return row;
         }
     }
 }
+
+
 
 export const getAssets = async () => {
     console.log(store.getState().wallets)
@@ -95,27 +119,29 @@ export const getAssets = async () => {
 
         
             for (let collection of collections){
-                let id = collection['title'].split(" ")[2].replace("#", "")
+                console.log(collection)
 
                 if (coll == "0x191b74d99327777660892b46a7c94ca25c896dc7"){
+                    let id = collection['title'].split(" ")[2].replace("#", "")
 
                     all_loans.push({
                         openseaSrc: `https://testnets.opensea.io/assets/rinkeby/${coll}/${id}`,
                         collection: 'NFTFi Loan',
                         name: `#${id}`,
                         imgSrc: collection['metadata']['image'],
-                        collection: coll,
+                        address: coll,
                         id: id
                     })
 
                 }
                 else{
+                    let id = parseInt(collection['id']['tokenId'])
                     all_loans.push({
                         openseaSrc: `https://testnets.opensea.io/assets/rinkeby/${coll}/${id}`,
                         collection: 'Multifaucet NFT',
-                        name: collection['title'],
+                        name: `#${id}`,
                         imgSrc: 'https://img.seadn.io/files/b4d419a67bc7dc52000e6d1336b24c46.png?fit=max&w=600',
-                        collection: coll,
+                        address: coll,
                         id: id
                     })
                 }
@@ -141,8 +167,8 @@ export const repayLoan = async (details) => {
 }
 
 export const addLiquidity = async (amount, vault) => {
+    
     console.log(amount, vault)
-
     let wallets = store.getState().wallets;
     let signer = wallets.library.getSigner()
 
@@ -156,7 +182,7 @@ export const addLiquidity = async (amount, vault) => {
 }
 
 export const removeLiquidity = async (amount, vault) => {
-
+    
     let wallets = store.getState().wallets;
     let signer = wallets.library.getSigner()
 
@@ -176,6 +202,8 @@ export const removeLiquidity = async (amount, vault) => {
 export const getAllLoans = async () => {
     let wallets = store.getState().wallets;
     let signer = wallets.library.getSigner()
+
+    let [ACCEPTED_COLLECTIONS, ORACLE_CONTRACT, VAULT_MANAGER, WETH] = await get_addys()
 
     let vm = new ethers.Contract( VAULT_MANAGER , VAULTMANAGER_ABI , signer)
     let vaults = await vm.getAllVaults()
@@ -231,6 +259,8 @@ export const getAllLoans = async () => {
 
 }
 export const getAllVaults = async () => {
+    let [ACCEPTED_COLLECTIONS, ORACLE_CONTRACT, VAULT_MANAGER, WETH] = await get_addys()
+
     let wallets = store.getState().wallets;
     let signer = wallets.library.getSigner()
 
@@ -297,6 +327,8 @@ export const getAllVaults = async () => {
 }
 
 export const addVault = async (details) => {
+    let [ACCEPTED_COLLECTIONS, ORACLE_CONTRACT, VAULT_MANAGER, WETH] = await get_addys()
+
     let wallets = store.getState().wallets;
     let signer = wallets.library.getSigner()
 
@@ -311,7 +343,7 @@ export const addVault = async (details) => {
     return addy
 }
 
-export const takeLoan = async (details) => {
+export const takeLoan = async (details) => {    
     let wallets = store.getState().wallets;
     let signer = wallets.library.getSigner()
 
