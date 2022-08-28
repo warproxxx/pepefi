@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import {DashboardLayout} from 'src/components/Nav/dashboard-layout'
 import Head from "next/head";
 import { useState } from "react";
@@ -11,7 +13,8 @@ import { lendingNFT as not_redux_lendingNFT } from 'src/data/lendingNFT';
 
 import { useAppSelector, useAppDispatch } from 'src/app/hooks';
 import { selectLendingNFT,setLendingNFT } from 'src/redux/lendingNFTSlice';
-import {getNFTDetails,getNFTFiUnderlying} from 'src/utils/contractFunctions';
+import {getNFTDetails,getNFTFiUnderlying, getRepayment} from 'src/utils/contractFunctions';
+
 
 
 
@@ -88,6 +91,13 @@ function LoanDetailPage(props:any) {
   const [loanAmount, setLoanAmount] = useState<number | number[]>(0);
 
   const handleChange = (event: Event, value: number | number [], activeThumb: number) => {
+    let vaults = lendingNFT.vaults;
+    let APR = vaults[selectedVaultIndex].APR;
+    let duration = vaults[selectedVaultIndex].durationInDays;
+    let repayment = Number(getRepayment(loanAmount,duration,APR)).toFixed(3);
+    dispatch(setLendingNFT({
+      repayment: repayment,
+    }))
     setLoanAmount(value);
   };
 
@@ -101,6 +111,22 @@ function LoanDetailPage(props:any) {
   };
 
   const [selectedVaultIndex,setSelectedVaultIndex] = useState(0);
+
+  const handleSelectVaultIndexChange = (index:number) =>{
+    if(selectedVaultIndex == index)
+      return
+    let vaults = lendingNFT.vaults;
+    let APR = vaults[index].APR;
+    let duration = vaults[index].durationInDays;
+    let repayment = Number(getRepayment(loanAmount,duration,APR)).toFixed(3);
+    dispatch(setLendingNFT({
+      repayment: repayment,
+      APR: APR,
+      duration: duration
+    }))
+    setSelectedVaultIndex(index);
+  }
+
 
   return (
     
@@ -271,7 +297,7 @@ function LoanDetailPage(props:any) {
                       lendingNFT.avaliableVaultsStrs.map((vault,index)=>{
                         return(
                           <Box key={index}>
-                            <LoanDetailBestVaultMenuItem onClick={()=>{handleClose();setSelectedVaultIndex(index)}}>{vault}</LoanDetailBestVaultMenuItem>
+                            <LoanDetailBestVaultMenuItem onClick={()=>{handleClose();handleSelectVaultIndexChange(index);}}>{vault}</LoanDetailBestVaultMenuItem>
                             <LoanDetailBestVaultMenuItemDivier />
                           </Box>
                         )
@@ -302,7 +328,6 @@ function LoanDetailPage(props:any) {
                       Duration
                     </LoanDetailLabelTypography>
                     <LoanDetailData1Typography>
-                      {console.log(lendingNFT)}
                       {lendingNFT.duration} Days
                     </LoanDetailData1Typography>
                   </Box>

@@ -24,7 +24,7 @@ async function approve_and_spend(target_address, abi, signer){
 }
 
 async function get_addys(){
-    console.log(console.log(store.getState().wallets))
+    // console.log(console.log(store.getState().wallets))
 
     let wallets = store.getState().wallets;
     const { chainId } = await wallets.library.getNetwork()
@@ -62,7 +62,7 @@ async function getCollectionDetails(coll) {
 
 
 export const getAssets = async () => {
-    console.log(store.getState().wallets)
+    // console.log(store.getState().wallets)
 
     //hardcoding as there is no easy way to get this data locally. In rinkeby alchemy API is used
     let wallets = store.getState().wallets;
@@ -129,11 +129,11 @@ export const getAssets = async () => {
             let response = await axios.get(url);
 
             let collections = response.data['ownedNfts']
-            console.log(collections)
+            // console.log(collections)
 
         
             for (let collection of collections){
-                console.log(collection)
+                // console.log(collection)
 
                 if (coll == "0x191b74d99327777660892b46a7c94ca25c896dc7"){
                     let id = collection['title'].split(" ")[2].replace("#", "")
@@ -191,7 +191,7 @@ export const repayLoan = async (details) => {
 
 export const addLiquidity = async (amount, vault) => {
     
-    console.log(amount, vault)
+    // console.log(amount, vault)
     let wallets = store.getState().wallets;
     let signer = wallets.library.getSigner()
 
@@ -213,7 +213,7 @@ export const removeLiquidity = async (amount, vault) => {
     let exp = await vault_contract.expirityDate()
     let curr = (new Date().getTime()/1000)
 
-    console.log(exp, curr)
+    // console.log(exp, curr)
 
     if (exp > curr) {
         return false;
@@ -402,7 +402,7 @@ export const getAllVaults = async () => {
         let i = 0
 
         for (let collection of collections){
-            console.log(collection)
+            // console.log(collection)
             let details = await getCollectionDetails(collection)
 
             let coll_details = {}

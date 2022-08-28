@@ -107,7 +107,7 @@ const getCollectionsMinAndMaxAndAverage = (collections,duration) =>{
 
     average.APR = average.APR / collections.length;
     average.LTV = average.LTV / collections.length;
-    console.log('oraclePrices',oraclePrices)
+    // console.log('oraclePrices',oraclePrices)
     let openseaPrice = averageFunc(openseaPrices);
     let oraclePrice = averageFunc(oraclePrices);
 
@@ -116,19 +116,19 @@ const getCollectionsMinAndMaxAndAverage = (collections,duration) =>{
 
 export const getAndSetMyLoans = async () => {
     let all_loans = await getAllLoans();
-    console.log("xx")
+    // console.log("xx")
     dispatch(setMyLoans(all_loans));
 
 }
 
 export const getAndSetAssets = async () => {
     const assets = await getAssets();
-    console.log('assets',assets)
+    // console.log('assets',assets)
     let full_data = []
     full_data['selectedNFTIndex'] = 0
     full_data['allNFTs'] = assets
 
-    console.log(full_data)
+    // console.log(full_data)
 
     dispatch(setLoans(full_data));
 }
@@ -150,7 +150,7 @@ export const getAndSetLendingNFT = (clickedNFTIndex) =>{
     let APR = temp_lendingNFT.vaults[0].APR;
     let loanAmountMin = 0.01;
     let loanAmount = loanAmountMin;
-    let duration = 10;
+
     temp_lendingNFT.valuation = valuation;
     let temp_vaults =  []
     temp_lendingNFT.vaults.map((vault,index)=>{
@@ -165,7 +165,8 @@ export const getAndSetLendingNFT = (clickedNFTIndex) =>{
 
     })
     temp_lendingNFT.vaults = temp_vaults;
-    temp_lendingNFT.duration = temp_vaults[0].durationInDays;
+    let duration = temp_vaults[0].durationInDays;
+    temp_lendingNFT.duration = duration;
     temp_lendingNFT.loanAmountMin = loanAmountMin;
     temp_lendingNFT.loanAmountMax = valuation * (LTV/1000);
     temp_lendingNFT.loanAmountSliderStep = loanAmountMin;
@@ -176,16 +177,16 @@ export const getAndSetLendingNFT = (clickedNFTIndex) =>{
     temp_lendingNFT.avaliableVaultsStrs = []
 
     temp_lendingNFT.vaults.map((vault)=>{
-        console.log(vault)
+        // console.log(vault)
         temp_lendingNFT.avaliableVaultsStrs.push(`${vault.name} (${vault.APR/10}% APR /  ${vault.LTV/10}% LTV / ${vault.durationInDays} days) `)
     })
-    console.log(temp_lendingNFT)
+    // console.log(temp_lendingNFT)
     dispatch(setLendingNFT(temp_lendingNFT))
 }
 
 export const getAndSetVaults = async () =>{
     const allVaults = await getAllVaults();
-    console.log(allVaults);
+    // console.log(allVaults);
     allVaults.map((vault)=>{
         let diffTime = new Date(Number(vault.duration * 1000)) - new Date();
         let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
@@ -254,7 +255,7 @@ export const getAndSetVaults = async () =>{
                 label: `${vault.data.APR.range[1]}%`
             }
         ]
-        console.log(vault);
+        // console.log(vault);
     })
     dispatch(setVaults(
         {
