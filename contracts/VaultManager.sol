@@ -31,15 +31,11 @@ contract VaultManager{
     }
 
     function createVault( string calldata _VAULT_NAME, uint256 _expirityDate, address[] memory _collections, uint32[] memory _ltvs, uint32[] memory _aprs, bool _external_lp_enabled, uint256 liquidityAdded) public returns (address vault) {
-        if (liquidityAdded > 0){
-            (bool success, ) = WETH.call(abi.encodeWithSelector(0x23b872dd, msg.sender, address(this), liquidityAdded));
-            require(success, "Cannot transfer DAI");
-        }
-
         vault = Clones.clone(VAULT_IMPLEMENTATION);
         IVault(vault).initialize(_VAULT_NAME, address(this), msg.sender, _expirityDate, _collections, _ltvs, _aprs, _external_lp_enabled);
         
         vaults.push(address(vault));
+
     }
 
     function getContractAddresses() public view returns (address, address, address, address, address, address, address)  {

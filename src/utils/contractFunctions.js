@@ -285,8 +285,13 @@ export const getAllVaults = async () => {
         curr['weth_value'] = (curr['supplied_shares'] * (await contract.getWETHBalance()) / (await contract.totalSupply()))
 
         curr['supplied_shares'] = ethers.utils.formatEther(curr['supplied_shares']);
+        
         curr['weth_value'] = curr['weth_value'] / 10**18;
         
+        if (isNaN(curr['weth_value'])){
+            curr['weth_value'] = 0
+        }
+
         await contract.expirityDate()
 
         let [collections, ltvs, aprs] = await contract.getVaultDetails()
@@ -335,12 +340,16 @@ export const addVault = async (details) => {
 
     let vm = new ethers.Contract( VAULT_MANAGER , VAULTMANAGER_ABI , signer)
 
+
+
+    let addy = await vm.createVault(details.vaultName, new Date((details.expiredDate)).getTime() / 1000, details.collectionsAddressArray, details.collectionsLTVArray, details.collectionsAPRArray, details.allowExternalLP, details.initialVaultDeposit)
+
+
+
     if (details.initialVaultDeposit > 0){
-        await approve_and_spend(WETH, ERC20_ABI, signer)
+        alert('Adding immediatly to vault is not supported yet')
     }
 
-    
-    let addy = await vm.createVault(details.vaultName, new Date((details.expiredDate)).getTime() / 1000, details.collectionsAddressArray, details.collectionsLTVArray, details.collectionsAPRArray, details.allowExternalLP, details.initialVaultDeposit)
     return addy
 }
 
