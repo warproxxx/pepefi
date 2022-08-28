@@ -43,7 +43,7 @@ contract Vault is ERC1155, ReentrancyGuard{
     /// The ID of the next token that will be minted. Skips 0
     uint256 private _nextId = 1;
 
-    uint256 private totalSupply = 0;
+    uint256 public totalSupply = 0;
 
     modifier onlyVaultAdmin {
         require (msg.sender == VAULT_ADMIN);

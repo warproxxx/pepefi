@@ -221,8 +221,11 @@ export const getAllVaults = async () => {
         curr['name'] = await contract.VAULT_NAME()
         curr['contractAddy'] = vault
         curr['totalWETH'] = await weth_contract.balanceOf(vault)
-
         curr['duration'] = await contract.expirityDate()
+        curr['supplied_shares'] = await contract.balanceOf(signer.getAddress(), 0)
+        curr['weth_value'] = (curr['supplied_shares'] * (await contract.getWETHBalance()) / (await contract.totalSupply))
+        
+        await contract.expirityDate()
 
         let [collections, ltvs, aprs] = await contract.getVaultDetails()
 
