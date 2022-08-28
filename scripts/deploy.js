@@ -158,6 +158,7 @@ async function updateOracleOnce(){
         await ORACLE.updatePrices(["0xf5de760f2e916647fd766B4AD9E85ff943cE3A2b"], [(0.1 * 10**18).toString()])
         console.log("Rinkeby Oracle updated")
     }else {
+        //This logic might have errors. Live needs a much better backtested one
         let { ORACLE_CONTRACT, ACCEPTED_COLLECTIONS } =  require("../src/config.js")
 
         let ORACLE = await ethers.getContractAt("PepeFiOracle", ORACLE_CONTRACT);
