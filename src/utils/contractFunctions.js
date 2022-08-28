@@ -34,7 +34,7 @@ export const getLoans = async () => {
     let wallets = store.getState().wallets;
     let signer = wallets.library.getSigner()
 
-    
+
 }
 
 export const getAssets = async () => {
@@ -86,8 +86,6 @@ export const getAssets = async () => {
 
         for (let curr of toCheck){
             let NFT_CONTRACT = new ethers.Contract(curr['collection'], ERC721_ABI,  signer);
-
-            conso
 
             if ((await NFT_CONTRACT.ownerOf(curr['id'])).toLowerCase() == wallets.account.toLowerCase()){
                 all_loans.push(curr)
