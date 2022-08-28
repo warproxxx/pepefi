@@ -9,11 +9,11 @@ import { loans as fake_data_loans } from "src/data/loans";
 import { myLoans as fake_data_myLoans } from "src/data/myLoans";
 import { vaults as fake_data_vaults } from "src/data/vaults";
 
-import {/*getUserNFTs,getUserLoans,*/getAllVaults, getAssets, getAllLoans} from "src/utils/contractFunctions"
+import {/*getUserNFTs,getUserLoans,*/getAllVaults, getAssets, getAllLoans, getNFTDetails, getRepayment} from "src/utils/contractFunctions"
 
 const dispatch = store.dispatch;
 const wallets = store.getState().wallets;
-const myLoans = store.getState().myLoans;
+
 const loans = store.getState().loans;
 
 const connectWallet = web3ModalHelper.connectWallet;
@@ -120,9 +120,9 @@ export const getAndSetMyLoans = async () => {
 
 }
 
-
 export const getAndSetAssets = async () => {
     const assets = await getAssets();
+    console.log('assets',assets)
     let full_data = []
     full_data['selectedNFTIndex'] = 0
     full_data['allNFTs'] = assets
@@ -130,7 +130,47 @@ export const getAndSetAssets = async () => {
     console.log(full_data)
 
     dispatch(setLoans(full_data));
+}
 
+export const setLendingNFT = (clickedNFTIndex) =>{
+    let loans = store.getState().loans;
+    // let vaults = store.getState().vaults.allVaults();
+    // let avaliableVaults = []
+    let lendingNFT = loans.allNFTs[clickedNFTIndex];
+    // vaults.map((vault,index)=>{
+    //     vault.collections.map((collection,index)=>{
+    //         if(collection.name == lendingNFT.collection){
+    //             avaliableVaults.push({APR:collection.APR,duration:collection.duration,LTV:collection.LTV,name:vault.name})
+    //         }
+    //     })
+    // })
+    let temp_lendingNFT = {...lendingNFT};
+    let temp_lendingNFTAddress = temp_lendingNFT.address;
+    let temp_lendingNFTId = temp_lendingNFT.id;
+    let NFTDetails = temp_lendingNFT.NFTDetails;
+    console.log(NFTDetails)
+    // let valuation = NFTDetails.oraclePrice / 10**18;
+    // let LTV = NFTDetails.vaults[0].LTV;
+    // let APR = NFTDetails.vaults[0].APR;
+    // let loanAmountMin = 0.01;
+    // let loanAmount = loanAmountMin;
+    // let duration = 10;
+
+    // temp_lendingNFT.valuation = valuation;
+
+    // temp_lendingNFT.avaliableVaults.map((vault,index)=>{
+    //     return vault.duration = 10;
+    // })
+    // temp_lendingNFT.loanAmountMin = loanAmountMin ;
+    // temp_lendingNFT.loanAmountMax = valuation * (LTV/1000);
+    // temp_lendingNFT.loanAmountSliderStep = loanAmountMin;
+    // temp_lendingNFT.duration = 10;
+    // temp_lendingNFT.loanAmount = loanAmountMin;
+    // temp_lendingNFT.repayment = getRepayment(loanAmount,duration,APR)
+    // temp_lendingNFT.repaymentDate ="10/28/2022";
+    // temp_lendingNFT.selectedValutIndex = 1;
+    // dispatch(setLendingNFT(temp_lendingNFT))
+    console.log(temp_lendingNFT)
 }
 
 export const getAndSetVaults = async () =>{
