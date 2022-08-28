@@ -1,9 +1,11 @@
 import { store } from "../app/store";
 import { ethers } from "ethers";
 import {PEPEFIORACLE_ABI, VAULT_ABI, VAULTMANAGER_ABI, ERC20_ABI, ERC721_ABI} from "../config"
+import {NFTFI_ABI} from "../config_rinkeby"
 
-import {ACCEPTED_COLLECTIONS as L_ACCEPTED_COLLECTIONS, ORACLE_CONTRACT as L_ORACLE_CONTRACT, VAULT_MANAGER as L_VAULT_MANAGER, WETH as L_WETH } from "../config"
-import {ACCEPTED_COLLECTIONS as R_ACCEPTED_COLLECTIONS, ORACLE_CONTRACT as R_ORACLE_CONTRACT, VAULT_MANAGER as R_VAULT_MANAGER, WETH as R_WETH } from "../config_rinkeby"
+import {ACCEPTED_COLLECTIONS as L_ACCEPTED_COLLECTIONS, ORACLE_CONTRACT as L_ORACLE_CONTRACT, VAULT_MANAGER as L_VAULT_MANAGER, WETH as L_WETH, NFTFI as L_NFTFI, NFTFI_COORDINATOR as L_NFTFI_COORDINATOR, NFTFI_NOTE as L_NFTFI_NOTE } from "../config"
+import {ACCEPTED_COLLECTIONS as R_ACCEPTED_COLLECTIONS, ORACLE_CONTRACT as R_ORACLE_CONTRACT, VAULT_MANAGER as R_VAULT_MANAGER, WETH as R_WETH, NFTFI as R_NFTFI, NFTFI_COORDINATOR as R_NFTFI_COORDINATOR, NFTFI_NOTE as R_NFTFI_NOTE } from "../config_rinkeby"
+
 
 const axios = require('axios')
 import { FetchWrapper } from "use-nft"
@@ -32,6 +34,20 @@ async function get_addys(){
     }
     else if (chainId == 4){
         return [R_ACCEPTED_COLLECTIONS, R_ORACLE_CONTRACT, R_VAULT_MANAGER, R_WETH]
+    }
+}
+
+async function get_nftfi_addys(){
+    console.log(console.log(store.getState().wallets))
+
+    let wallets = store.getState().wallets;
+    const { chainId } = await wallets.library.getNetwork()
+
+    if (chainId == 1337){
+        return [L_NFTFI, L_NFTFI_COORDINATOR, L_NFTFI_NOTE]
+    }
+    else if (chainId == 4){
+        return [R_NFTFI, R_NFTFI_COORDINATOR, R_NFTFI_NOTE]
     }
 }
 
@@ -263,8 +279,28 @@ export const getRepayment = (loan_amount, duration, apr) => {
     return (loan_amount + (loan_amount * (((apr/100) * loan_amount)/365 * duration)))
 }
 
+export const getNFTFiUnderlying = async(collection, id) => {
+    
+
+    let wallets = store.getState().wallets;
+    let signer = wallets.library.getSigner()
+
+
+    let [NFTFI, NFTFI_COORDINATOR, NFTFI_NOTE] = await get_nftfi_addys();
+
+    let note_contract = new ethers.Contract(NFTFI_NOTE, ERC721_ABI, signer)
+    let loan_id = await note_contract.loans(id)
+
+
+    let nftfi = new ethers.Contract( NFTFI , NFTFI_ABI , signer)
+    [loanPrincipalAmount, maximumRepaymentAmount, nftCollateralId, loanERC20Denomination, loanDuration, int, bas, wrapper, loanStartTime, nftCollateralContract, borrower ] = await nftfi.loanIdToLoan(loan_id)
+
+    return [nftCollateralContract, nftCollateralId]
+}
+
 export const getNFTDetails = async(collection, id) => {
-    console.log('detailsss')
+
+
     let [ACCEPTED_COLLECTIONS, ORACLE_CONTRACT, VAULT_MANAGER, WETH] = await get_addys()
 
     let wallets = store.getState().wallets;
@@ -273,7 +309,14 @@ export const getNFTDetails = async(collection, id) => {
     let oracle = new ethers.Contract(ORACLE_CONTRACT, PEPEFIORACLE_ABI, signer)
     let vm = new ethers.Contract( VAULT_MANAGER , VAULTMANAGER_ABI , signer)
 
+    if (['0x191b74d99327777660892b46a7c94ca25c896dc7', '0x5660e206496808f7b5cdb8c56a696a96ae5e9b23'].includes(collection.toLowerCase())) {
+        //set collection to the underlying
+        [collection, id] = await getNFTFiUnderlying(collection, id)
+    }
+
     let curr = {}
+
+
 
     curr['oraclePrice'] = await oracle.getPrice(collection)
 
