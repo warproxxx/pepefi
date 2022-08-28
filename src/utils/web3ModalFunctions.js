@@ -57,7 +57,6 @@ const connectWallet = async () => {
         const accounts = await library.listAccounts();
         const network = await library.getNetwork();
         const signer = await library?.getSigner();
-        console.log(library);
         let chainId = 0;
         let account = ""
         if (accounts) {
