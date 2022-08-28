@@ -91,7 +91,7 @@ const getCollectionsMinAndMaxAndAverage = (collections,duration) =>{
         collectionImgSrcs.push(collection.imgSrc)
         collection.NFTs= [
             {
-                imgSrc: '/static/images/vaults/collection1.png',
+                imgSrc: collection.imgSrc,
                 openseaSrc: '',
                 etherScanSrc: '',
                 value: 55,

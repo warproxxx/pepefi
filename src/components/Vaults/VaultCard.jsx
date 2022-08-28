@@ -227,6 +227,7 @@ export const VaultCard = (props) => {
                     </Box>
 
                 </Box>
+                <Typography sx={{mt:'20px'}} variant="h6">{vault.name}</Typography>
                 <Box sx={{my:"15px"}}>
                     <Box sx={{display:'flex',justifyContent:'space-between',my:'7px'}}>
                         <Box sx={{display:'flex'}}>
