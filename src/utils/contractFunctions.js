@@ -55,7 +55,7 @@ export const getAssets = async () => {
         {
             openseaSrc: 'https://opensea.io/assets/ethereum/0x5660e206496808f7b5cdb8c56a696a96ae5e9b23/12699013038842394238',
             collection: 'NFTFi Loan',
-            name: '#9431',
+            name: '#2192',
             imgSrc: 'https://api.nftfi.com/loans/v2/promissory/image/1/12699013038842394238',
             address: '0x5660e206496808f7b5cdb8c56a696a96ae5e9b23',
             id: '12699013038842394238'
@@ -63,7 +63,7 @@ export const getAssets = async () => {
         {
             openseaSrc: 'https://opensea.io/assets/ethereum/0x5660e206496808f7b5cdb8c56a696a96ae5e9b23/14103957916149294123',
             collection: 'NFTFi Loan',
-            name: '#9428',
+            name: '#2317',
             imgSrc: 'https://api.nftfi.com/loans/v2/promissory/image/1/14103957916149294123',
             address: '0x5660e206496808f7b5cdb8c56a696a96ae5e9b23',
             id: '14103957916149294123'
