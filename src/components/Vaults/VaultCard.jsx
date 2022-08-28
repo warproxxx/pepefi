@@ -164,12 +164,12 @@ const vaultCardSliderRows = [
         description: 'APR tooltip description',
         unit:'%',
     },
-    {
-        name:'Duration',
-        dataName:'duration',
-        description: 'Duration tooltip description',
-        unit:'day',
-    },
+    // {
+    //     name:'Duration',
+    //     dataName:'duration',
+    //     description: 'Duration tooltip description',
+    //     unit:'day',
+    // },
 ]
 
 export const VaultCard = (props) => {
@@ -199,13 +199,13 @@ export const VaultCard = (props) => {
                     }}>
                         <CollectionPictureBox>
                             <CollectionPictureInnerBox>
-                                <Image src={vault.data.imgSrc[0]} layout="responsive" height="100%" width="100%"></Image>
+                                <Image src={`${ vault.data.imgSrc.length > 0 ? vault.data.imgSrc[0] : '/static/images/vaults/blank.png' }`} layout="responsive" height="100%" width="100%"></Image>
                             </CollectionPictureInnerBox>
                         </CollectionPictureBox>
 
                         <CollectionPictureBox>
                             <CollectionPictureInnerBox>
-                                <Image src={vault.data.imgSrc[1]} layout="responsive" height="100%" width="100%"></Image>
+                                <Image src={`${ vault.data.imgSrc.length > 1 ? vault.data.imgSrc[1] : '/static/images/vaults/blank.png' }`} layout="responsive" height="100%" width="100%"></Image>
                             </CollectionPictureInnerBox>
                         </CollectionPictureBox>
                     </Box>
@@ -215,13 +215,13 @@ export const VaultCard = (props) => {
                     }}>
                         <CollectionPictureBox>
                             <CollectionPictureInnerBox>
-                                <Image src={vault.data.imgSrc[2]} layout="responsive" height="100%" width="100%"></Image>
+                                <Image src={`${ vault.data.imgSrc.length > 2 ? vault.data.imgSrc[2] : '/static/images/vaults/blank.png' }`} layout="responsive" height="100%" width="100%"></Image>
                             </CollectionPictureInnerBox>
                         </CollectionPictureBox>
 
                         <CollectionPictureBox>
                             <CollectionPictureInnerBox>
-                                <Image src={vault.data.imgSrc[3]} layout="responsive" height="100%" width="100%"></Image>
+                                <Image src={`${ vault.data.imgSrc.length > 3 ? vault.data.imgSrc[3] : '/static/images/vaults/blank.png' }`} layout="responsive" height="100%" width="100%"></Image>
                             </CollectionPictureInnerBox>
                         </CollectionPictureBox>
                     </Box>
