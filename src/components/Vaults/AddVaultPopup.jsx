@@ -199,8 +199,10 @@ export const AddVaultPopup = (props) => {
         finalFormReturnValues['collectionsLTVArray'].push(collection.collectionLTV * 10); //doing this as solidity expects in this format
         finalFormReturnValues['collectionsAPRArray'].push(collection.collectionAPR * 10); //doing this as solidity expects in this format
       })
-
-      await addVault(finalFormReturnValues)
+      let addVaultContractSuccess = false;
+      setLoadingAfterConfirm(true);
+      addVaultContractSuccess = await addVault(finalFormReturnValues)
+      setLoadingAfterConfirm(false);
     }
 
     let finalFormReturnValues = {

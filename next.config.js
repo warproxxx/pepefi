@@ -2,7 +2,6 @@
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
-  
   async redirects() {
     return [
       {
@@ -12,6 +11,9 @@ const nextConfig = {
       },
     ]
   },
+  images:{
+    domains:['api.nftfi.com']
+  }
 }
 
 module.exports = nextConfig

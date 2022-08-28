@@ -267,7 +267,6 @@ export const VaultCard = (props) => {
                                             marks={vault.data[row.dataName].marks}
                                         />  
                                     </Box>
-
                                 </Box>
                             )
                         })
