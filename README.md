@@ -29,10 +29,14 @@ Start a local hardhat instance with a mainnet fork using:
 Then deploy the contracts locally and generate config file: 
 >npm run build:hardhat
 
+To deploy locally. To deploy on rinkeby:
+npx hardhat run scripts/deploy.js --network rinkeby
+
 While deploying, Oracle price for select collections will be automatically set. To start the oracle scripts which updates price on 5% deviation, start it with:
 >npm run start:oracle
 
-For mainnet or rinkeby deployment, refer to the scripts inside package.json and change the params accordingly
+To start the rinkeby oracle:
+npx hardhat run scripts/oracle.js --network rinkeby
 
 Then start the application using:
 >npm run dev

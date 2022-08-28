@@ -84,32 +84,46 @@ export const getAssets = async () => {
     }
     else if (chainId == 4){
         
-        baseURL = `https://eth-rinkeby.alchemyapi.io`;
+        let baseURL = `https://eth-rinkeby.alchemyapi.io`;
         
-        for (let coll of ['0xf5de760f2e916647fd766B4AD9E85ff943cE3A2b', '0x191b74d99327777660892b46a7c94ca25c896dc7']) 
+        for (let coll of ['0x191b74d99327777660892b46a7c94ca25c896dc7', '0xf5de760f2e916647fd766B4AD9E85ff943cE3A2b']) {
+            let url = `${baseURL}/nft/v2/owT0720L_wB0MTvt5YN3feBqfUckmYL6/getNFTs/?owner=${wallets.account}&contractAddresses[]=${coll}`;
+            let response = await axios.get(url);
+
+            let collections = response.data['ownedNfts']
+            console.log(collections)
+
         
-        let url = `${baseURL}/nft/v2/${apiKey}/getNFTs/?owner=${wallets.account}&contractAddresses[]=0xf5de760f2e916647fd766B4AD9E85ff943cE3A2b`;
-        let response = await axios.get(url);
+            for (let collection of collections){
+                let id = collection['title'].split(" ")[2].replace("#", "")
 
-        let collections = response.data['ownedNfts']
+                if (coll == "0x191b74d99327777660892b46a7c94ca25c896dc7"){
 
+                    all_loans.push({
+                        openseaSrc: `https://testnets.opensea.io/assets/rinkeby/${coll}/${id}`,
+                        collection: 'NFTFi Loan',
+                        name: `#${id}`,
+                        imgSrc: collection['metadata']['image'],
+                        collection: coll,
+                        id: id
+                    })
 
-    
-        for (let collection of collections){
-            let id = collection['title'].split(" ")[2].replace("#", "")
+                }
+                else{
+                    all_loans.push({
+                        openseaSrc: `https://testnets.opensea.io/assets/rinkeby/${coll}/${id}`,
+                        collection: 'Multifaucet NFT',
+                        name: collection['title'],
+                        imgSrc: 'https://img.seadn.io/files/b4d419a67bc7dc52000e6d1336b24c46.png?fit=max&w=600',
+                        collection: coll,
+                        id: id
+                    })
+                }
 
-            let curr = {
-                openseaSrc: `https://testnets.opensea.io/assets/rinkeby/0xf5de760f2e916647fd766B4AD9E85ff943cE3A2b/${id}`,
-                collection: 'Multifaucet NFT',
-                name: collection['title'],
-                imgSrc: 'https://ipfs.io/ipfs/bafybeifvwitulq6elvka2hoqhwixfhgb42l4aiukmtrw335osetikviuuu',
-                collection: '0xf5de760f2e916647fd766B4AD9E85ff943cE3A2b',
-                id: id
             }
-
-            all_loans.push(curr)
-
         }
+        
+        
     }
 
     return all_loans

@@ -18,7 +18,7 @@ if (process.env.HARDHAT_NETWORK == 'rinkeby')
     contracts['NFTFI_NOTE'] = "0x191b74d99327777660892b46a7c94ca25c896dc7"
 
     acceptedCollections = [
-        { name: 'Multifaucet NFT', address: '0xf5de760f2e916647fd766B4AD9E85ff943cE3A2b', imgSrc:'https://ipfs.io/ipfs/bafybeifvwitulq6elvka2hoqhwixfhgb42l4aiukmtrw335osetikviuuu', slug: 'boredapeyachtclub'},
+        { name: 'Multifaucet NFT', address: '0xf5de760f2e916647fd766B4AD9E85ff943cE3A2b', imgSrc:'https://img.seadn.io/files/b4d419a67bc7dc52000e6d1336b24c46.png?fit=max&w=600', slug: 'multifaucet-nft-q55yxxitoz'},
     ]
 }
 else
@@ -146,70 +146,82 @@ async function perform_whale_transfer() {
 }
 
 async function updateOracleOnce(){
-    const { ORACLE_CONTRACT, ACCEPTED_COLLECTIONS } =  require("../src/config.js")
-
-    const ORACLE = await ethers.getContractAt("PepeFiOracle", ORACLE_CONTRACT);
+    
 
     let prices = {}
     let addys = []
     let newPrice = []
 
-    for (collection of ACCEPTED_COLLECTIONS){
-        try {
-            let res = await axios.get(`https://api.reservoir.tools/oracle/collections/${collection['address']}/floor-ask/v1`);
-            prices['reservoir'] = res['data']['price'] * 10**18
-        } catch (error) {
+    if (process.env.HARDHAT_NETWORK == 'rinkeby'){
+        let { ORACLE_CONTRACT, ACCEPTED_COLLECTIONS } =  require("../src/config_rinkeby.js")
+        let ORACLE = await ethers.getContractAt("PepeFiOracle", ORACLE_CONTRACT);
+        await ORACLE.updatePrices(["0xf5de760f2e916647fd766B4AD9E85ff943cE3A2b"], [(0.1 * 10**18).toString()])
+
+    }else {
+        let { ORACLE_CONTRACT, ACCEPTED_COLLECTIONS } =  require("../src/config.js")
+
+        let ORACLE = await ethers.getContractAt("PepeFiOracle", ORACLE_CONTRACT);
+
+        for (collection of ACCEPTED_COLLECTIONS){
+
+            
+
+            try {
+                let res = await axios.get(`https://api.reservoir.tools/oracle/collections/${collection['address']}/floor-ask/v1`);
+                prices['reservoir'] = res['data']['price'] * 10**18
+            } catch (error) {
+                
+            }
+            
+            
+            try {
+                let rare = await axios.get(`https://api.looksrare.org/api/v1/collections/stats?address=${collection['address']}`)
+                prices['looksrare'] = parseInt(rare['data']['data']['floorPrice'])
+            } catch (error) {
+                
+            }
+
+            try {
+                //most important because collection is not unique
+                let open = await axios.get(`https://api.opensea.io/api/v1/collection/${collection['slug']}/stats`)
+                prices['opensea'] = open['data']['stats']['floor_price'] * 10**18
+            } catch (error) {
+            
+            }
+
+            //now loop thru to find the minimum which is not nan or 0
+            
+            let minimum = 0
+
+            for (const [key, value] of Object.entries(prices)) {
+                if ((value != 0) && (isNaN(value) == false)){
+                    if (minimum == 0)
+                        minimum = value
+
+                    if (value < minimum)
+                        minimum = value
+                }
+            }
+
+            if (minimum != 0){
+                let oraclePrice = await ORACLE.getPrice(collection['address'])
+
+                if (oraclePrice <= minimum * 0.95 || oraclePrice >= minimum * 1.05){
+                    console.log(`Updating ${collection['address']} price to ${minimum} from ${oraclePrice}`)
+
+                    addys.push(collection['address'])
+                    newPrice.push(minimum.toString())
+                }
+            }
             
         }
-          
-        
-        try {
-            let rare = await axios.get(`https://api.looksrare.org/api/v1/collections/stats?address=${collection['address']}`)
-            prices['looksrare'] = parseInt(rare['data']['data']['floorPrice'])
-        } catch (error) {
-            
-        }
 
-        try {
-            //most important because collection is not unique
-            let open = await axios.get(`https://api.opensea.io/api/v1/collection/${collection['slug']}/stats`)
-            prices['opensea'] = open['data']['stats']['floor_price'] * 10**18
-        } catch (error) {
-           
-        }
-
-        //now loop thru to find the minimum which is not nan or 0
-        
-        let minimum = 0
-
-        for (const [key, value] of Object.entries(prices)) {
-            if ((value != 0) && (isNaN(value) == false)){
-                if (minimum == 0)
-                    minimum = value
-
-                if (value < minimum)
-                    minimum = value
-            }
-        }
-
-        if (minimum != 0){
-            let oraclePrice = await ORACLE.getPrice(collection['address'])
-
-            if (oraclePrice <= minimum * 0.95 || oraclePrice >= minimum * 1.05){
-                console.log(`Updating ${collection['address']} price to ${minimum} from ${oraclePrice}`)
-
-                addys.push(collection['address'])
-                newPrice.push(minimum.toString())
-            }
-        }
-        
+        await ORACLE.updatePrices(addys, newPrice)
     }
-
-    await ORACLE.updatePrices(addys, newPrice)
-
 }
 
 async function deploy(){
+    let [signer] = await ethers.getSigners();
 
     if (process.env.HARDHAT_NETWORK == 'localhost'){
         await perform_whale_transfer()
@@ -261,13 +273,16 @@ async function deploy(){
     const PepeAuction = await ethers.getContractFactory("PepeAuction");
     pe = await PepeAuction.deploy(contracts['WETH']);
     await pe.deployed();  
+    console.log("Auction Contract Deployed at " + pe.address);
+
 
     const VaultUtils = await ethers.getContractFactory("VaultUtils");
     vu = await VaultUtils.deploy(contracts['NFTFI'],  contracts['NFTFI_COORDINATOR']);
     await vu.deployed();  
+    console.log("Utils Contract Deployed at " + vu.address);
 
     const OracleManager = await ethers.getContractFactory("PepeFiOracle");
-    or = await OracleManager.deploy(owner.address);
+    or = await OracleManager.deploy(signer.address);
     await or.deployed(); 
     console.log("Oracle Contract Deployed at " + or.address);
 
@@ -280,7 +295,8 @@ async function deploy(){
     await vm.deployed();  
     console.log("Vault Manager Contract Deployed at " + vm.address);
 
-    let res = await vm.createVault('Test Vault', 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], [450, 450, 450, 450], true, 0)
+    
+    // let res = await vm.createVault('Test Vault', 1700695053, ['0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d', '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b', '0x42069abfe407c60cf4ae4112bedead391dba1cdb', '0xb7f7f6c52f2e2fdb1963eab30438024864c313f6'], [500, 500, 400, 500], [450, 450, 450, 450], true, 0)
 
 
     ABI_STRING = ABI_STRING + "let ORACLE_CONTRACT='" + or.address + "'\n"
@@ -289,7 +305,12 @@ async function deploy(){
 
     ABI_STRING = ABI_STRING + export_string
 
-    fs.writeFileSync('src/config.js', ABI_STRING);   
+    if (process.env.HARDHAT_NETWORK == 'rinkeby'){
+        fs.writeFileSync('src/config_rinkeby.js', ABI_STRING);   
+    }
+    else{
+        fs.writeFileSync('src/config.js', ABI_STRING);
+    }
 
     await updateOracleOnce()
 }
