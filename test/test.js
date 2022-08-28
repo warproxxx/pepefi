@@ -111,7 +111,7 @@ describe('Contract tests', () => {
 
         let loanDetails = await vault._loans(curr_loan)
 
-        expect((loanDetails.repaymentAmount/10**18).toFixed(3)).to.equal('1.003');
+        expect((loanDetails.repaymentAmount/10**18).toFixed(3)).to.be.oneOf(['1.002', '1.003', '1.004']);
         expect(loanDetails.expirity).to.equal(1661438551);
         expect(loanDetails.loanPrincipalAmount).to.equal('1000000000000000000');
 
@@ -120,7 +120,7 @@ describe('Contract tests', () => {
         await WETH_CONTRACT.approve(vault.address, ethers.constants.MaxUint256);
         await vault.repayLoan(curr_loan)
 
-        expect((await vault.getWETHBalance()/10**18).toFixed(3)).to.equal('2.003');
+        expect((await vault.getWETHBalance()/10**18).toFixed(3)).to.be.oneOf(['2.002', '2.003', '2.004']);
 
     })
 
@@ -158,7 +158,7 @@ describe('Contract tests', () => {
 
         let loanDetails = await vault._loans(curr_loan)
 
-        expect((loanDetails.repaymentAmount/10**18).toFixed(3)).to.equal('1.003');
+        expect((loanDetails.repaymentAmount/10**18).toFixed(3)).to.be.oneOf(['1.002', '1.003', '1.004']);
         expect(loanDetails.expirity).to.equal(1661438551);
         expect(loanDetails.loanPrincipalAmount).to.equal('1000000000000000000');
 
@@ -167,9 +167,9 @@ describe('Contract tests', () => {
 
     })
 
-    it("Auction and Withdraw Liquidity", async function () {
+    it("Expire Vault and Withdraw Liquidity", async function () {
         await vault.expireVault();
-
+        await vault.withdrawLiquidity(10)
     })
 
 })
