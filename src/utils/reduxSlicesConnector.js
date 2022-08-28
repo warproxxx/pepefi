@@ -152,19 +152,33 @@ export const getAndSetLendingNFT = (clickedNFTIndex) =>{
     let loanAmount = loanAmountMin;
     let duration = 10;
     temp_lendingNFT.valuation = valuation;
+    let temp_vaults =  []
+    temp_lendingNFT.vaults.map((vault,index)=>{
+        let diffTime = new Date(Number(vault.duration * 1000)) - new Date();
+        let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+        temp_vaults.push(
+            {
+                ...vault,
+                durationInDays: diffDays
+            }
+        )
 
-    // temp_lendingNFT.avaliableVaults.map((vault,index)=>{
-    //     return vault.duration = 10;
-    // })
-
-    temp_lendingNFT.loanAmountMin = loanAmountMin ;
-    temp_lendingNFT.loanAmountMax = Number(valuation * (LTV/1000)).toFixed(2);
+    })
+    temp_lendingNFT.vaults = temp_vaults;
+    temp_lendingNFT.duration = temp_vaults[0].durationInDays;
+    temp_lendingNFT.loanAmountMin = loanAmountMin;
+    temp_lendingNFT.loanAmountMax = valuation * (LTV/1000);
     temp_lendingNFT.loanAmountSliderStep = loanAmountMin;
-    temp_lendingNFT.duration = 10;
     temp_lendingNFT.loanAmount = loanAmountMin;
     temp_lendingNFT.repayment = Number(getRepayment(loanAmount,duration,APR)).toFixed(3)
-    temp_lendingNFT.repaymentDate ="10/28/2022";
+    temp_lendingNFT.repaymentDate =new Date(Number(temp_lendingNFT.vaults[0].duration * 1000)) .toLocaleDateString();
     temp_lendingNFT.selectedValutIndex = 1;
+    temp_lendingNFT.avaliableVaultsStrs = []
+
+    temp_lendingNFT.vaults.map((vault)=>{
+        console.log(vault)
+        temp_lendingNFT.avaliableVaultsStrs.push(`${vault.name} (${vault.APR/10}% APR /  ${vault.LTV/10}% LTV / ${vault.durationInDays} days) `)
+    })
     console.log(temp_lendingNFT)
     dispatch(setLendingNFT(temp_lendingNFT))
 }

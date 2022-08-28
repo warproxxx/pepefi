@@ -24,7 +24,7 @@ const DashboardLayoutRoot = styled('div')((props) => sx({
 }));
 
 export const DashboardLayout = (props:any) => {
-  useTraceUpdate(props);
+  // useTraceUpdate(props);
   const { children } = props;
 
   const [myLoansPopUpOpen, setMyLoansPopUpOpen] = useState(false);

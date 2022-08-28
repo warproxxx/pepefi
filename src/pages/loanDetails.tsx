@@ -181,7 +181,7 @@ function LoanDetailPage(props:any) {
                     {lendingNFT.name}
                   </LoanDetailData1Typography>
                   <LoanDetailNFTNameTypography>
-                    {lendingNFT.name}
+                    {lendingNFT.collection}
                   </LoanDetailNFTNameTypography>
                 </Box>
 
@@ -302,6 +302,7 @@ function LoanDetailPage(props:any) {
                       Duration
                     </LoanDetailLabelTypography>
                     <LoanDetailData1Typography>
+                      {console.log(lendingNFT)}
                       {lendingNFT.duration} Days
                     </LoanDetailData1Typography>
                   </Box>
