@@ -33,6 +33,8 @@ import { useAppSelector } from 'src/app/hooks';
 
 import {addVault} from 'src/utils/contractFunctions.js'
 
+import Image from "next/image";
+
   const steps = [
     'Gerneral Info',
     'Vault Details',
@@ -103,7 +105,9 @@ const defaultCollectionDetailsError = {
 
 export const AddVaultPopup = (props) => {
     const [activeStep, setActiveStep] = useState(0);
-  
+    const [loadingAfterConfirm, setLoadingAfterConfirm] = useState(false);
+    const [addVaultSuccess, setAddVaultSuccess] = useState(false);
+
     const [showAddCollection, setShowAddcollection] = useState(false);
     const [collectionDetail,setCollectionDetail] = useState(defaultCollectionDetails)
     const [collectionDetailError, setCollectionDetailError] = useState(defaultCollectionDetailsError)
@@ -461,6 +465,12 @@ export const AddVaultPopup = (props) => {
       </Box>   
     )
 
+    const loadingAfterConfirmContent = (
+      <Box sx={{position:'relative',aspectRatio:'1/1',width:'100%'}}>
+        <Image src={"/static/images/pepes/loading_pepe.gif"} layout="fill" objectFit="contain" alt=""/>
+      </Box>
+    )
+
     return (
         <Dialog
         open={props.open}
@@ -512,22 +522,28 @@ export const AddVaultPopup = (props) => {
                 autoComplete="off"
                 sx={{minHeight:'263px'}}
               >
-              { activeStep == 0 ? 
+              { activeStep == 0 && !loadingAfterConfirm ? 
                 page0Content
               : 
                   void(0)
               }
 
-              { activeStep == 1 ? 
+              { activeStep == 1 && !loadingAfterConfirm ? 
                   page1Content
               : 
                   void(0)
               }
 
-              { activeStep == 2 ? 
+              { activeStep == 2 && !loadingAfterConfirm ? 
                   page2Content
               : 
                   void(0)
+              }
+              {
+                loadingAfterConfirm ?
+                loadingAfterConfirmContent
+                :
+                void(0)
               }
               
             </Box>
@@ -536,7 +552,7 @@ export const AddVaultPopup = (props) => {
         </DialogContent>
         <DialogActions>
         {
-          activeStep != 0 
+          activeStep != 0 && !loadingAfterConfirm
           ?
           <Button onClick={()=>handleBack()}>
                 Back
@@ -546,7 +562,7 @@ export const AddVaultPopup = (props) => {
         }
 
         {
-          activeStep != 2
+          activeStep != 2 && !loadingAfterConfirm
           ?
           <Button onClick={()=>handleNext()}>
                 Next
@@ -555,11 +571,18 @@ export const AddVaultPopup = (props) => {
           void(0)
         }
         {
-          activeStep == 2
+          activeStep == 2 && !loadingAfterConfirm
           ?
           <Button onClick={()=>{finishAddVault()}}>
                 Finish
           </Button>
+          :
+          void(0)
+        }
+        {
+          loadingAfterConfirm
+          ?
+          void(0)
           :
           void(0)
         }
