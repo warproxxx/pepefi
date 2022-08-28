@@ -12,7 +12,7 @@ const nextConfig = {
     ]
   },
   images:{
-    domains:['api.nftfi.com']
+    domains:['api.nftfi.com', 'img.seadn.io', '*']
   }
 }
 
