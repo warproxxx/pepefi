@@ -4,13 +4,14 @@ import {ACCEPTED_COLLECTIONS, PEPEAUCTION_ABI, PEPEFIORACLE_ABI, VAULT_ABI, VAUL
 const axios = require('axios')
 import { FetchWrapper } from "use-nft"
 
-async function approve_and_spend(addy, abi, signer){
-    let provider = signer.provider;
-    let contract = new ethers.Contract( addy, abi, signer )
-    let x = await contract.allowance(provider.address, nftfi)
+async function approve_and_spend(target_address, abi, signer){
+    let user_address = await signer.getAddress( )
+
+    let contract = new ethers.Contract( WETH, abi, signer )
+    let x = await contract.allowance(user_address, target_address)
 
     if (x < 10**18 * 1000){
-        await contract.approve(addy, ethers.constants.MaxUint256)
+        await contract.approve(target_address, ethers.constants.MaxUint256)
     }
 }
 
@@ -127,6 +128,21 @@ export const repayLoan = async (details) => {
 
     let vault = new ethers.Contract( details.vault , VAULT_ABI , signer)
     await vault.repayLoan(details.id)
+}
+
+export const addLiquidity = async (amount, vault) => {
+    console.log(amount, vault)
+
+    let wallets = store.getState().wallets;
+    let signer = wallets.library.getSigner()
+
+    await approve_and_spend(vault, ERC20_ABI, signer)    
+
+    let exactAmt = ethers.utils.parseUnits(String(amount), "ether");
+    
+
+    let vault_contract = new ethers.Contract( vault , VAULT_ABI , signer)
+    await vault_contract.addLiquidity(exactAmt)
 }
 
 export const getAllLoans = async () => {

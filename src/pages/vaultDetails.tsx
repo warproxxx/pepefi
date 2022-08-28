@@ -15,7 +15,7 @@ import {truncateAddress} from 'src/utils/helpers'
 import { useAppSelector } from 'src/app/hooks';
 import { selectWallets } from 'src/redux/walletsSlice';
 import { selectVaults } from 'src/redux/vaultsSlice';
-
+import {addLiquidity} from 'src/utils/contractFunctions';
 
 
 export const VaultDetailBox = styled(Box)((props)  => sx({
@@ -471,8 +471,8 @@ function VaultDetailPage(props:any) {
                         <Button 
                         sx={{mt:'70px',borderRadius: "15px",color:'white',padding:'20px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:"30px",width:'100%'}} 
                         variant="contained"
-                        onClick={()=>{
-                            console.log(inputValue)
+                        onClick={async ()=>{
+                            await addLiquidity(inputValue, vault.contractAddy)
                         }}
                         >
                             Confirm
