@@ -11,7 +11,8 @@ import { lendingNFT as not_redux_lendingNFT } from 'src/data/lendingNFT';
 
 import { useAppSelector, useAppDispatch } from 'src/app/hooks';
 import { selectLoans,setLoans } from 'src/redux/loansSlice';
-import { setLendingNFT } from 'src/redux/lendingNFTSlice';
+// import { setLendingNFT } from 'src/redux/lendingNFTSlice';
+import { setLendingNFT } from 'src/utils/reduxSlicesConnector';
 
 
 export const LoansBox = styled(Box)((props)  => sx({
@@ -80,8 +81,9 @@ function LoansPage(props:any) {
                     }
                   }}
                   onClick={()=>{
-                    dispatch(setLendingNFT(not_redux_lendingNFT));
-                    router.push("/loanDetails");
+                    // dispatch(setLendingNFT(not_redux_lendingNFT));
+                    setLendingNFT(index);
+                    // router.push("/loanDetails");
                   }}
                   >
                     <Box sx={{

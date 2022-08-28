@@ -258,57 +258,6 @@ export const getAllLoans = async () => {
     return all_loans
 
 }
-
-export const getRepayment = (loan_amount, duration, apr) => {
-    return (loan_amount + (loan_amount * (((apr/100) * loan_amount)/365 * duration)))
-}
-
-export const getNFTDetails = async(collection, id) => {
-    console.log('detailsss')
-    let [ACCEPTED_COLLECTIONS, ORACLE_CONTRACT, VAULT_MANAGER, WETH] = await get_addys()
-
-    let wallets = store.getState().wallets;
-    let signer = wallets.library.getSigner()
-
-    let oracle = new ethers.Contract(ORACLE_CONTRACT, PEPEFIORACLE_ABI, signer)
-    let vm = new ethers.Contract( VAULT_MANAGER , VAULTMANAGER_ABI , signer)
-
-    let curr = {}
-
-    curr['oraclePrice'] = await oracle.getPrice(collection)
-
-    let vaults = await vm.getAllVaults()
-    let weth_contract = new ethers.Contract( WETH , ERC20_ABI , signer)
-    let allVaults = []
-
-    for (let vault of vaults){
-        let contract = new ethers.Contract( vault , VAULT_ABI , signer)
-        let [collections, ltvs, aprs] = await contract.getVaultDetails()
-
-
-        
-        let i = 0
-        for (let collection of collections){
-            if (collection.toLowerCase() == collection.toLowerCase()){
-                let curr_vault = {} 
-                curr_vault['name'] = await contract.VAULT_NAME()
-                curr_vault['contractAddy'] = vault
-                curr_vault['duration'] = await contract.expirityDate()
-                curr_vault['APR'] = aprs[i]
-                curr_vault['LTV'] = ltvs[i]
-                curr_vault['max'] = Math.min((ltvs[0]/1000) * ethers.utils.formatEther(curr['oraclePrice']), ethers.utils.formatEther(await weth_contract.balanceOf(vault)))
-                allVaults.push(curr_vault)
-                break
-            }
-
-            i = i + 1
-        }
-    }
-
-    curr['vaults'] = allVaults
-    return curr
-}
-
 export const getAllVaults = async () => {
     let [ACCEPTED_COLLECTIONS, ORACLE_CONTRACT, VAULT_MANAGER, WETH] = await get_addys()
 
