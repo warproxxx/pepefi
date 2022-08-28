@@ -28,10 +28,10 @@ async function get_addys(){
     const { chainId } = await wallets.library.getNetwork()
 
     if (chainId == 1337){
-        return (L_ACCEPTED_COLLECTIONS, L_ORACLE_CONTRACT, L_VAULT_MANAGER, L_WETH)
+        return [L_ACCEPTED_COLLECTIONS, L_ORACLE_CONTRACT, L_VAULT_MANAGER, L_WETH]
     }
     else if (chainId == 4){
-        return (R_ACCEPTED_COLLECTIONS, R_ORACLE_CONTRACT, R_VAULT_MANAGER, R_WETH)
+        return [R_ACCEPTED_COLLECTIONS, R_ORACLE_CONTRACT, R_VAULT_MANAGER, R_WETH]
     }
 }
 
@@ -265,6 +265,7 @@ export const getAllVaults = async () => {
     let signer = wallets.library.getSigner()
 
     let weth_contract = new ethers.Contract( WETH , ERC20_ABI , signer)
+
     let vm = new ethers.Contract( VAULT_MANAGER , VAULTMANAGER_ABI , signer)
     let oracle = new ethers.Contract(ORACLE_CONTRACT, PEPEFIORACLE_ABI, signer)
     
