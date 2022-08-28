@@ -113,6 +113,7 @@ export const AddVaultPopup = (props) => {
     const [collectionDetailError, setCollectionDetailError] = useState(defaultCollectionDetailsError)
     const [collections,setCollections] = useState([]);
 
+
     const handleSetCollectionDetail = (prop) => (event) => {
       const value = event.target.value;
       if(prop == 'collectionAPR'){
@@ -185,6 +186,13 @@ export const AddVaultPopup = (props) => {
       }
     };
 
+    const resetEverything = () =>{
+      setValues(defaultValues);
+      setCollectionDetail(defaultCollectionDetails);
+      setActiveStep(0);
+      setCollections([]);
+    }
+
     useEffect(()=>{
       setValues({ ...values, ['vaultManagerAddress']: wallets.account});
     },[wallets.account])
@@ -203,6 +211,7 @@ export const AddVaultPopup = (props) => {
       setLoadingAfterConfirm(true);
       addVaultContractSuccess = await addVault(finalFormReturnValues)
       setLoadingAfterConfirm(false);
+      setAddVaultSuccess(true);
     }
 
     let finalFormReturnValues = {
@@ -473,6 +482,13 @@ export const AddVaultPopup = (props) => {
       </Box>
     )
 
+    const loadingSuccessContent = (
+      <Box sx={{position:'relative',aspectRatio:'1/1',width:'100%'}}>
+        <Typography>Add Vault Done!</Typography>
+        <Image src={"/static/images/pepes/pepe-sunglasses.gif"} layout="fill" objectFit="contain" alt=""/>
+      </Box>
+    )
+
     return (
         <Dialog
         open={props.open}
@@ -524,19 +540,19 @@ export const AddVaultPopup = (props) => {
                 autoComplete="off"
                 sx={{minHeight:'263px'}}
               >
-              { activeStep == 0 && !loadingAfterConfirm ? 
+              { activeStep == 0 && !loadingAfterConfirm && !addVaultSuccess ? 
                 page0Content
               : 
                   void(0)
               }
 
-              { activeStep == 1 && !loadingAfterConfirm ? 
+              { activeStep == 1 && !loadingAfterConfirm && !addVaultSuccess ? 
                   page1Content
               : 
                   void(0)
               }
 
-              { activeStep == 2 && !loadingAfterConfirm ? 
+              { activeStep == 2 && !loadingAfterConfirm && !addVaultSuccess ? 
                   page2Content
               : 
                   void(0)
@@ -547,6 +563,12 @@ export const AddVaultPopup = (props) => {
                 :
                 void(0)
               }
+              {
+                !loadingAfterConfirm && addVaultSuccess? 
+                loadingSuccessContent
+                :
+                void(0)
+              }
               
             </Box>
           </Box>
@@ -554,7 +576,7 @@ export const AddVaultPopup = (props) => {
         </DialogContent>
         <DialogActions>
         {
-          activeStep != 0 && !loadingAfterConfirm
+          activeStep != 0 && !loadingAfterConfirm && !addVaultSuccess
           ?
           <Button onClick={()=>handleBack()}>
                 Back
@@ -564,7 +586,7 @@ export const AddVaultPopup = (props) => {
         }
 
         {
-          activeStep != 2 && !loadingAfterConfirm
+          activeStep != 2 && !loadingAfterConfirm && !addVaultSuccess
           ?
           <Button onClick={()=>handleNext()}>
                 Next
@@ -573,7 +595,7 @@ export const AddVaultPopup = (props) => {
           void(0)
         }
         {
-          activeStep == 2 && !loadingAfterConfirm
+          activeStep == 2 && !loadingAfterConfirm && !addVaultSuccess
           ?
           <Button onClick={()=>{finishAddVault()}}>
                 Finish
@@ -582,9 +604,11 @@ export const AddVaultPopup = (props) => {
           void(0)
         }
         {
-          loadingAfterConfirm
+          loadingAfterConfirm || addVaultSuccess
           ?
-          void(0)
+          <Button onClick={()=>{resetEverything();setActiveStep(0);setLoadingAfterConfirm(false);setAddVaultSuccess(false);props.handleClose()}}>
+                Done
+          </Button>
           :
           void(0)
         }
