@@ -30,16 +30,7 @@ export interface VaultsState {
               label: string;
             }
           },
-          duration: {
-            range: Array<number>;
-            average: number;
-            min: number;
-            max: number;
-            marks: {
-              value: number;
-              label: string;
-            }
-          },
+          duration: number;
           openseaPrice: number;
           oraclePrice: number;
           imgSrc: Array<string>;

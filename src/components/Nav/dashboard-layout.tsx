@@ -40,13 +40,19 @@ export const DashboardLayout = (props:any) => {
   const wallets = useAppSelector(selectWallets);
   const dispatch = useAppDispatch(); 
 
+
   useEffect(() => {
-    let web3Modal = web3ModalSetup();
-    if (web3Modal.cachedProvider) {
-      connectWalletAndGetData();
+    async function LoginAndGetVaultts() {
+      let web3Modal = web3ModalSetup();
+      let connectSuccess = false;
+      if (web3Modal.cachedProvider) {
+        connectSuccess = await connectWalletAndGetData();
+      }
+      if(connectSuccess)
+        getAndSetVaults();
     }
-    getAndSetVaults();
-  }, []);
+    LoginAndGetVaultts();
+  }, []); 
 
   useEffect(() => {
   if (wallets.provider?.on) {

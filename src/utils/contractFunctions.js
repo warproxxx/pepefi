@@ -30,7 +30,6 @@ function getCollectionDetails(coll) {
 }
 
 export const getAllVaults = async () => {
-    console.log(store.getState().wallets)
     let wallets = store.getState().wallets;
     let signer = wallets.library.getSigner()
 
@@ -86,7 +85,7 @@ export const getAllVaults = async () => {
         allVaults.push(curr)
     }
 
-    console.log(allVaults)
+    // console.log(allVaults)
     return allVaults
 }
 

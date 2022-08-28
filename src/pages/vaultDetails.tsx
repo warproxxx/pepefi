@@ -8,12 +8,13 @@ import {styled, experimental_sx as sx} from '@mui/system';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
-import { vaults } from 'src/data/vaults';
+// import { vaults } from 'src/data/vaults';
 
 import {truncateAddress} from 'src/utils/helpers'
 
 import { useAppSelector } from 'src/app/hooks';
 import { selectWallets } from 'src/redux/walletsSlice';
+import { selectVaults } from 'src/redux/vaultsSlice';
 
 
 
@@ -116,8 +117,8 @@ function VaultDetailPage(props:any) {
     const [mode,setMode] = useState("deposit");
     const [selectedCollection,setSelectedCollection] = useState(-1);
     const [inputValue, setInputValue] = useState("0");
-
-    const vault = vaults[0];
+    const vaults = useAppSelector(selectVaults);
+    const vault = vaults.allVaults[0];
     const router = useRouter();
     const wallets = useAppSelector(selectWallets);
 
@@ -248,7 +249,7 @@ function VaultDetailPage(props:any) {
                                                 </VaultDetailCollectionTitleTypography>
 
                                                 <VaultDetailCollectionDataTypography>
-                                                    {collection.price}
+                                                    {`${collection.oraclePrice} WETH`}
                                                 </VaultDetailCollectionDataTypography>                                       
                                             </Box>
                                         </Box>

@@ -15,7 +15,7 @@ let VAULTMANAGER_ABI = [{"inputs":[{"internalType":"address","name":"_WETH","typ
 let VAULTUTILS_ABI = [{"inputs":[{"internalType":"address","name":"_NFTFI_CONTRACT","type":"address"},{"internalType":"address","name":"_NFTFI_COORDINATOR","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"name":"NFTFI_CONTRACT","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"NFTFI_COORDINATOR","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"_loanId","type":"uint32"},{"internalType":"uint256","name":"_loanAmount","type":"uint256"}],"name":"_preprocessPNNFTFi","outputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint64","name":"","type":"uint64"}],"stateMutability":"view","type":"function"}]
 
 
-let ORACLE_CONTRACT='0xf5c4a909455C00B99A90d93b48736F3196DB5621'
-let VAULT_MANAGER='0xB22C255250d74B0ADD1bfB936676D2a299BF48Bd'
+let ORACLE_CONTRACT='0x7Cf4be31f546c04787886358b9486ca3d62B9acf'
+let VAULT_MANAGER='0x0c626FC4A447b01554518550e30600136864640B'
 
 module.exports = {ACCEPTED_COLLECTIONS,WETH,NFTFI,NFTFI_COORDINATOR,NFTFI_NOTE,SUDOSWAP_ROUTER,ERC20_ABI,ERC721_ABI,PEPEAUCTION_ABI,PEPEFIORACLE_ABI,VAULT_ABI,VAULTMANAGER_ABI,VAULTUTILS_ABI,ORACLE_CONTRACT,VAULT_MANAGER}
