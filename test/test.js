@@ -167,9 +167,10 @@ describe('Contract tests', () => {
 
     })
 
-    it("Expire Vault and Withdraw Liquidity", async function () {
+    it("Expire Vault, and Withdraw Liquidity", async function () {
         await vault.expireVault();
         await vault.withdrawLiquidity(10)
+
     })
 
 })
