@@ -265,6 +265,7 @@ export const VaultCard = (props) => {
                                             min={vault.data[row.dataName].min}
                                             max={vault.data[row.dataName].max}
                                             marks={vault.data[row.dataName].marks}
+                                            key={index}
                                         />  
                                     </Box>
                                 </Box>

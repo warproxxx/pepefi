@@ -176,9 +176,7 @@ export const getAssets = async () => {
         new_loans.push(loan)
     }
     
-
     return new_loans
-
 }
 
 export const repayLoan = async (details) => {
