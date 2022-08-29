@@ -368,6 +368,9 @@ export const getAllVaults = async () => {
     let [ACCEPTED_COLLECTIONS, ORACLE_CONTRACT, VAULT_MANAGER, WETH] = await get_addys()
 
     let wallets = store.getState().wallets;
+
+    const { chainId } = await wallets.library.getNetwork()
+
     let signer = wallets.library.getSigner()
 
     let weth_contract = new ethers.Contract( WETH , ERC20_ABI , signer)
@@ -376,6 +379,7 @@ export const getAllVaults = async () => {
     let oracle = new ethers.Contract(ORACLE_CONTRACT, PEPEFIORACLE_ABI, signer)
     
     let vaults = await vm.getAllVaults()
+
     
     let allVaults = []
 
@@ -412,14 +416,20 @@ export const getAllVaults = async () => {
             let coll_details = {}
             coll_details['name'] = details['name']
             coll_details['imgSrc'] = details['imgSrc']
-            coll_details['openseaSrc'] = 'https://opensea.io/collection/' + details['slug']
-
-            coll_details['etherScanSrc'] = 'etherscan.io/address/' + collection
+            if (chainId == 1337){
+                coll_details['openseaSrc'] = 'https://opensea.io/collection/' + details['slug']
+                coll_details['etherScanSrc'] = 'etherscan.io/address/' + collection
+                let open = await axios.get(`https://api.opensea.io/api/v1/collection/${details['slug']}/stats`)
+                coll_details['openseaPrice'] = open['data']['stats']['floor_price']
+            } else if (chainId = 4){
+                coll_details['openseaSrc'] = 'https://testnets.opensea.io/assets/rinkeby/' + details['slug']
+                coll_details['etherScanSrc'] = 'etherscan.io/address/' + collection
+                coll_details['openseaPrice'] = '1'
+            }
 
             coll_details['oraclePrice'] = await oracle.getPrice(collection)
 
-            let open = await axios.get(`https://api.opensea.io/api/v1/collection/${details['slug']}/stats`)
-            coll_details['openseaPrice'] = open['data']['stats']['floor_price']
+
 
             coll_details['LTV'] = ltvs[i]
             coll_details['APR'] = aprs[i]
@@ -434,7 +444,9 @@ export const getAllVaults = async () => {
         allVaults.push(curr)
     }
 
-    // console.log(allVaults)
+    console.log("Got vaults")
+
+    console.log(allVaults)
     return allVaults
 }
 
