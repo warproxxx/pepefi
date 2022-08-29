@@ -1,4 +1,14 @@
 # PepeFi
+
+
+:-------------------------:|:-------------------------:
+![](/public/static/1.png)  |  ![]((/public/static/2.png)
+                           |             
+:-------------------------:|:-------------------------:
+![]((/public/static/3.png) |  ![]((/public/static/4.png)
+
+
+
 Data from NFTFi shows that:
 
 1) Lenders are happy to hold a negative equity loan. Despite such defaults, lenders yield a higher return than anything else in the Market.
