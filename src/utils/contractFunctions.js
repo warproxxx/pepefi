@@ -265,7 +265,7 @@ export const getAllLoans = async () => {
             curr_details['collection'] = details['id']
             curr_details['lendedVault'] = vault
             
-            loan_duration = (loanDetails.expirity - loanDetails.timestamp)/86400
+            let loan_duration = (loanDetails.expirity - loanDetails.timestamp)/86400
 
             curr_details['APR'] = (((loanDetails.repaymentAmount - loanDetails.loanPrincipalAmount)/loanDetails.loanPrincipalAmount)/loan_duration) * 365 * 100
             curr_details['loanAmount'] = loanDetails['loanPrincipalAmount'] / 10**18
@@ -455,19 +455,23 @@ export const addVault = async (details) => {
     return addy
 }
 
-export const takeLoan = async (details, index, loanPrincipal, loanDuration) => {    
+export const takeLoan = async (details, index) => {    
     let wallets = store.getState().wallets;
     let signer = wallets.library.getSigner()
 
-    let vault = new ethers.Contract( details['vaults'][index]['contractAddy'] , VAULT_ABI , signer)
+    let vault_addy = details['vaults'][index]['contractAddy']
 
-    let expirity = (loanDuration * 86400) + (new Date().getTime() / 1000)
+    let vault = new ethers.Contract( vault_addy , VAULT_ABI , signer)
+
+    let expirity = parseInt((details.duration * 86400) + (new Date().getTime() / 1000))
+
+    let loanPrincipal = ethers.utils.parseUnits(String(details.loanAmount), "ether");
 
     let NFT_CONTRACT = new ethers.Contract(details.address, ERC721_ABI,  signer);
     let approved = parseInt(await NFT_CONTRACT.getApproved(details.id))
 
-    if (approved != signer.getAddress()){
-        await NFT_CONTRACT.approve(details.address, details.id)
+    if (approved != vault_addy){
+        await NFT_CONTRACT.approve(vault_addy, details.id)
     }
     else{
         console.log("Already approved")
@@ -487,7 +491,7 @@ export const takeLoan = async (details, index, loanPrincipal, loanDuration) => {
         
         await vault.takePNNFILoan(loan_id, loanPrincipal, expirity);
     } else {
-        await vault.takeERC721Loan(details.address, details.id, loanPrincipal, details.repaymentDay); //past time works as we are using old fork
+        await vault.takeERC721Loan(details.address, details.id, loanPrincipal, expirity); //past time works as we are using old fork
     }
 
 }
