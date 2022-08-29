@@ -455,16 +455,16 @@ export const addVault = async (details) => {
     return addy
 }
 
-export const takeLoan = async (details, index) => {    
+export const takeLoan = async (details, index, loanPrincipal, loanDuration) => {    
     let wallets = store.getState().wallets;
     let signer = wallets.library.getSigner()
 
     let vault = new ethers.Contract( details['vaults'][index]['contractAddy'] , VAULT_ABI , signer)
 
-    console.log(details)
+    let expirity = (loanDuration * 86400) + (new Date().getTime() / 1000)
 
     let NFT_CONTRACT = new ethers.Contract(details.address, ERC721_ABI,  signer);
-    let approved = await NFT_CONTRACT.getApproved(details.id)
+    let approved = parseInt(await NFT_CONTRACT.getApproved(details.id))
 
     if (approved != signer.getAddress()){
         await NFT_CONTRACT.approve(details.address, details.id)
@@ -475,6 +475,7 @@ export const takeLoan = async (details, index) => {
 
     let contracts = ['0x5660e206496808f7b5cdb8c56a696a96ae5e9b23', '0x33e75763F3705252775C5AEEd92E5B4987622f44']
 
+
     if(contracts.includes(details.address)){
         let [NFTFI, NFTFI_COORDINATOR, NFTFI_NOTE] = await get_nftfi_addys();
 
@@ -484,9 +485,9 @@ export const takeLoan = async (details, index) => {
         let loan_det = await note_contract.loans(details.id)
         let loan_id = loan_det[1]
         
-        // await vault.takePNNFILoan(loan_id, details.loanPrincipal, details.repaymentDay);
+        await vault.takePNNFILoan(loan_id, loanPrincipal, expirity);
     } else {
-        // await vault.takeERC721Loan(details.address, details.id, details.loanPrincipal, details.repaymentDay); //past time works as we are using old fork
+        await vault.takeERC721Loan(details.address, details.id, loanPrincipal, details.repaymentDay); //past time works as we are using old fork
     }
 
 }
