@@ -23,7 +23,8 @@ async function approve_and_spend(target_address, abi, signer){
     let x = await contract.allowance(user_address, target_address)
 
     if (x < 10**18 * 1000){
-        await contract.approve(target_address, ethers.constants.MaxUint256)
+        let res = await contract.approve(target_address, ethers.constants.MaxUint256)
+        await tx.wait()
     }
 }
 
@@ -487,7 +488,8 @@ export const takeLoan = async (details, index) => {
     let approved = parseInt(await NFT_CONTRACT.getApproved(details.id))
 
     if (approved != vault_addy){
-        await NFT_CONTRACT.approve(vault_addy, details.id)
+        let ret = await NFT_CONTRACT.approve(vault_addy, details.id)
+        await ret.wait();
     }
     else{
         console.log("Already approved")
