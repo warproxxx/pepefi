@@ -24,7 +24,7 @@ async function approve_and_spend(target_address, abi, signer){
 
     if (x < 10**18 * 1000){
         let res = await contract.approve(target_address, ethers.constants.MaxUint256)
-        await tx.wait()
+        await res.wait()
     }
 }
 
