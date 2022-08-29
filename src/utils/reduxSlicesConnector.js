@@ -165,7 +165,8 @@ export const getAndSetLendingNFT = (clickedNFTIndex) =>{
 
     })
     temp_lendingNFT.vaults = temp_vaults;
-    let duration = temp_vaults[0].durationInDays;
+    temp_lendingNFT.durationMax = temp_vaults[0].durationInDays;
+    let duration = 1;
     temp_lendingNFT.duration = duration;
     temp_lendingNFT.loanAmountMin = loanAmountMin;
     temp_lendingNFT.loanAmountMax = valuation * (LTV/1000);

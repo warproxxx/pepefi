@@ -89,7 +89,7 @@ function LoanDetailPage(props:any) {
   const dispatch = useAppDispatch();
 
   const [loanAmount, setLoanAmount] = useState<number | number[]>(0);
-  const [durationSliderValue, setDurationSliderValue] = useState<number | number[]>(0);
+  const [durationSliderValue, setDurationSliderValue] = useState<number | number[]>(1);
 
   const handleChangeDurationSlider = (event: Event, value: number | number [], activeThumb: number) => {
     setDurationSliderValue(value);
@@ -102,6 +102,7 @@ function LoanDetailPage(props:any) {
     let repayment = Number(getRepayment(loanAmount,duration,APR)).toFixed(3);
     dispatch(setLendingNFT({
       repayment: repayment,
+      duration: durationSliderValue
     }))
   };
 
@@ -117,6 +118,7 @@ function LoanDetailPage(props:any) {
     let repayment = Number(getRepayment(loanAmount,duration,APR)).toFixed(3);
     dispatch(setLendingNFT({
       repayment: repayment,
+      loanAmount: loanAmount
     }))
   };
 
@@ -141,7 +143,7 @@ function LoanDetailPage(props:any) {
     dispatch(setLendingNFT({
       repayment: repayment,
       APR: APR,
-      duration: vaults[index].durationInDays
+      durationMax: vaults[index].durationInDays
     }))
     setDurationSliderValue(Math.ceil(vaults[index].durationInDays/2));
     setSelectedVaultIndex(index);
@@ -216,33 +218,38 @@ function LoanDetailPage(props:any) {
                 display:'flex',
                 flexDirection:'column'               
               }}>
-                <Box sx={{
-                  display:'flex',
-                  flexDirection:'column'
-                }}>
-                  <LoanDetailLabelTypography>
-                    NFT Information
-                  </LoanDetailLabelTypography>
-                  <LoanDetailData1Typography>
-                    {lendingNFT.name}
-                  </LoanDetailData1Typography>
-                  <LoanDetailNFTNameTypography>
-                    {lendingNFT.collection}
-                  </LoanDetailNFTNameTypography>
+                <Box sx={{display:'flex',gap:'50px'}}>
+                  <Box sx={{
+                    display:'flex',
+                    flexDirection:'column',
+                    width:'40%',
+                  }}>
+                    <LoanDetailLabelTypography>
+                      NFT Information
+                    </LoanDetailLabelTypography>
+                    <LoanDetailData1Typography>
+                      {lendingNFT.name}
+                    </LoanDetailData1Typography>
+                    <LoanDetailNFTNameTypography>
+                      {lendingNFT.collection}
+                    </LoanDetailNFTNameTypography>
+                  </Box>
+                  <Box sx={{
+                    display:'flex',
+                    flexDirection:'column',
+                    width:'40%'
+                  }}>
+                    <LoanDetailLabelTypography>
+                      NFT Valuation
+                    </LoanDetailLabelTypography>
+                    <LoanDetailData1Typography>
+                      {lendingNFT.valuation} WETH
+                    </LoanDetailData1Typography>
+                  </Box>
                 </Box>
 
-                <Box sx={{
-                  display:'flex',
-                  flexDirection:'column',
-                  mt:'20px'
-                }}>
-                  <LoanDetailLabelTypography>
-                    NFT Valuation
-                  </LoanDetailLabelTypography>
-                  <LoanDetailData1Typography>
-                    {lendingNFT.valuation} WETH
-                  </LoanDetailData1Typography>
-                </Box>
+
+
 
                 <Box sx={{
                   display:'flex',
@@ -276,7 +283,7 @@ function LoanDetailPage(props:any) {
                   <Box sx={{mt:'40px'}}>
                   <Slider 
                   min={0} 
-                  max={lendingNFT.duration} 
+                  max={lendingNFT.durationMax} 
                   valueLabelFormat={value=><div>{`${value} days`}</div>} 
                   step={1} 
                   valueLabelDisplay="on" 

@@ -21,6 +21,7 @@ export interface LendingNFTState {
     avaliableVaultsStrs:Array<string>;
     selectedValutIndex: number;
     repayment: number;
+    durationMax: number;
     duration: number;
     repaymentDate: string;
 }
@@ -39,7 +40,8 @@ const initialState: LendingNFTState = {
     avaliableVaultsStrs:[],
     selectedValutIndex: 0,
     repayment: 1.0,
-    duration: 1.0,
+    durationMax: 100,
+    duration: 1,
     repaymentDate: '',
 };
 
