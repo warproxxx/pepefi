@@ -1,7 +1,6 @@
 # PepeFi
-![alt-text-1](/public/static/1.png "title-1") ![alt-text-2](/public/static/1.png "title-2")
-![alt-text-1](/public/static/3.png "title-1") ![alt-text-2](/public/static/4.png "title-2")
-
+![alt-text-2](/public/static/2.png "title-2")
+![alt-text-1](/public/static/3.png "title-1")
 
 
 Data from NFTFi shows that:
