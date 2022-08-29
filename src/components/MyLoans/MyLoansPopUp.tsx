@@ -287,8 +287,8 @@ export const MyLoansPopUp = (props:any) => {
       }
       newLoans.push(loan);
     })
-    console.log(newLoans);
-    console.log(not_redux_myLoans);
+    // console.log(newLoans);
+    // console.log(not_redux_myLoans);
     return (
         <Dialog
         open={props.open}

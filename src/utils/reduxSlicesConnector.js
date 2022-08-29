@@ -116,7 +116,7 @@ const getCollectionsMinAndMaxAndAverage = (collections,duration) =>{
 
 export const getAndSetMyLoans = async () => {
     let all_loans = await getAllLoans();
-    console.log(all_loans)
+    // console.log(all_loans)
     // console.log("xx")
     dispatch(setMyLoans(all_loans));
 
