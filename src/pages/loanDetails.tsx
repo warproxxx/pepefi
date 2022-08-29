@@ -89,14 +89,30 @@ function LoanDetailPage(props:any) {
   const dispatch = useAppDispatch();
 
   const [loanAmount, setLoanAmount] = useState<number | number[]>(0);
+  const [durationSliderValue, setDurationSliderValue] = useState<number | number[]>(0);
+
+  const handleChangeDurationSlider = (event: Event, value: number | number [], activeThumb: number) => {
+    setDurationSliderValue(value);
+  };
+  const changeRepaymentBaseOnDuration = (event: Event, value: number | number [], activeThumb: number) => {
+    let vaults = lendingNFT.vaults;
+    let APR = vaults[selectedVaultIndex].APR/1000;
+    let duration = durationSliderValue;
+    console.log(APR,duration,loanAmount)
+    let repayment = Number(getRepayment(loanAmount,duration,APR)).toFixed(3);
+    dispatch(setLendingNFT({
+      repayment: repayment,
+    }))
+  };
 
   const handleChange = (event: Event, value: number | number [], activeThumb: number) => {
     setLoanAmount(value);
   };
-  const changeLoanAmount = (event: Event, value: number | number [], activeThumb: number) => {
+
+  const changeRepaymentBaseOnLoanAmount = (event: Event, value: number | number [], activeThumb: number) => {
     let vaults = lendingNFT.vaults;
     let APR = vaults[selectedVaultIndex].APR/1000;
-    let duration = vaults[selectedVaultIndex].durationInDays;
+    let duration = durationSliderValue;
     console.log(APR,duration,loanAmount)
     let repayment = Number(getRepayment(loanAmount,duration,APR)).toFixed(3);
     dispatch(setLendingNFT({
@@ -120,13 +136,14 @@ function LoanDetailPage(props:any) {
       return
     let vaults = lendingNFT.vaults;
     let APR = vaults[index].APR/1000;
-    let duration = vaults[index].durationInDays;
-    let repayment = Number(getRepayment(loanAmount,duration,APR)).toFixed(3);
+    let duration = durationSliderValue;
+    let repayment = Number(getRepayment(loanAmount,duration,APR)).toFixed(2);
     dispatch(setLendingNFT({
       repayment: repayment,
       APR: APR,
-      duration: duration
+      duration: vaults[index].durationInDays
     }))
+    setDurationSliderValue(Math.ceil(vaults[index].durationInDays/2));
     setSelectedVaultIndex(index);
   }
 
@@ -182,11 +199,11 @@ function LoanDetailPage(props:any) {
                 width:'50%'
               }}>
                 <Box sx={{
-                  border: "1px solid #FEDA84",
-                  boxShadow: "3px 5px 13px -8px #FFC3AB",
+                  // border: "1px solid #FEDA84",
+                  // boxShadow: "3px 5px 13px -8px #FFC3AB",
                   borderRadius: "18px",
-                  height:'100%',
-                  overflow: 'clip'
+                  overflow: 'clip',
+                  height:'fit-content'
                 }}>
                   <Image src={lendingNFT.imgSrc} layout="responsive" height="100%" width="100%"/>
                 </Box>
@@ -244,7 +261,28 @@ function LoanDetailPage(props:any) {
                   valueLabelDisplay="on" 
                   value={loanAmount} 
                   onChange={handleChange} 
-                  onChangeCommitted={changeLoanAmount}/>
+                  onChangeCommitted={changeRepaymentBaseOnLoanAmount}/>
+                  </Box>
+                </Box>
+
+                <Box sx={{
+                  display:'flex',
+                  flexDirection:'column',
+                  mt:'20px'
+                }}>
+                  <LoanDetailLabelTypography>
+                    Duration
+                  </LoanDetailLabelTypography>
+                  <Box sx={{mt:'40px'}}>
+                  <Slider 
+                  min={0} 
+                  max={lendingNFT.duration} 
+                  valueLabelFormat={value=><div>{`${value} days`}</div>} 
+                  step={1} 
+                  valueLabelDisplay="on" 
+                  value={durationSliderValue} 
+                  onChange={handleChangeDurationSlider} 
+                  onChangeCommitted={changeRepaymentBaseOnDuration}/>
                   </Box>
                 </Box>
 
@@ -321,11 +359,37 @@ function LoanDetailPage(props:any) {
                 <Box sx={{
                   display:'flex',
                   flexDirection:'row',
-                  mt:'50px',
-                  justifyContent: 'space-between'
+                  mt:'20px',
+                  gap:'50px'
                 }}>
 
-                  <Box>
+                  <Box sx={{width:'40%'}}>
+                    <LoanDetailLabelTypography>
+                      Loan Amount
+                    </LoanDetailLabelTypography>
+                    <LoanDetailData1Typography>
+                      {loanAmount.toFixed(2)} WEth
+                    </LoanDetailData1Typography>
+                  </Box>
+
+                  <Box sx={{width:'40%'}}>
+                    <LoanDetailLabelTypography>
+                      Duration
+                    </LoanDetailLabelTypography>
+                    <LoanDetailData1Typography>
+                      {durationSliderValue} Days
+                    </LoanDetailData1Typography>
+                  </Box>
+                </Box>
+
+                <Box sx={{
+                  display:'flex',
+                  flexDirection:'row',
+                  mt:'20px',
+                  gap:'50px'
+                }}>
+
+                  <Box sx={{width:'40%'}}>
                     <LoanDetailLabelTypography>
                       Repayment
                     </LoanDetailLabelTypography>
@@ -334,16 +398,7 @@ function LoanDetailPage(props:any) {
                     </LoanDetailData1Typography>
                   </Box>
 
-                  <Box>
-                    <LoanDetailLabelTypography>
-                      Duration
-                    </LoanDetailLabelTypography>
-                    <LoanDetailData1Typography>
-                      {lendingNFT.duration} Days
-                    </LoanDetailData1Typography>
-                  </Box>
-
-                  <Box>
+                  <Box sx={{width:'40%'}}>
                     <LoanDetailLabelTypography>
                       Repayment Date
                     </LoanDetailLabelTypography>
@@ -358,7 +413,7 @@ function LoanDetailPage(props:any) {
                 <Box sx={{
                   display:'flex',
                   flexDirection:'column',
-                  marginTop:'auto'
+                  mt:'20px',
                 }}>
 
                   
