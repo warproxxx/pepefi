@@ -4,15 +4,37 @@ import Autocomplete from '@mui/material/Autocomplete';
 import {AddVaultPopupQuestionTextField} from './AddVaultPopup'
 import { Typography, Box, Tooltip } from '@mui/material';
 import Image from 'next/image';
-import {ACCEPTED_COLLECTIONS} from 'src/config'
+// import {ACCEPTED_COLLECTIONS} from 'src/config'
 
 import { tooltipDelay } from 'src/constants/tooltip';
+import {useState,useEffect} from 'react';
+import { useAppSelector } from 'src/app/hooks';
+import { selectWallets } from 'src/redux/walletsSlice';
+import { getConfig } from 'src/utils/contractFunctions';
 
 export default function ComboBox(props) {
-const selectedValue = props.value;
-const SetSelectedValue = props.setSelectedCollectionAddressAndName;
-let inputRef;
-const pictureWidthAndHeight = '45px';
+    const selectedValue = props.value;
+    const SetSelectedValue = props.setSelectedCollectionAddressAndName;
+    let inputRef;
+    const pictureWidthAndHeight = '45px';
+    const wallets = useAppSelector(selectWallets);
+
+    const [accepctedCollections,setAcceptedCollections] = useState([])
+
+    useEffect(() => {
+        function fetchAcceptedCollections() {
+            const chainId = wallets.chainId;
+            if (chainId == 1337){
+                setAcceptedCollections(getConfig('localhost').localhost)
+            }
+            else if (chainId == 4){
+                setAcceptedCollections(getConfig('rinkeby').rinkeby)
+            }
+        }
+        fetchAcceptedCollections();
+      }, [wallets.chainId]); // Or [] if effect doesn't need props or state
+
+
   return (
     <Tooltip title={"Ethereum contract address for the collection, currently we only support the collections listed below"} 
     arrow 
@@ -22,7 +44,7 @@ const pictureWidthAndHeight = '45px';
     placement="top">
         <Autocomplete
         id="combo-box-demo"
-        options={ACCEPTED_COLLECTIONS}
+        options={accepctedCollections}
         freeSolo
         disableClearable
         openOnFocus

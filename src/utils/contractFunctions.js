@@ -10,7 +10,7 @@ import {ACCEPTED_COLLECTIONS as R_ACCEPTED_COLLECTIONS, ORACLE_CONTRACT as R_ORA
 const axios = require('axios')
 import { FetchWrapper } from "use-nft"
 
-function getConfig(){
+export function getConfig(){
     return {'localhost': L_ACCEPTED_COLLECTIONS, 'rinkeby': R_ACCEPTED_COLLECTIONS}
 }
 
