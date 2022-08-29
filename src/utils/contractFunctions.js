@@ -10,6 +10,10 @@ import {ACCEPTED_COLLECTIONS as R_ACCEPTED_COLLECTIONS, ORACLE_CONTRACT as R_ORA
 const axios = require('axios')
 import { FetchWrapper } from "use-nft"
 
+function getConfig(){
+    return {'localhost': L_ACCEPTED_COLLECTIONS, 'rinkeby': R_ACCEPTED_COLLECTIONS}
+}
+
 async function approve_and_spend(target_address, abi, signer){
     let [ACCEPTED_COLLECTIONS, ORACLE_CONTRACT, VAULT_MANAGER, WETH] = await get_addys()
 
