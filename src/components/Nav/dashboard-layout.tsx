@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { selectWallets } from 'src/redux/walletsSlice';
 
 import { useTraceUpdate } from 'src/hooks/useTraceUpdate';
+import { PepeLoading } from '../General/PepeLoading';
 
 const DashboardLayoutRoot = styled('div')((props) => sx({
   display: 'flex',
@@ -122,6 +123,7 @@ export const DashboardLayout = (props:any) => {
       <DashboardNavbar handleMyLoansPopUpOpen={handleMyLoansPopUpOpen}/>
       {/* <DashboardSidebar onClose={() => setSidebarOpen(false)} open={isSidebarOpen}/> */}
       <MyLoansPopUp open={myLoansPopUpOpen} handleClose={handleMyLoansPopUpClose}/>
+      <PepeLoading/>
     </>
   );
 };
