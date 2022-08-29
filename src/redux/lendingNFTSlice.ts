@@ -24,7 +24,6 @@ export interface LendingNFTState {
     durationMax: number;
     duration: number;
     repaymentDate: string;
-    loanAmount: number;
 }
 
 const initialState: LendingNFTState = {
@@ -36,7 +35,6 @@ const initialState: LendingNFTState = {
     loanAmountMin: 0.0,
     loanAmountMax : 10.0,
     loanAmountSliderStep: 0.01,
-    loanAmount: 0.0,
     avaliableVaults: [],
     avaliableVaultsStrs:[],
     selectedValutIndex: 0,
