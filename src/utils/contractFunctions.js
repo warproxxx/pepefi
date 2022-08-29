@@ -344,7 +344,7 @@ export const getNFTDetails = async(collection, id) => {
                 let curr_vault = {} 
                 curr_vault['name'] = await contract.VAULT_NAME()
                 curr_vault['contractAddy'] = vault
-                curr_vault['duration'] = await contract.expirityDate()
+                curr_vault['duration'] = (await contract.expirityDate()) - (86400 * 2)
                 curr_vault['APR'] = aprs[i]
                 curr_vault['LTV'] = ltvs[i]
                 curr_vault['max'] = Math.min((ltvs[0]/1000) * ethers.utils.formatEther(curr['oraclePrice']), ethers.utils.formatEther(await weth_contract.balanceOf(vault)))
@@ -455,19 +455,38 @@ export const addVault = async (details) => {
     return addy
 }
 
-export const takeLoan = async (details) => {    
+export const takeLoan = async (details, index) => {    
     let wallets = store.getState().wallets;
     let signer = wallets.library.getSigner()
 
-    let NFT_CONTRACT = new ethers.Contract(details.collection, ERC721_ABI,  signer);
-    await NFT_CONTRACT.approve(details.vault, details.id)
+    let vault = new ethers.Contract( details['vaults'][index]['contractAddy'] , VAULT_ABI , signer)
+
+    console.log(details)
+
+    let NFT_CONTRACT = new ethers.Contract(details.address, ERC721_ABI,  signer);
+    let approved = await NFT_CONTRACT.getApproved(details.id)
+
+    if (approved != signer.getAddress()){
+        await NFT_CONTRACT.approve(details.address, details.id)
+    }
+    else{
+        console.log("Already approved")
+    }
 
     let contracts = ['0x5660e206496808f7b5cdb8c56a696a96ae5e9b23', '0x33e75763F3705252775C5AEEd92E5B4987622f44']
 
-    if(contracts.includes(details.collection)){
-        await vault.takePNNFILoan(details.loanId, details.loanPrincipal, details.repaymentDay);
+    if(contracts.includes(details.address)){
+        let [NFTFI, NFTFI_COORDINATOR, NFTFI_NOTE] = await get_nftfi_addys();
+
+        let nftfi_connection = new ethers.Contract( NFTFI , NFTFI_ABI , signer)
+        let note_contract = new ethers.Contract(NFTFI_NOTE, ERC721_ABI, signer)
+
+        let loan_det = await note_contract.loans(details.id)
+        let loan_id = loan_det[1]
+        
+        // await vault.takePNNFILoan(loan_id, details.loanPrincipal, details.repaymentDay);
     } else {
-        await vault.takeERC721Loan(details.collection, details.id, details.loanPrincipal, details.repaymentDay); //past time works as we are using old fork
+        // await vault.takeERC721Loan(details.address, details.id, details.loanPrincipal, details.repaymentDay); //past time works as we are using old fork
     }
 
 }

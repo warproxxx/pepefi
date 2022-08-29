@@ -13,7 +13,7 @@ import { lendingNFT as not_redux_lendingNFT } from 'src/data/lendingNFT';
 
 import { useAppSelector, useAppDispatch } from 'src/app/hooks';
 import { selectLendingNFT,setLendingNFT } from 'src/redux/lendingNFTSlice';
-import {getNFTDetails,getNFTFiUnderlying, getRepayment} from 'src/utils/contractFunctions';
+import {takeLoan, getRepayment} from 'src/utils/contractFunctions';
 
 
 
@@ -362,7 +362,7 @@ function LoanDetailPage(props:any) {
                 }}>
 
                   
-                  <Button variant="contained" onClick={async ()=>{console.log(await getNFTFiUnderlying('0xf896527c49b44aAb3Cf22aE356Fa3AF8E331F280', '14358716824499463741'))
+                  <Button variant="contained" onClick={async ()=>{console.log(await takeLoan(lendingNFT, selectedVaultIndex))
                   //this should be collection address and current id
                 }} sx={{width:'140px'}}>
                       Get Loan
