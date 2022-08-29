@@ -1,9 +1,9 @@
 # PepeFi
 <a href="https://docs.google.com/presentation/d/1hpWRa2PT1i1OqA77zWx4KJCkBIkspA1yNxTaznpO2os/edit#slide=id.g14879f76834_0_10" target="_blank">Pitch Deck</a>
 
-<a href="" target="_blank">Live Deployment</a>
+<a href="https://pepefi.vercel.app/loans" target="_blank">Live Deployment</a>
 
-<a href="" target="_blank">Demo Video</a>
+<a href="https://www.loom.com/share/c6c4da91f0ac458fa6b4c6beb2eb6046" target="_blank">Demo Video</a>
 
 
 <p align="center">
