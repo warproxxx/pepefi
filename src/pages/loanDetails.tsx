@@ -88,8 +88,8 @@ function LoanDetailPage(props:any) {
   const lendingNFT = useAppSelector(selectLendingNFT);
   const dispatch = useAppDispatch();
 
-  const [loanAmount, setLoanAmount] = useState<number | number[]>(0);
-  const [durationSliderValue, setDurationSliderValue] = useState<number | number[]>(1);
+  const [loanAmount, setLoanAmount] = useState<number | number[]>(0.01);
+  const [durationSliderValue, setDurationSliderValue] = useState<number | number[]>(0);
 
   const handleChangeDurationSlider = (event: Event, value: number | number [], activeThumb: number) => {
     setDurationSliderValue(value);

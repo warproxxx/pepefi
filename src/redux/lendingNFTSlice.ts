@@ -24,6 +24,7 @@ export interface LendingNFTState {
     durationMax: number;
     duration: number;
     repaymentDate: string;
+    loanAmount: number;
 }
 
 const initialState: LendingNFTState = {
@@ -43,6 +44,7 @@ const initialState: LendingNFTState = {
     durationMax: 100,
     duration: 1,
     repaymentDate: '',
+    loanAmount: 0.01
 };
 
 export const LendingNFTSlice = createSlice({
