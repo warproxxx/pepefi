@@ -33,10 +33,10 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 export const PepeLoading = (props:any) => {
   let loading = false;
-  let success = true;
+  let success = false;
     return (
         <Dialog
-        open={true}
+        open={loading}
         TransitionComponent={Transition}
         keepMounted
         onClose={()=>{}}

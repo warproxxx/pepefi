@@ -4,6 +4,8 @@ import loansReducer from 'src/redux/loansSlice'
 import lendingNFTSlice from 'src/redux/lendingNFTSlice';
 import myLoansSlice from 'src/redux/myLoansSlice';
 import vaultsSlice from 'src/redux/vaultsSlice';
+import loadingSlice from 'src/redux/loadingSlice';
+
 
 export const store = configureStore({
   
@@ -13,6 +15,7 @@ export const store = configureStore({
     lendingNFT: lendingNFTSlice,
     myLoans: myLoansSlice,
     vaults: vaultsSlice,
+    loading: loadingSlice
   },
   middleware: (getDefaultMiddleware:any) =>
   getDefaultMiddleware({
