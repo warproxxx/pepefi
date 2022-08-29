@@ -1,6 +1,11 @@
 # PepeFi
-![alt-text-2](/public/static/2.png "title-2")
-![alt-text-1](/public/static/3.png "title-1")
+
+<p align="center">
+  <img alt="Light" src="./public/static/2.png" width="45%">
+&nbsp; &nbsp; &nbsp; &nbsp;
+  <img alt="Dark" src="./public/static/3.png" width="45%">
+</p>
+
 
 
 Data from NFTFi shows that:
