@@ -1,7 +1,10 @@
 # PepeFi
 <a href="https://docs.google.com/presentation/d/1hpWRa2PT1i1OqA77zWx4KJCkBIkspA1yNxTaznpO2os/edit#slide=id.g14879f76834_0_10" target="_blank">Pitch Deck</a>
+
 <a href="" target="_blank">Live Deployment</a>
+
 <a href="" target="_blank">Demo Video</a>
+
 
 <p align="center">
   <img alt="Light" src="./public/static/2.png" width="45%">
