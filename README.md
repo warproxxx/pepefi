@@ -1,12 +1,13 @@
 # PepeFi
 
-
-:-------------------------:|:-------------------------:
-![](/public/static/1.png)  |  ![]((/public/static/2.png)
-                           |             
-:-------------------------:|:-------------------------:
-![]((/public/static/3.png) |  ![]((/public/static/4.png)
-
+<p float="left">
+  <img src="/public/static/1.png" width="100" />
+  <img src="/public/static/2.png" width="100" /> 
+</p>
+<p float="left">
+  <img src="/public/static/3.png" width="100" />
+  <img src="/public/static/4.png" width="100" /> 
+</p>
 
 
 Data from NFTFi shows that:
