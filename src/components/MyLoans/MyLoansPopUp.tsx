@@ -32,9 +32,10 @@ import { useAppSelector } from 'src/app/hooks';
 
 import Image from "next/image";
 
-import { myLoans } from "src/data/myLoans";
+import { myLoans as not_redux_myLoans } from "src/data/myLoans";
 
 import MUIDataTable from "mui-datatables";
+import { selectMyLoans } from "src/redux/myLoansSlice";
 
 
 
@@ -161,16 +162,16 @@ const dataRows2 = [
       sort: true,
      }
   },
-  {
-    name: 'loanDate',
-    dataName: 'loanDate',
-    unit: '',
-    label: 'Loan Date',
-    options: {
-      filter: true,
-      sort: true,
-     }
-  },
+  // {
+  //   name: 'loanDate',
+  //   dataName: 'loanDate',
+  //   unit: '',
+  //   label: 'Loan Date',
+  //   options: {
+  //     filter: true,
+  //     sort: true,
+  //    }
+  // },
   {
     name: 'remainingDays',
     dataName: 'remainingDays',
@@ -273,7 +274,21 @@ const getMuiTheme = () => createTheme({
 })
 
 export const MyLoansPopUp = (props:any) => {
-    const [activeStep, setActiveStep] = useState(0);
+    const myLoans = useAppSelector(selectMyLoans).allLoans;
+    let newLoans = []
+    myLoans.map((loan,index)=>{
+      loan = {
+        ...loan,
+        loanDate: loan.loanDate.toLocaleDateString(),
+        APR: loan.APR.toFixed(2),
+        lendedVault: truncateAddress(loan.lendedVault),
+        remainingDays: Math.floor(loan.remainingDays),
+        repaymentAmount: loan.repaymentAmount.toFixed(3)
+      }
+      newLoans.push(loan);
+    })
+    console.log(newLoans);
+    console.log(not_redux_myLoans);
     return (
         <Dialog
         open={props.open}
@@ -298,7 +313,7 @@ export const MyLoansPopUp = (props:any) => {
 
           <ThemeProvider theme={getMuiTheme()}>
             <MUIDataTable
-              data={myLoans}
+              data={newLoans}
               columns={dataRows2}
               options={options}
             />

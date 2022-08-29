@@ -166,7 +166,7 @@ export const DashboardNavbar = (props:any) => {
               }
             }}
           >
-            <MenuItem onClick={async ()=>{console.log(await getAllLoans()) ;props.handleMyLoansPopUpOpen(); handleCloseUserMenu();}} sx={{color:'black'}}>My Loans</MenuItem>
+            <MenuItem onClick={async ()=>{props.handleMyLoansPopUpOpen(); handleCloseUserMenu();}} sx={{color:'black'}}>My Loans</MenuItem>
             <MenuItem onClick={()=>{disconnectAndClearData();handleCloseUserMenu();}} sx={{color:'black'}}>Disconnect</MenuItem>
           </Menu>  
             </Box>

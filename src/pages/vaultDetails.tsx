@@ -78,19 +78,19 @@ const dataRows = [
         name:'Total Supply',
         dataName: 'totalWETH',
         nameDescription: 'Total supply is ...',
-        unit: 'WETH'
+        unit: 'WETH',
     },
     {
         name:'LTV',
         dataName:'LTV',
         nameDescription: 'LTV is ...',
-        unit: '%'
+        unit: '%',
     },
     {
         name:'APR',
         dataName:'APR',
         nameDescription: 'APR is ...',
-        unit: '%'
+        unit: '%',
     },
     {
         name:'Duration',
@@ -140,6 +140,12 @@ function VaultDetailPage(props:any) {
           justifyContent: 'center'
         }}
       >
+    {
+        vaults.selectedVault == -1 ?
+        <Typography>
+            Loading
+        </Typography>
+        :
         <VaultDetailBox sx={{maxWidth:'1400px',display:'flex',justifyContent:'space-between',fontFamily:'DM Mono',minHeight:'1300px'}}>
             <Box sx={{width:'67%',height:'100%',background: "#121218",boxShadow: "3px 3px 11px rgba(0, 0, 0, 0.25)",borderRadius: "15px",padding:'30px'}}>
                 <Box 
@@ -249,7 +255,7 @@ function VaultDetailPage(props:any) {
                                                 </VaultDetailCollectionTitleTypography>
 
                                                 <VaultDetailCollectionDataTypography>
-                                                    {`${collection.oraclePrice} WETH`}
+                                                    {`${collection.oraclePrice.toFixed(2)} WETH`}
                                                 </VaultDetailCollectionDataTypography>                                       
                                             </Box>
                                         </Box>
@@ -296,13 +302,13 @@ function VaultDetailPage(props:any) {
                                                     {
                                                     typeof(vault.data[row.dataName]) == 'object' ?
                                                     `${vault.data[row.dataName]?.range[0]}/${vault.data[row.dataName]?.average}/${vault.data[row.dataName]?.range[1]} ${row.unit}` :
-                                                    `${vault.data[row.dataName]} ${row.unit}`
+                                                    `${(vault.data[row.dataName] && vault.data[row.dataName].toFixed ) ? vault.data[row.dataName].toFixed(2) + ' ' + row.unit.toString() : 'Unavaliable'}`
                                                     }
                                                 </VaultDetailData2Typography>
                                                 :
                                                 <VaultDetailData2Typography>
                                                     {
-                                                    `${vault.collections[selectedCollection][row.dataName]} ${row.unit}`
+                                                    `${ vault.collections[selectedCollection][row.dataName] ? vault.collections[selectedCollection][row.dataName].toFixed(2) + ' ' + row.unit.toString() : 'Unavaliable'}`
                                                     }
                                                 </VaultDetailData2Typography>
                                             }
@@ -495,6 +501,9 @@ function VaultDetailPage(props:any) {
             </Box>
 
         </VaultDetailBox>
+    }
+    
+
       </Box>
     </>
   );

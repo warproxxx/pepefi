@@ -32,7 +32,7 @@ export default function ComboBox(props) {
             }
         }
         fetchAcceptedCollections();
-      }, [wallets.chainId]); // Or [] if effect doesn't need props or state
+      }, [wallets.chainId]);
 
 
   return (
