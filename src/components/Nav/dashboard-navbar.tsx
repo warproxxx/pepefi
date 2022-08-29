@@ -16,7 +16,7 @@ import {web3ModalHelper} from 'src/utils/web3ModalFunctions'
 import {truncateAddress,toHex} from 'src/utils/helpers'
 import { useAppSelector, useAppDispatch } from 'src/app/hooks';
 import {selectWallets,} from 'src/redux/walletsSlice';
-
+import {getAllLoans} from 'src/utils/contractFunctions'
 import { connectWalletAndGetData, disconnectAndClearData } from 'src/utils/reduxSlicesConnector';
 
 const pages = [ 'Loans','Vaults'];
@@ -166,7 +166,7 @@ export const DashboardNavbar = (props:any) => {
               }
             }}
           >
-            <MenuItem onClick={()=>{props.handleMyLoansPopUpOpen();handleCloseUserMenu();}} sx={{color:'black'}}>My Loans</MenuItem>
+            <MenuItem onClick={async ()=>{console.log(await getAllLoans()) ;props.handleMyLoansPopUpOpen(); handleCloseUserMenu();}} sx={{color:'black'}}>My Loans</MenuItem>
             <MenuItem onClick={()=>{disconnectAndClearData();handleCloseUserMenu();}} sx={{color:'black'}}>Disconnect</MenuItem>
           </Menu>  
             </Box>
