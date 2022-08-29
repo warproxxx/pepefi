@@ -203,7 +203,7 @@ const dataRows2 = [
       customBodyRender: (value:string, tableMeta:any, updateValue:string) => {
         return (
           <Button 
-            onClick={async ()=> await repayLoan(tableMeta['tableData'][tableMeta['rowIndex']])}
+          onClick={async ()=> await repayLoan(tableMeta['tableData'][tableMeta['rowIndex']])}
             variant="contained"
             sx={{
                 backgroundColor:'#5dc961 !important',
@@ -280,15 +280,16 @@ export const MyLoansPopUp = (props:any) => {
       loan = {
         ...loan,
         loanDate: loan.loanDate.toLocaleDateString(),
-        APR: loan.APR.toFixed(2),
+        APR: `${loan.APR.toFixed(2)} %`,
         lendedVault: truncateAddress(loan.lendedVault),
-        remainingDays: Math.floor(loan.remainingDays),
-        repaymentAmount: loan.repaymentAmount.toFixed(3)
+        remainingDays: `${Math.floor(loan.remainingDays)} days`,
+        repaymentAmount:`${loan.repaymentAmount.toFixed(3)} WETH`,
+        loanAmount:`${loan.loanAmount.toFixed(2)} WETH`,
       }
       newLoans.push(loan);
     })
-    // console.log(newLoans);
-    // console.log(not_redux_myLoans);
+    console.log(newLoans);
+    console.log(not_redux_myLoans);
     return (
         <Dialog
         open={props.open}
