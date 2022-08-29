@@ -302,7 +302,7 @@ function VaultDetailPage(props:any) {
                                                     {
                                                     typeof(vault.data[row.dataName]) == 'object' ?
                                                     `${vault.data[row.dataName]?.range[0]}/${vault.data[row.dataName]?.average}/${vault.data[row.dataName]?.range[1]} ${row.unit}` :
-                                                    `${(vault.data[row.dataName] && vault.data[row.dataName].toFixed ) ? vault.data[row.dataName].toFixed(2) + ' ' + row.unit.toString() : 'Unavaliable'}`
+                                                    `${(vault.data[row.dataName]) ? Number(vault.data[row.dataName]).toFixed(2)+ ' ' + row.unit.toString() : 'Unavaliable'}`
                                                     }
                                                 </VaultDetailData2Typography>
                                                 :

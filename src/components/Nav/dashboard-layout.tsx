@@ -59,6 +59,16 @@ export const DashboardLayout = (props:any) => {
   }, []); 
 
   useEffect(() => {
+  //@ts-ignore
+  if(wallets?.library?.on){
+      //@ts-ignore
+    wallets.library.on("block", (blockNumber:any) => {
+      getAndSetMyLoans();
+      getAndSetAssets();
+      getAndSetVaults();
+    })
+  }
+
   if (wallets.provider?.on) {
       const handleAccountsChanged:Function = (accounts:Array<string>) => {
       console.log("accountsChanged", accounts);
@@ -83,6 +93,11 @@ export const DashboardLayout = (props:any) => {
           wallets.provider.removeListener("accountsChanged", handleAccountsChanged);
           wallets.provider.removeListener("chainChanged", handleChainChanged);
           wallets.provider.removeListener("disconnect", handleDisconnect);
+      }
+      //@ts-ignore
+      if (wallets.library.removeAllListeners){
+        //@ts-ignore
+        wallets.library.removeAllListeners();
       }
       };
   }
