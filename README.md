@@ -1,4 +1,7 @@
 # PepeFi
+<a href="https://docs.google.com/presentation/d/1hpWRa2PT1i1OqA77zWx4KJCkBIkspA1yNxTaznpO2os/edit#slide=id.g14879f76834_0_10" target="_blank">Pitch Deck</a>
+<a href="" target="_blank">Live Deployment</a>
+<a href="" target="_blank">Demo Video</a>
 
 <p align="center">
   <img alt="Light" src="./public/static/2.png" width="45%">
@@ -17,7 +20,7 @@ Data from NFTFi shows that:
 PepeFi integrates these concepts in its Vaults. Pepefi allows NFTFi lenders to take a loan on an NFT or on an NFTFi loan whose creators determine APR, LTV, and supported collections. To integrate the changing dynamics of the Market, vaults have an expiry date (Later, to make the life of beginner LPs easy, a protocol can be built on top of PepeFi). Different Vaults will exist at a given time, and anyone can create a vault. Depending on the risk profile of LPs, various Vaults can provide loans on different LTVs and APRs. This creates competition among Vault Creators and LPs, making the Market more efficient for borrowers.
 
 
-PepeFi doesn't liquidate loans till the end of loan duration, integrating the Market Dynamics. If the loan is still not repaid, liquidators can start a dutch auction which begins at the MIN(1.1 * floor price, repaymentAmount) and decreases by 2% every hour. We do not believe that we can't provide "riskless" loans on NFTs and get yield out of it; thus, LPs will sometimes take a hit. But data from NFTFi shows that the yield for NFTs is still higher than anything else on the Market despite the default.
+PepeFi doesn't liquidate loans till the end of loan duration, integrating the Market Dynamics. If the loan is still not repaid, liquidators can start a dutch auction which begins at the MIN(1.1 * floor price, repaymentAmount) and decreases by 2% every hour. We do not believe that we can provide loans on NFTs without any drawdown to the LPs; thus, LPs will sometimes take a hit. But data from NFTFi shows that the yield for NFTs is still higher than anything else on the Market despite the default. 
 
 PepeFi creates powerful dynamics for solving most of the problems today. It provides the wider ecosystem access to the lucrative NFT lending market. At the same time, PepeFi creates competition among Vault Creators and LPs, making the Market more efficient. Providing liquidity to NFTFi lenders further increases liquidity in the Market, helping to make NFT Financialization happen. As most loans are much below the LTV, this creates exciting dynamics for the loan on an NFTFi loan. A Vault with a 60% LTV might ensure a 1X leverage loan for the lender if their current LTV is 60%
 
