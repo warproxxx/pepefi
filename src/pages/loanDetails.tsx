@@ -94,15 +94,24 @@ function LoanDetailPage(props:any) {
   const handleChangeDurationSlider = (event: Event, value: number | number [], activeThumb: number) => {
     setDurationSliderValue(value);
   };
+  
   const changeRepaymentBaseOnDuration = (event: Event, value: number | number [], activeThumb: number) => {
+    function addDays(date, days) {
+      var result = new Date(date);
+      result.setDate(result.getDate() + days);
+      return result;
+    }
+
     let vaults = lendingNFT.vaults;
     let APR = vaults[selectedVaultIndex].APR/1000;
     let duration = durationSliderValue;
     console.log(APR,duration,loanAmount)
     let repayment = Number(getRepayment(loanAmount,duration,APR)).toFixed(3);
+    let repaymentDate = addDays(new Date(), duration).toLocaleDateString();
     dispatch(setLendingNFT({
       repayment: repayment,
-      duration: durationSliderValue
+      duration: durationSliderValue,
+      repaymentDate: repaymentDate
     }))
   };
 
