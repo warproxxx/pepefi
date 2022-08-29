@@ -184,16 +184,6 @@ export const getAssets = async () => {
     return new_loans
 }
 
-export const repayLoan = async (details) => {
-    let wallets = store.getState().wallets;
-    let signer = wallets.library.getSigner()
-
-    await approve_and_spend(details.vault, ERC20_ABI, signer)
-
-    let vault = new ethers.Contract( details.vault , VAULT_ABI , signer)
-    await vault.repayLoan(details.id)
-}
-
 export const addLiquidity = async (amount, vault) => {
     
     // console.log(amount, vault)
@@ -269,6 +259,9 @@ export const getAllLoans = async () => {
             curr_details['name'] = details['name']
             curr_details['collection'] = details['id']
             curr_details['lendedVault'] = vault
+            curr_details['vault'] = vault
+
+            curr_details['loandId'] = loan
             
             let loan_duration = (loanDetails.expirity - loanDetails.timestamp)/86400
 
@@ -512,4 +505,17 @@ export const takeLoan = async (details, index) => {
         await vault.takeERC721Loan(details.address, details.id, loanPrincipal, expirity); //past time works as we are using old fork
     }
 
+}
+
+
+export const repayLoan = async (details) => {
+    console.log(details)
+
+    let wallets = store.getState().wallets;
+    let signer = wallets.library.getSigner()
+
+    await approve_and_spend(details.vault, ERC20_ABI, signer)
+
+    let vault = new ethers.Contract( details.vault , VAULT_ABI , signer)
+    await vault.repayLoan(details.loandId)
 }

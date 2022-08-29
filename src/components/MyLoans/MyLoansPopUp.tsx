@@ -36,7 +36,7 @@ import { myLoans as not_redux_myLoans } from "src/data/myLoans";
 
 import MUIDataTable from "mui-datatables";
 import { selectMyLoans } from "src/redux/myLoansSlice";
-
+import { repayLoan } from "src/utils/contractFunctions"
 
 
 export const MyLoansPopUpLabelTypography = styled(Typography)((props)  => sx({
@@ -203,7 +203,7 @@ const dataRows2 = [
       customBodyRender: (value:string, tableMeta:any, updateValue:string) => {
         return (
           <Button 
-            onClick={()=>console.log(value)}
+            onClick={async ()=> await repayLoan(tableMeta['tableData'][tableMeta['rowIndex']])}
             variant="contained"
             sx={{
                 backgroundColor:'#5dc961 !important',
