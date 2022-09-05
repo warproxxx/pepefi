@@ -1,11 +1,11 @@
 # PepeFi
-Made as part of <a href="https://medium.com/macrohacks/macro-hackathons-nft-finance-edition-recap-winner-showcase-8fd3893b206e">MacroHacks Hackathon</a> which we ended up winning.
+Made as part of <a href="https://medium.com/macrohacks/macro-hackathons-nft-finance-edition-recap-winner-showcase-8fd3893b206e">MacroHacks Hackathon</a> which we ended up winning. Materials submitted in the hackathon:
 
-<a href="https://docs.google.com/presentation/d/1hpWRa2PT1i1OqA77zWx4KJCkBIkspA1yNxTaznpO2os/edit#slide=id.g14879f76834_0_10" target="_blank">Pitch Deck</a>
+* <a href="https://docs.google.com/presentation/d/1hpWRa2PT1i1OqA77zWx4KJCkBIkspA1yNxTaznpO2os/edit#slide=id.g14879f76834_0_10" target="_blank">Pitch Deck</a>
 
-<a href="https://pepefi.vercel.app/loans" target="_blank">Live Deployment</a>
+* <a href="https://pepefi.vercel.app/loans" target="_blank">Live Deployment</a>
 
-<a href="https://www.loom.com/share/c6c4da91f0ac458fa6b4c6beb2eb6046" target="_blank">Demo Video</a>
+* <a href="https://www.loom.com/share/c6c4da91f0ac458fa6b4c6beb2eb6046" target="_blank">Demo Video</a>
 
 
 
