@@ -27,7 +27,8 @@ module.exports = {
       chainId: 1337,
       forking: {
         url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_API}`,
-        accounts: [process.env.ETH_KEY]
+        accounts: [process.env.ETH_KEY],
+        blockNumber: 15405357
       }
     },
     rinkeby: {
