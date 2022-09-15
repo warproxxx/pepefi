@@ -1,9 +1,12 @@
 # PepeFi
-<a href="https://docs.google.com/presentation/d/1hpWRa2PT1i1OqA77zWx4KJCkBIkspA1yNxTaznpO2os/edit#slide=id.g14879f76834_0_10" target="_blank">Pitch Deck</a>
+Made as part of <a href="https://medium.com/macrohacks/macro-hackathons-nft-finance-edition-recap-winner-showcase-8fd3893b206e">MacroHacks Hackathon</a> which we ended up winning. Materials submitted in the hackathon:
 
-<a href="https://pepefi.vercel.app/loans" target="_blank">Live Deployment</a>
+* <a href="https://docs.google.com/presentation/d/1hpWRa2PT1i1OqA77zWx4KJCkBIkspA1yNxTaznpO2os/edit#slide=id.g14879f76834_0_10" target="_blank">Pitch Deck</a>
 
-<a href="https://www.loom.com/share/c6c4da91f0ac458fa6b4c6beb2eb6046" target="_blank">Demo Video</a>
+* <a href="https://pepefi.vercel.app/loans" target="_blank">Live Deployment</a>
+
+* <a href="https://www.loom.com/share/c6c4da91f0ac458fa6b4c6beb2eb6046" target="_blank">Demo Video</a>
+
 
 
 <p align="center">
@@ -45,13 +48,13 @@ Then deploy the contracts locally and generate config file:
 >npm run build:hardhat
 
 To deploy locally. To deploy on rinkeby:
-npx hardhat run scripts/deploy.js --network rinkeby
+>npx hardhat run scripts/deploy.js --network rinkeby
 
 While deploying, Oracle price for select collections will be automatically set. To start the oracle scripts which updates price on 5% deviation, start it with:
 >npm run start:oracle
 
 To start the rinkeby oracle:
-npx hardhat run scripts/oracle.js --network rinkeby
+>npx hardhat run scripts/oracle.js --network rinkeby
 
 Then start the application using:
 >npm run dev
