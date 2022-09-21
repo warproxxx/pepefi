@@ -57,16 +57,16 @@ class CustomDocument extends Document {
             name="theme-color"
             content="#111827"
           />
-          <meta name="title" content="Goblin Sax" />
-          <meta name="description" content="Goblin Sax is an NFT financialization collective and we currently make NFT-collateralized loans to NFT holders." />
-          <meta property="og:type" content="website" />
-          <meta property="og:title" content="Goblin Sax" />
-          <meta property="og:description" content="Goblin Sax is an NFT financialization collective and we currently make NFT-collateralized loans to NFT holders." />
-          {/* <meta property="og:image" content="/static/images/GS.png" /> */}
+          <meta name="title" content="PepeFi" />
+          <meta name="description" content="TOWARDS A MORE EFFICIENT NFT LENDING MARKET" />
+          <meta property="og:type" content="NFT APP" />
+          <meta property="og:title" content="PepeFi" />
+          <meta property="og:description" content="TOWARDS A MORE EFFICIENT NFT LENDING MARKET" />
+          <meta property="og:image" content="/static/images/PepeFi.png" />
           <meta property="twitter:card" content="summary_large_image" />
-          <meta property="twitter:title" content="Goblin Sax" />
-          <meta property="twitter:description" content="Goblin Sax is an NFT financialization collective and we currently make NFT-collateralized loans to NFT holders." />
-          {/* <meta property="twitter:image" content="/static/images/GS.png" /> */}
+          <meta property="twitter:title" content="PepeFi" />
+          <meta property="twitter:description" content="TOWARDS A MORE EFFICIENT NFT LENDING MARKET" />
+          <meta property="twitter:image" content="/static/images/PepeFi.png" />
         </Head>
         <body>
         <Main />

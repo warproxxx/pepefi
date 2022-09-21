@@ -141,12 +141,13 @@ export const getAssets = async () => {
                 // console.log(collection)
 
                 if (coll == "0x191b74d99327777660892b46a7c94ca25c896dc7"){
-                    let id = collection['title'].split(" ")[2].replace("#", "")
+                    let name = collection['title'].split(" ")[2].replace("#", "")
+                    let id = collection['id']['tokenId']
 
                     all_loans.push({
                         openseaSrc: `https://testnets.opensea.io/assets/rinkeby/${coll}/${id}`,
                         collection: 'NFTFi Loan',
-                        name: `#${id}`,
+                        name: `#${name}`,
                         imgSrc: collection['metadata']['image'],
                         address: coll,
                         id: id
@@ -286,6 +287,9 @@ export const getRepayment = (loan_amount, duration, apr) => {
 
 export const getNFTFiUnderlying = async(collection, id) => {
 
+    console.log('got')
+    console.log(collection, id)
+
     let wallets = store.getState().wallets;
     let signer = wallets.library.getSigner()
 
@@ -317,7 +321,10 @@ export const getNFTDetails = async(collection, id) => {
 
     if (['0x191b74d99327777660892b46a7c94ca25c896dc7', '0x5660e206496808f7b5cdb8c56a696a96ae5e9b23'].includes(collection.toLowerCase())) {
         //set collection to the underlying
+
         [collection, id] = await getNFTFiUnderlying(collection, id)
+        
+
     }
 
     let curr = {}

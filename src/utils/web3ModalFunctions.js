@@ -20,13 +20,13 @@ const providerOptions = {
         package: CoinbaseWalletSDK, // Required
         options: {
         appName: "Web 3 Modal Demo", // Required
-        infuraId: process.env.INFURA_KEY // Required unless you provide a JSON RPC url; see `rpc` below
+        infuraId: "228fe573bfdf459789cc31eb2a55619d" // Required unless you provide a JSON RPC url; see `rpc` below
         }
     },
     walletconnect: {
         package: WalletConnect, // required
         options: {
-        infuraId: process.env.INFURA_KEY // required
+        infuraId: "228fe573bfdf459789cc31eb2a55619d" // required
         }
     }
 };

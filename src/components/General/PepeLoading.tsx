@@ -20,6 +20,7 @@ import {
   Grid,
   ThemeProvider,
   createTheme,
+  DialogAction
 } from "@mui/material";
 
 import { styled, experimental_sx as sx } from '@mui/system';
@@ -66,7 +67,7 @@ export const PepeLoading = (props:any) => {
              <Typography variant="h3" sx={{}}>Success</Typography>
             <DialogContent sx={{width:'100%',padding:'20px',background:'transparent',width:'25vw',aspectRatio:'1/1',position:'relative'}}>
             <Image src={"/static/images/pepes/pepe-sunglasses.gif"} layout="fill" objectFit="contain" alt=""/>
-            </DialogContent>           
+            </DialogContent>       
             </>
 
             :
@@ -74,7 +75,7 @@ export const PepeLoading = (props:any) => {
               <Typography variant="h3" sx={{}}>Failed</Typography>
               <DialogContent sx={{width:'100%',padding:'20px',background:'transparent',width:'25vw',aspectRatio:'1/1',position:'relative'}}>
               <Image src={"/static/images/pepes/crying.gif"} layout="fill" objectFit="contain" alt=""/>
-              </DialogContent>           
+              </DialogContent>       
             </>
 
           }
