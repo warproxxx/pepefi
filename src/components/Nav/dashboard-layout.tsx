@@ -8,7 +8,7 @@ import {
   setChainId,
 } from 'src/redux/walletsSlice';
 import {web3ModalSetup} from 'src/utils/web3ModalFunctions'
-import { connectWalletAndGetData, disconnectAndClearData, getAndSetVaults, getAndSetAssets, getAndSetMyLoans } from 'src/utils/reduxSlicesConnector';
+import { connectWalletAndGetData, disconnectAndClearData, getAndSetVaults, getAndSetAssets, getAndSetMyLoans, setLoadingDone } from 'src/utils/reduxSlicesConnector';
 
 import { MyLoansPopUp } from 'src/components/MyLoans/MyLoansPopUp';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
@@ -64,9 +64,11 @@ export const DashboardLayout = (props:any) => {
   if(wallets?.library?.on){
       //@ts-ignore
     wallets.library.on("block", (blockNumber:any) => {
+      console.log("new block")
       getAndSetMyLoans();
       getAndSetAssets();
       getAndSetVaults();
+      setLoadingDone();
     })
   }
 

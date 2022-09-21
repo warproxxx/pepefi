@@ -11,11 +11,14 @@ import { myLoans as fake_data_myLoans } from "src/data/myLoans";
 import { vaults as fake_data_vaults } from "src/data/vaults";
 
 import {/*getUserNFTs,getUserLoans,*/getAllVaults, getAssets, getAllLoans, getNFTDetails, getRepayment} from "src/utils/contractFunctions"
+import { setLoadingState } from "src/redux/loadingSlice";
 
 const dispatch = store.dispatch;
 const wallets = store.getState().wallets;
 
 const loans = store.getState().loans;
+
+const loadingState = store.getState().loading;
 
 const connectWallet = web3ModalHelper.connectWallet;
 const disconnect = web3ModalHelper.disconnect
@@ -268,4 +271,9 @@ export const getAndSetVaults = async () =>{
 
 }
 
-
+export const setLoadingDone = () => {
+    dispatch(setLoadingState({
+        loading: false,
+        success: true,
+    }))
+}

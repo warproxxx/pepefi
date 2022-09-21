@@ -185,13 +185,13 @@ export const VaultCard = (props) => {
                 boxShadow: "3px 3px 20px 8px rgb(84 128 191 / 12%), 0px 1px 2px 0px rgb(100 116 139 / 10%)", 
             }
         }}>
-            <VaultsCardContent sx={{backgroundColor: "inherit", padding:'25px'}}>
+            <VaultsCardContent sx={{backgroundColor: "inherit", padding:'25px', minHeight:'680px',display:'flex',flexDirection:'column'}}>
                 <Box sx={{
                     border: "1px solid #7CE7FF",
                     boxShadow: "3px 5px 14px -2px rgba(97, 233, 241, 0.25)",
                     borderRadius: "18px",
                     px:'20px',
-                    py:'10px'
+                    py:'10px',
                 }}>
                 {/* <VaultOverViewChart data={props.data}/> */}
                     <Box sx={{
@@ -229,7 +229,7 @@ export const VaultCard = (props) => {
                 </Box>
                 <Typography sx={{mt:'20px'}} variant="h6">{vault.name}</Typography>
                 <Box sx={{my:"15px"}}>
-                    <Box sx={{display:'flex',justifyContent:'space-between',my:'7px'}}>
+                    <Box sx={{display:'flex',justifyContent:'space-between',my:'7px',alignItems: 'center'}}>
                         <Box sx={{display:'flex'}}>
                             <VaultsCardDataTypography>
                                 {vaultCardRows[0].name}:
@@ -240,14 +240,38 @@ export const VaultCard = (props) => {
                             </Box>
 
                         </Box>
-                        <VaultsCardDataNumberTypography>
-                            {`${vault.data.totalWETH} ${vaultCardRows[0].unit}`}
-                        </VaultsCardDataNumberTypography>
+                        <Box sx={{minHeight:'34px',display:'flex',alignItems:'center'}}>
+                            <VaultsCardDataNumberTypography>
+                                {`${vault.data.totalWETH} ${vaultCardRows[0].unit}`}
+                            </VaultsCardDataNumberTypography>
+                        </Box>
+
                     </Box>
                     {
                         vaultCardSliderRows.map((row,index)=>{
+                            if(vault.collections.length === 1){
+                                return(
+                                    <Box sx={{display:'flex',justifyContent:'space-between',my:'7px',alignItems: 'center'}} key={row.name}>
+                                        <Box sx={{display:'flex'}}>
+                                            <VaultsCardDataTypography>
+                                                {row.name}:
+                                            </VaultsCardDataTypography>
+                                            <Box sx={{mx:'2px'}}></Box>
+                                            <Box sx={{display:'flex',alignItems:'center',cursor:'pointer'}}>
+                                                {questionMarkSvg(row.description)}
+                                            </Box>
+
+                                        </Box>
+
+                                        <Box sx={{minHeight:'34px',display:'flex',alignItems:'center'}}>
+                                            <VaultsCardDataNumberTypography>{`${vault.data[row.dataName].min.toFixed(2)} ${row.unit}`}</VaultsCardDataNumberTypography>
+                                        </Box>
+
+                                    </Box>
+                                )
+                            }
                             return(
-                                <Box sx={{display:'flex',justifyContent:'space-between',my:'7px',alignItems: 'center'}} key={index}>
+                                <Box sx={{display:'flex',justifyContent:'space-between',my:'7px',alignItems: 'center'}} key={row.name}>
                                     <Box sx={{display:'flex'}}>
                                         <VaultsCardDataTypography>
                                             {row.name}:
@@ -265,16 +289,17 @@ export const VaultCard = (props) => {
                                             min={vault.data[row.dataName].min}
                                             max={vault.data[row.dataName].max}
                                             marks={vault.data[row.dataName].marks}
-                                            key={index}
+                                            key={row.name}
                                         />  
                                     </Box>
                                 </Box>
                             )
                         })
+
                     }
                 </Box>
 
-                <Box sx={{width:'100%',display:'flex',justifyContent:'flex-end',mt:'40px'}}>
+                <Box sx={{width:'100%',display:'flex',justifyContent:'flex-end',marginTop:'auto'}}>
                     <Button variant="contained" onClick={()=>router.push('/vaultDetails')}>
                         Visit Vault
                     </Button>

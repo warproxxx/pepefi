@@ -29,9 +29,11 @@ import {truncateAddress,camelCaseToSpace} from '../../utils/helpers'
 import { tooltipDelay } from "src/constants/tooltip";
 
 import { selectWallets } from "src/redux/walletsSlice";
-import { useAppSelector } from 'src/app/hooks';
+import { useAppSelector,useAppDispatch } from 'src/app/hooks';
 
 import {addVault} from 'src/utils/contractFunctions.js'
+
+import { selectLoading, setLoadingState, setOpen, setSuccecss, setTitle } from "src/redux/loadingSlice";
 
 import Image from "next/image";
 
@@ -112,6 +114,9 @@ export const AddVaultPopup = (props) => {
     const [collectionDetail,setCollectionDetail] = useState(defaultCollectionDetails)
     const [collectionDetailError, setCollectionDetailError] = useState(defaultCollectionDetailsError)
     const [collections,setCollections] = useState([]);
+
+    const loadingState = useAppSelector(selectLoading);
+    const dispatch = useAppDispatch();
 
 
     const handleSetCollectionDetail = (prop) => (event) => {
@@ -207,11 +212,31 @@ export const AddVaultPopup = (props) => {
         finalFormReturnValues['collectionsLTVArray'].push(collection.collectionLTV * 10); //doing this as solidity expects in this format
         finalFormReturnValues['collectionsAPRArray'].push(collection.collectionAPR * 10); //doing this as solidity expects in this format
       })
+
+      //Initial transcation result
       let addVaultContractSuccess = false;
-      setLoadingAfterConfirm(true);
-      addVaultContractSuccess = await addVault(finalFormReturnValues)
-      setLoadingAfterConfirm(false);
-      setAddVaultSuccess(true);
+
+      // Close current modal
+      props.handleClose()
+
+      // Open loading modal with a set method
+      dispatch(setLoadingState({open: true, loading: true, success: false}))
+
+      // Wait for the transaction to be mined
+      try{
+        addVaultContractSuccess = await addVault(finalFormReturnValues)
+        if (addVaultContractSuccess) {
+          dispatch(setTitle("Waiting For Transaction To Be Mined"))
+        }
+  
+        else{
+          dispatch(setLoadingState({loading: false, success: false}))
+        }
+      }
+      catch(e){
+        console.error(e);
+        dispatch(setLoadingState({loading: false, success: false}))
+      }
     }
 
     let finalFormReturnValues = {
@@ -294,7 +319,7 @@ export const AddVaultPopup = (props) => {
         </Box>
 
         {showAddCollection ?
-        <Box sx={{"background":"#ffffff0a","boxShadow":"0px 5px 2px 1px rgb(0 0 0 / 25%)","borderRadius":"8px","py":"10px",mb:'20px',px:'20px'}}>
+        <Box sx={{"background":"#ffffff0a","boxShadow":"-4px 5px 2px 1px rgb(0 0 0 / 10%)","borderRadius":"8px","py":"10px",mb:'20px',px:'20px'}}>
           <Typography>New Collection</Typography>
             <AddVaultPopupCollectionSearch value={collectionDetail.collectionAddress} setSelectedCollectionAddressAndName={setSelectedCollectionAddressAndName}/>
             <Tooltip title={"Collection Name ..."} 
@@ -451,7 +476,7 @@ export const AddVaultPopup = (props) => {
                 {
                   value.map((collection,index)=>{
                     return(
-                      <Box sx={{"background":"#1B1B21","boxShadow":"0px 5px 2px 1px rgba(0, 0, 0, 0.25)","borderRadius":"8px",px:'10px',py:'5px',mt:'10px'}} key={index}>
+                      <Box sx={{"background":"#1B1B21","boxShadow":"-4px 5px 2px 1px rgb(0 0 0 / 10%)","borderRadius":"8px",px:'10px',py:'5px',mt:'10px'}} key={index}>
                         <Typography >
                           {`${collection.collectionName}, ${truncateAddress(collection.collectionAddress)}`}
                         </Typography>
