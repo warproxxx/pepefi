@@ -71,7 +71,7 @@ function VaultsPage(props:any) {
       </Box>
       <AddVaultPopup open={addVaultPopupOpen} handleClose={handleAddVaultPopupClose}/>
       <Box sx={{
-        position: 'absolute',
+        position: 'fixed',
         right:"5%",
         bottom: "5%",
         cursor:'pointer',

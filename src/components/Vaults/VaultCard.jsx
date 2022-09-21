@@ -249,27 +249,6 @@ export const VaultCard = (props) => {
                     </Box>
                     {
                         vaultCardSliderRows.map((row,index)=>{
-                            if(vault.collections.length === 1){
-                                return(
-                                    <Box sx={{display:'flex',justifyContent:'space-between',my:'7px',alignItems: 'center'}} key={row.name}>
-                                        <Box sx={{display:'flex'}}>
-                                            <VaultsCardDataTypography>
-                                                {row.name}:
-                                            </VaultsCardDataTypography>
-                                            <Box sx={{mx:'2px'}}></Box>
-                                            <Box sx={{display:'flex',alignItems:'center',cursor:'pointer'}}>
-                                                {questionMarkSvg(row.description)}
-                                            </Box>
-
-                                        </Box>
-
-                                        <Box sx={{minHeight:'34px',display:'flex',alignItems:'center'}}>
-                                            <VaultsCardDataNumberTypography>{`${vault.data[row.dataName].min.toFixed(2)} ${row.unit}`}</VaultsCardDataNumberTypography>
-                                        </Box>
-
-                                    </Box>
-                                )
-                            }
                             return(
                                 <Box sx={{display:'flex',justifyContent:'space-between',my:'7px',alignItems: 'center'}} key={row.name}>
                                     <Box sx={{display:'flex'}}>
@@ -283,7 +262,13 @@ export const VaultCard = (props) => {
 
                                     </Box>
 
-                                    <Box sx={{width:'70%'}}>
+                                    {
+                                        vault.collections.length === 1 || new Set(vault.data[row.dataName].range).size === 1 ?
+                                        <Box sx={{minHeight:'34px',display:'flex',alignItems:'center'}}>
+                                            <VaultsCardDataNumberTypography>{`${vault.data[row.dataName].min.toFixed(2)} ${row.unit}`}</VaultsCardDataNumberTypography>
+                                        </Box>
+                                        :
+                                        <Box sx={{width:'70%'}}>
                                         <RangeSlider
                                             value={vault.data[row.dataName].range}
                                             min={vault.data[row.dataName].min}
@@ -292,6 +277,8 @@ export const VaultCard = (props) => {
                                             key={row.name}
                                         />  
                                     </Box>
+                                    }
+
                                 </Box>
                             )
                         })
