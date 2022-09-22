@@ -163,7 +163,6 @@ function LoanDetailPage(props:any) {
     changeRepaymentBaseOnDuration()
   },[durationSliderValue,loanAmount])
 
-
   return (
     
     <>
@@ -282,6 +281,25 @@ function LoanDetailPage(props:any) {
                   valueLabelDisplay="on" 
                   value={loanAmount} 
                   onChange={handleChange} 
+                  marks={[
+                    {
+                        value: lendingNFT.loanAmountMin,
+                        label: `${lendingNFT.loanAmountMin}  WETH`
+                    },
+                    {
+                        value: lendingNFT.loanAmountMax,
+                        label: `${lendingNFT.loanAmountMax} WETH`
+                    },
+                  ]}
+                  sx={{
+                    '& .MuiSlider-markLabel':{
+                      color:'rgba(255, 255, 255, 0.4)',
+                      transform: "none"
+                    },
+                    'span.MuiSlider-markLabel[data-index="1"]':{
+                      transform: "translateX(-100%)"
+                    }
+                  }}
                   // onChangeCommitted={changeRepaymentBaseOnLoanAmount}
                   />
                   </Box>
@@ -304,6 +322,25 @@ function LoanDetailPage(props:any) {
                   valueLabelDisplay="on" 
                   value={Number(durationSliderValue)} 
                   onChange={handleChangeDurationSlider} 
+                  marks={[
+                    {
+                        value: 0,
+                        label: `${0} days`
+                    },
+                    {
+                        value: lendingNFT.durationMax,
+                        label: `${lendingNFT.durationMax} days`
+                    },
+                  ]}
+                  sx={{
+                    '& .MuiSlider-markLabel':{
+                      color:'rgba(255, 255, 255, 0.4)',
+                      transform: "none"
+                    },
+                    'span.MuiSlider-markLabel[data-index="1"]':{
+                      transform: "translateX(-100%)"
+                    }
+                  }}
                   // onChangeCommitted={changeRepaymentBaseOnDuration}
                   />
                   </Box>

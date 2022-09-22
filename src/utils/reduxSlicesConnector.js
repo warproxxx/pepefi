@@ -173,7 +173,7 @@ export const getAndSetLendingNFT = (clickedNFTIndex) =>{
     let duration = 0;
     temp_lendingNFT.duration = duration;
     temp_lendingNFT.loanAmountMin = loanAmountMin;
-    temp_lendingNFT.loanAmountMax = valuation * (LTV/1000);
+    temp_lendingNFT.loanAmountMax = +(valuation * (LTV/1000)).toFixed(2);
     temp_lendingNFT.loanAmountSliderStep = loanAmountMin;
     temp_lendingNFT.loanAmount = 0.01;
     temp_lendingNFT.repayment = Number(getRepayment(loanAmount,duration,APR)).toFixed(3)
