@@ -159,8 +159,13 @@ function LoanDetailPage(props:any) {
   }
 
   useEffect(() => {
-    changeRepaymentBaseOnLoanAmount()
-    changeRepaymentBaseOnDuration()
+    const timeout = setTimeout(() => {
+      changeRepaymentBaseOnLoanAmount()
+      changeRepaymentBaseOnDuration()
+    }, 100);
+    return () => {
+      clearTimeout(timeout);
+    };
   },[durationSliderValue,loanAmount])
 
   return (
