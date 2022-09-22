@@ -283,6 +283,7 @@ export const AddVaultPopup = (props) => {
         placement="top">
         <AddVaultPopupQuestionTextField
             label={inputs[2]}
+            type="number"
             variant="filled"
             margin="normal"
             InputProps={{

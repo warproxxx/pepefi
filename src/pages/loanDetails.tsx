@@ -2,8 +2,8 @@
 
 import {DashboardLayout} from 'src/components/Nav/dashboard-layout'
 import Head from "next/head";
-import { useState } from "react";
-import {Button,Box,Grid, Typography, Slider, Divider, Menu, MenuItem} from "@mui/material";
+import { useEffect, useState } from "react";
+import {Button,Box,Grid, Typography, Slider, Divider, Menu, MenuItem, Input, InputAdornment} from "@mui/material";
 import { VaultCard } from "src/components/Vaults/VaultCard";
 import {styled, experimental_sx as sx} from '@mui/system';
 import Image from 'next/image';
@@ -95,7 +95,7 @@ function LoanDetailPage(props:any) {
     setDurationSliderValue(value);
   };
   
-  const changeRepaymentBaseOnDuration = (event: Event, value: number | number [], activeThumb: number) => {
+  const changeRepaymentBaseOnDuration = () => {
     function addDays(date, days) {
       var result = new Date(date);
       result.setDate(result.getDate() + days);
@@ -119,7 +119,7 @@ function LoanDetailPage(props:any) {
     setLoanAmount(value);
   };
 
-  const changeRepaymentBaseOnLoanAmount = (event: Event, value: number | number [], activeThumb: number) => {
+  const changeRepaymentBaseOnLoanAmount = () => {
     let vaults = lendingNFT.vaults;
     let APR = vaults[selectedVaultIndex].APR/1000;
     let duration = durationSliderValue;
@@ -157,6 +157,11 @@ function LoanDetailPage(props:any) {
     setDurationSliderValue(Math.ceil(vaults[index].durationInDays/2));
     setSelectedVaultIndex(index);
   }
+
+  useEffect(() => {
+    changeRepaymentBaseOnLoanAmount()
+    changeRepaymentBaseOnDuration()
+  },[durationSliderValue,loanAmount])
 
 
   return (
@@ -252,7 +257,7 @@ function LoanDetailPage(props:any) {
                       NFT Valuation
                     </LoanDetailLabelTypography>
                     <LoanDetailData1Typography>
-                      {lendingNFT.valuation} WETH
+                      {lendingNFT.valuation.toFixed(2)} WETH
                     </LoanDetailData1Typography>
                   </Box>
                 </Box>
@@ -277,7 +282,8 @@ function LoanDetailPage(props:any) {
                   valueLabelDisplay="on" 
                   value={loanAmount} 
                   onChange={handleChange} 
-                  onChangeCommitted={changeRepaymentBaseOnLoanAmount}/>
+                  // onChangeCommitted={changeRepaymentBaseOnLoanAmount}
+                  />
                   </Box>
                 </Box>
 
@@ -296,9 +302,10 @@ function LoanDetailPage(props:any) {
                   valueLabelFormat={value=><div>{`${value} days`}</div>} 
                   step={1} 
                   valueLabelDisplay="on" 
-                  value={durationSliderValue} 
+                  value={Number(durationSliderValue)} 
                   onChange={handleChangeDurationSlider} 
-                  onChangeCommitted={changeRepaymentBaseOnDuration}/>
+                  // onChangeCommitted={changeRepaymentBaseOnDuration}
+                  />
                   </Box>
                 </Box>
 
@@ -383,18 +390,58 @@ function LoanDetailPage(props:any) {
                     <LoanDetailLabelTypography>
                       Loan Amount
                     </LoanDetailLabelTypography>
-                    <LoanDetailData1Typography>
-                      {loanAmount.toFixed(2)} WEth
-                    </LoanDetailData1Typography>
+                    <Input 
+                      value={loanAmount} 
+                      type="number"
+                      onChange={(e)=>{
+                        if(e.target.value.split('.')[1]?.length > 2)
+                          return
+                        const number_input = +Number(e.target.value).toFixed(2);
+                        if(number_input>=0 && number_input<=lendingNFT.loanAmountMax){
+                          setLoanAmount(number_input);
+                        }
+                      }}
+                      // onBlur={()=>{
+                      //   changeRepaymentBaseOnLoanAmount();
+                      // }}
+                      sx={{
+                        color:'white',
+                        fontSize:'30px',
+                        fontWeight:'700',
+                        ':before': { borderBottomColor: 'rgba(255, 255, 255, 0.4)' },
+                        // underline when selected
+                        ':after': { borderBottomColor: 'white' },
+                      }} endAdornment={<InputAdornment position="end">WETH</InputAdornment>}>
+                    </Input>
                   </Box>
 
                   <Box sx={{width:'40%'}}>
                     <LoanDetailLabelTypography>
                       Duration
                     </LoanDetailLabelTypography>
-                    <LoanDetailData1Typography>
-                      {durationSliderValue} Days
-                    </LoanDetailData1Typography>
+
+                    <Input 
+                    value={durationSliderValue} 
+                    // type="number"
+                    inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                    onChange={(e)=>{
+                      const number_input = Math.floor(Number(e.target.value))
+                      if(number_input>=0 && number_input<=lendingNFT.durationMax){
+                        console.log(typeof(number_input));
+                        setDurationSliderValue(number_input);
+                      }
+                    }}
+                    // onBlur={()=>{
+                    //   changeRepaymentBaseOnDuration();
+                    // }}
+                    sx={{
+                      color:'white',
+                      fontSize:'30px',
+                      fontWeight:'700',
+                      ':before': { borderBottomColor: 'rgba(255, 255, 255, 0.4)' },
+                      // underline when selected
+                      ':after': { borderBottomColor: 'white' },
+                    }} endAdornment={<InputAdornment position="end">Days</InputAdornment>}></Input>
                   </Box>
                 </Box>
 
@@ -410,7 +457,7 @@ function LoanDetailPage(props:any) {
                       Repayment
                     </LoanDetailLabelTypography>
                     <LoanDetailData1Typography>
-                      {lendingNFT.repayment} WEth
+                      {lendingNFT.repayment} WETH
                     </LoanDetailData1Typography>
                   </Box>
 

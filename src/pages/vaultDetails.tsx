@@ -59,6 +59,13 @@ export const VaultDetailData2Typography = styled(Typography)((props)  => sx({
     fontWeight:'700'
 }));
 
+export const VaultDetailData3Typography = styled(Typography)((props)  => sx({
+    fontSize:'17px',
+    color:'white',
+    fontFamily:'inherit',
+    fontWeight:'700'
+}));
+
 export const VaultDetailCollectionTitleTypography = styled(Typography)((props)  => sx({
     fontSize:'10px',
     fontWeight: 'normal',
@@ -116,11 +123,18 @@ const dataRows = [
 function VaultDetailPage(props:any) {
     const [mode,setMode] = useState("deposit");
     const [selectedCollection,setSelectedCollection] = useState(-1);
-    const [inputValue, setInputValue] = useState("0");
+    const [inputValue, setInputValue] = useState("0.00");
     const vaults = useAppSelector(selectVaults);
     const vault = vaults.allVaults[0];
     const router = useRouter();
     const wallets = useAppSelector(selectWallets);
+
+    const setInputValueToFixed2 = () => {
+
+        const number_value = Number(inputValue);
+        number_value = number_value.toFixed(2);
+        setInputValue(number_value);
+    }
 
   return (
     <>
@@ -149,15 +163,18 @@ function VaultDetailPage(props:any) {
         <VaultDetailBox sx={{maxWidth:'1400px',display:'flex',justifyContent:'space-between',fontFamily:'DM Mono',minHeight:'1300px'}}>
             <Box sx={{width:'67%',height:'100%',background: "#121218",boxShadow: "3px 3px 11px rgba(0, 0, 0, 0.25)",borderRadius: "15px",padding:'30px'}}>
                 <Box 
-                sx={{display:'flex', cursor:'pointer',width:'fit-content',color:'rgba(255, 255, 255, 0.4);',transitionDuration:"0.3s",'&:hover':{
-                    color:'white'
-                }}}
+                sx={{
+                    display:'flex', cursor:'pointer',width:'fit-content',color:'rgba(255, 255, 255, 0.7);',transitionDuration:"0.3s",
+                    '&:hover':{
+                        color:'white',
+                    }
+            }}
                 onClick={()=>{router.push("/vaults")}}
                 >
-                    <Typography variant='h2' sx={{whiteSpace:'pre-wrap'}} id="#vault_previous_page">
+                    <Typography variant='h2' sx={{whiteSpace:'pre-wrap',color:'inherit'}} id="#vault_previous_page">
                         {"< "}
                     </Typography>
-                    <Typography variant='h2' >
+                    <Typography variant='h2' sx={{whiteSpace:'pre-wrap',color:'inherit'}}>
                         {"Vaults"}
                     </Typography>
                 </Box>
@@ -302,7 +319,7 @@ function VaultDetailPage(props:any) {
                                                     {
                                                     typeof(vault.data[row.dataName]) == 'object' ?
                                                     `${vault.data[row.dataName]?.range[0]}/${vault.data[row.dataName]?.average}/${vault.data[row.dataName]?.range[1]} ${row.unit}` :
-                                                    `${(vault.data[row.dataName] && vault.data[row.dataName].toFixed) ? Number(vault.data[row.dataName]).toFixed(2)+ ' ' + row.unit.toString() : 'Unavaliable'}`
+                                                    `${(vault.data[row.dataName] && vault.data[row.dataName].toFixed) ? Number(vault.data[row.dataName]).toFixed(2)+ ' ' + row.unit.toString() : 'Unavailable'}`
                                                     }
                                                 </VaultDetailData2Typography>
                                                 :
@@ -383,9 +400,9 @@ function VaultDetailPage(props:any) {
                                                         {'NFT Value'}
                                                     </VaultDetailLabel2Typography>
                     
-                                                    <VaultDetailData2Typography>
-                                                        {`${NFT.value} WETH`}
-                                                    </VaultDetailData2Typography>
+                                                    <VaultDetailData3Typography>
+                                                        {`${NFT.value?.toFixed(2).replace(/\.00$/, '')} WETH`}
+                                                    </VaultDetailData3Typography>
                                                 </Box>
             
                                                 <Box sx={{width:'50%'}}>
@@ -393,9 +410,9 @@ function VaultDetailPage(props:any) {
                                                         {'Duration'}
                                                     </VaultDetailLabel2Typography>
                     
-                                                    <VaultDetailData2Typography>
+                                                    <VaultDetailData3Typography>
                                                         {`${NFT.duration} days`}
-                                                    </VaultDetailData2Typography>
+                                                    </VaultDetailData3Typography>
                                                 </Box>
                                             </Box>
                                             <Box sx={{
@@ -407,9 +424,9 @@ function VaultDetailPage(props:any) {
                                                         {'Loan Amount'}
                                                     </VaultDetailLabel2Typography>
                     
-                                                    <VaultDetailData2Typography>
-                                                        {`${NFT.loanAmount} WETH`}
-                                                    </VaultDetailData2Typography>
+                                                    <VaultDetailData3Typography>
+                                                        {`${NFT.loanAmount?.toFixed(2).replace(/\.00$/, '')} WETH`}
+                                                    </VaultDetailData3Typography>
                                                 </Box>
             
                                                 <Box sx={{width:'50%'}}>
@@ -417,9 +434,9 @@ function VaultDetailPage(props:any) {
                                                         {'APR'}
                                                     </VaultDetailLabel2Typography>
                     
-                                                    <VaultDetailData2Typography>
-                                                        {`${NFT.APR} %`}
-                                                    </VaultDetailData2Typography>
+                                                    <VaultDetailData3Typography>
+                                                        {`${NFT.APR?.toFixed(2).replace(/\.00$/, '')} %`}
+                                                    </VaultDetailData3Typography>
                                                 </Box>
                                             </Box> 
                                         </Box>
@@ -469,7 +486,7 @@ function VaultDetailPage(props:any) {
                             {/* <Typography variant="h3"sx={{color: 'rgba(255, 255, 255, 0.4)'}}>
                                 0
                             </Typography>   */}
-                            <Input disableUnderline value={inputValue} sx={{color: 'white',fontSize:'36px'}} onChange={(e)=>{setInputValue(e.target.value)}}></Input>                      
+                            <Input disableUnderline type="number" value={inputValue} sx={{color: 'white',fontSize:'36px'}} onChange={(e)=>{setInputValue(e.target.value)}} onBlur={()=>{setInputValueToFixed2()}}></Input>                      
                         </Box>   
 
  

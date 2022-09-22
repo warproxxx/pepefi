@@ -212,6 +212,8 @@ export const getAndSetVaults = async () =>{
                 average: collectionAverage.LTV,
                 min: collectionsMin.LTV / 1.5,
                 max: collectionsMax.LTV * 1.5 > 100 ? 100 : collectionsMax.LTV * 1.5,
+                // min: 0,
+                // max: 100,
                 marks: {
                   value: 0,
                   label: '',
@@ -222,6 +224,8 @@ export const getAndSetVaults = async () =>{
               average: collectionAverage.APR,
               min: collectionsMin.APR / 1.5,
               max: collectionsMax.APR * 1.5 > 1000 ? 1000 : collectionsMax.APR * 1.5,
+            //   min: 0,
+            //   max: 1000,
               marks: {
                 value: 0,
                 label: '',
